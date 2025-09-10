@@ -2,392 +2,318 @@
 // Hugging Face Hub Catalog - Frontend Logic
 // This script handles data fetching, searching, filtering, and rendering for Hugging Face datasets, models, and spaces.
 //
+
 // --- Global Constants and API Endpoints ---
 const GITHUB_PAGES_BASE_URL = 'https://huggingface.co';
 const ORGANIZATION_NAME = 'imageomics';
-const API_URL = 'https://huggingface.co/api/models';
-const DATASET_URL = 'https://huggingface.co/api/datasets';
-const SPACES_URL = 'https://huggingface.co/api/spaces';
+// Updated to fetch all repositories for the organization to enable cross-filtering
+const API_URL = `https://huggingface.co/api/models?author=${ORGANIZATION_NAME}&full=true`;
+const DATASET_URL = `https://huggingface.co/api/datasets?author=${ORGANIZATION_NAME}&full=true`;
+const SPACES_URL = `https://huggingface.co/api/spaces?author=${ORGANIZATION_NAME}&full=true`;
 
 // --- DOM Element References ---
-// We select all the necessary elements from the HTML file to interact with them.
 const searchInput = document.getElementById('searchInput');
 const repoTypeSelect = document.getElementById('repoType');
 const sortBySelect = document.getElementById('sortBy');
 const tagFilterSelect = document.getElementById('tagFilter');
 const itemList = document.getElementById('itemList');
 const emptyState = document.getElementById('emptyState');
+const filterSpacer = document.getElementById('filterSpacer');
 
-// Specific filter containers and dropdowns that are shown/hidden dynamically.
+// Specific filter containers and dropdowns
 const datasetFilters = document.getElementById('datasetFilters');
 const modelFilters = document.getElementById('modelFilters');
 const spaceFilters = document.getElementById('spaceFilters');
+
+// Dataset-specific dropdowns
 const taskFilterSelect = document.getElementById('taskFilter');
 const modalityFilterSelect = document.getElementById('modalityFilter');
+
+// Model-specific dropdowns
 const libraryFilterSelect = document.getElementById('libraryFilter');
 const modelDatasetFilterSelect = document.getElementById('modelDatasetFilter');
-const sdkFilterSelect = document.getElementById('sdkFilter');
+
+// Space-specific dropdowns
+const spaceSdkFilterSelect = document.getElementById('spaceSdkFilter');
 const spaceModelFilterSelect = document.getElementById('spaceModelFilter');
 const spaceDatasetFilterSelect = document.getElementById('spaceDatasetFilter');
 
-// --- Global State Variables ---
-// `allItems` stores all fetched data to avoid re-fetching on every filter change.
+// --- Global State ---
+// allData stores categorized data for populating filters.
+let allData = { models: [], datasets: [], spaces: [] };
+// allItems is a flattened list for rendering.
 let allItems = [];
-// `currentRepoType` tracks the currently selected repository type.
-let currentRepoType = 'datasets';
 
-// --- Event Listeners ---
-// The main event listeners for user interactions.
+// --- Main Initialization ---
+// Fetches data and sets up event listeners when the script loads.
 document.addEventListener('DOMContentLoaded', () => {
-    // Fetch initial data when the page loads (defaults to datasets).
-    fetchItems(DATASET_URL, 'datasets');
+    fetchAllData();
+    setupEventListeners();
 });
 
-// `input` event on the search bar triggers a re-render of the items.
-searchInput.addEventListener('input', renderItems);
-// `change` event on the repository type dropdown triggers a new data fetch.
-repoTypeSelect.addEventListener('change', () => {
-    currentRepoType = repoTypeSelect.value;
-    // Show a loading skeleton while the new data is fetched.
-    itemList.innerHTML = `
-        <div class="skeleton-card skeleton rounded-xl p-6 h-64"></div>
-        <div class="skeleton-card skeleton rounded-xl p-6 h-64 hidden sm:block"></div>
-        <div class="skeleton-card skeleton rounded-xl p-6 h-64 hidden lg:block"></div>
-        <div class="skeleton-card skeleton rounded-xl p-6 h-64 hidden xl:block"></div>
-    `;
-
-    // Reset all dynamic filter dropdowns to their default state.
-    tagFilterSelect.value = "";
-    taskFilterSelect.value = "";
-    modalityFilterSelect.value = "";
-    libraryFilterSelect.value = "";
-    modelDatasetFilterSelect.value = "";
-    sdkFilterSelect.value = "";
-    spaceModelFilterSelect.value = "";
-    spaceDatasetFilterSelect.value = "";
-
-    // Hide all dynamic filter containers before deciding which one to show.
-    datasetFilters.classList.add('hidden');
-    modelFilters.classList.add('hidden');
-    spaceFilters.classList.add('hidden');
-
-    // Fetch data and show the appropriate filters based on the selected repository type.
-    switch (currentRepoType) {
-        case 'datasets':
-            fetchItems(DATASET_URL, 'datasets');
-            datasetFilters.classList.remove('hidden');
-            break;
-        case 'models':
-            fetchItems(API_URL, 'models');
-            modelFilters.classList.remove('hidden');
-            break;
-        case 'spaces':
-            fetchItems(SPACES_URL, 'spaces');
-            spaceFilters.classList.remove('hidden');
-            break;
-    }
-});
-
-// Listeners for all filter and sort dropdowns to trigger a re-render.
-sortBySelect.addEventListener('change', renderItems);
-tagFilterSelect.addEventListener('change', renderItems);
-taskFilterSelect.addEventListener('change', renderItems);
-modalityFilterSelect.addEventListener('change', renderItems);
-libraryFilterSelect.addEventListener('change', renderItems);
-modelDatasetFilterSelect.addEventListener('change', renderItems);
-sdkFilterSelect.addEventListener('change', renderItems);
-spaceModelFilterSelect.addEventListener('change', renderItems);
-spaceDatasetFilterSelect.addEventListener('change', renderItems);
-
-// --- Core Functions ---
-
+// --- Data Fetching ---
 /**
- * Fetches items from the Hugging Face API for a given repository type.
- * @param {string} url The API endpoint URL.
- * @param {string} type The type of repository ('datasets', 'models', or 'spaces').
+ * Fetches all datasets, models, and spaces from the Hugging Face Hub API in parallel.
+ * Once fetched, it populates the global state, populates the filters, and renders the items.
  */
-async function fetchItems(url, type) {
+async function fetchAllData() {
+    setLoadingState(true);
     try {
-        const response = await fetch(`${url}?author=${ORGANIZATION_NAME}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        allItems = await response.json();
-        
-        // Populate the filter dropdowns with unique options from the fetched data.
-        populateFilters(allItems, type);
+        const [models, datasets, spaces] = await Promise.all([
+            fetch(API_URL).then(res => res.json()),
+            fetch(DATASET_URL).then(res => res.json()),
+            fetch(SPACES_URL).then(res => res.json())
+        ]);
 
-        // Render the items for the first time after fetching.
+        allData = {
+            models: models.map(item => ({ ...item, repoType: 'model' })),
+            datasets: datasets.map(item => ({ ...item, repoType: 'dataset' })),
+            spaces: spaces.map(item => ({ ...item, repoType: 'space' }))
+        };
+
+        allItems = [...allData.models, ...allData.datasets, ...allData.spaces];
+
+        populateFilters();
         renderItems();
     } catch (error) {
-        console.error('Could not fetch items:', error);
-        itemList.innerHTML = `<p class="text-red-500 text-center col-span-full">Error fetching data. Please try again later.</p>`;
+        console.error("Failed to fetch data from Hugging Face Hub:", error);
+        itemList.innerHTML = `<p class="text-red-500 text-center col-span-full">Error loading data. Please try again later.</p>`;
+    } finally {
+        setLoadingState(false);
     }
 }
 
+// --- Event Handling ---
 /**
- * Populates the filter dropdowns based on the repository type.
- * It gathers all unique tags, tasks, etc., and adds them as options.
- * @param {Array<Object>} items The list of repository items.
- * @param {string} type The type of repository.
+ * Sets up event listeners for all interactive UI elements.
  */
-function populateFilters(items, type) {
-    // Use `Set` to automatically handle unique values.
-    const allTags = new Set();
-    const allTasks = new Set();
-    const allModalities = new Set();
-    const allLibraries = new Set();
-    const allDatasets = new Set();
-    const allSDKs = new Set();
-    const allModels = new Set();
-
-    items.forEach(item => {
-        if (item.cardData) {
-            // All repository types have tags.
-            if (item.cardData.tags) {
-                item.cardData.tags.forEach(tag => allTags.add(tag));
-            }
-
-            // Populate type-specific filters based on the current repository type.
-            if (type === 'datasets') {
-                if (item.cardData.tasks) {
-                    item.cardData.tasks.forEach(task => allTasks.add(task));
-                }
-                if (item.cardData.modalities) {
-                    item.cardData.modalities.forEach(modality => allModalities.add(modality));
-                }
-            } else if (type === 'models') {
-                if (item.cardData.library_name) {
-                    allLibraries.add(item.cardData.library_name);
-                }
-                if (item.cardData.datasets) {
-                    item.cardData.datasets.forEach(dataset => allDatasets.add(dataset));
-                }
-            } else if (type === 'spaces') {
-                if (item.cardData.sdk) {
-                    allSDKs.add(item.cardData.sdk);
-                }
-                if (item.cardData.models) {
-                    item.cardData.models.forEach(model => allModels.add(model));
-                }
-                if (item.cardData.datasets) {
-                    item.cardData.datasets.forEach(dataset => allDatasets.add(dataset));
-                }
-            }
-        }
-    });
-
-    // Render the collected unique options into their respective select elements.
-    renderOptions(tagFilterSelect, Array.from(allTags).sort());
-
-    if (type === 'datasets') {
-        renderOptions(taskFilterSelect, Array.from(allTasks).sort());
-        renderOptions(modalityFilterSelect, Array.from(allModalities).sort());
-    } else if (type === 'models') {
-        renderOptions(libraryFilterSelect, Array.from(allLibraries).sort());
-        renderOptions(modelDatasetFilterSelect, Array.from(allDatasets).sort());
-    } else if (type === 'spaces') {
-        renderOptions(sdkFilterSelect, Array.from(allSDKs).sort());
-        renderOptions(spaceModelFilterSelect, Array.from(allModels).sort());
-        renderOptions(spaceDatasetFilterSelect, Array.from(allDatasets).sort());
-    }
+function setupEventListeners() {
+    const triggers = [
+        searchInput, repoTypeSelect, sortBySelect, tagFilterSelect,
+        taskFilterSelect, modalityFilterSelect, libraryFilterSelect,
+        modelDatasetFilterSelect, spaceSdkFilterSelect, spaceModelFilterSelect,
+        spaceDatasetFilterSelect
+    ];
+    triggers.forEach(el => el.addEventListener('input', renderItems));
+    repoTypeSelect.addEventListener('change', toggleFilterVisibility);
 }
 
+// --- UI Rendering and State Management ---
 /**
- * Helper function to render options in a given select element.
- * It clears existing options and adds new ones.
- * @param {HTMLSelectElement} selectElement The select element to populate.
- * @param {Array<string>} options The options to add.
+ * Toggles the visibility of filter sections based on the selected repository type.
+ * @param {Event} event - The change event from the repoType select dropdown.
  */
-function renderOptions(selectElement, options) {
-    // Start from index 1 to preserve the "All..." option.
-    while (selectElement.options.length > 1) {
-        selectElement.remove(1);
-    }
-    options.forEach(option => {
-        const newOption = document.createElement('option');
-        newOption.value = option;
-        newOption.textContent = option;
-        selectElement.appendChild(newOption);
-    });
+function toggleFilterVisibility(event) {
+    const selectedType = event.target.value;
+    datasetFilters.classList.toggle('hidden', selectedType !== 'dataset');
+    modelFilters.classList.toggle('hidden', selectedType !== 'model');
+    spaceFilters.classList.toggle('hidden', selectedType !== 'space');
+    filterSpacer.classList.toggle('hidden', selectedType === '');
 }
 
 /**
- * Renders the filtered and sorted items to the UI.
- * This is the main function that updates the item list on the page.
+ * Sets the loading state of the UI, showing or hiding skeleton cards.
+ * @param {boolean} isLoading - Whether to show the loading state.
+ */
+function setLoadingState(isLoading) {
+    if (isLoading) {
+        itemList.innerHTML = `
+            <div class="skeleton-card skeleton rounded-xl p-6 h-64"></div>
+            <div class="skeleton-card skeleton rounded-xl p-6 h-64 hidden sm:block"></div>
+            <div class="skeleton-card skeleton rounded-xl p-6 h-64 hidden lg:block"></div>
+            <div class="skeleton-card skeleton rounded-xl p-6 h-64 hidden xl:block"></div>
+        `;
+    } else {
+        itemList.innerHTML = '';
+    }
+}
+
+/**
+ * Renders the filtered and sorted items to the DOM.
  */
 function renderItems() {
-    // Start with a copy of all items to filter.
-    let filteredItems = [...allItems];
-    const searchTerm = searchInput.value.toLowerCase();
-    const selectedTag = tagFilterSelect.value;
-    const sortBy = sortBySelect.value;
-
-    // --- Filtering Logic ---
-    // Filter by type-specific dropdowns first.
-    if (currentRepoType === 'datasets') {
-        const selectedTask = taskFilterSelect.value;
-        const selectedModality = modalityFilterSelect.value;
-        if (selectedTask) {
-            filteredItems = filteredItems.filter(item => item.cardData?.tasks?.includes(selectedTask));
-        }
-        if (selectedModality) {
-            filteredItems = filteredItems.filter(item => item.cardData?.modalities?.includes(selectedModality));
-        }
-    } else if (currentRepoType === 'models') {
-        const selectedLibrary = libraryFilterSelect.value;
-        const selectedDataset = modelDatasetFilterSelect.value;
-        if (selectedLibrary) {
-            filteredItems = filteredItems.filter(item => item.cardData?.library_name === selectedLibrary);
-        }
-        if (selectedDataset) {
-            filteredItems = filteredItems.filter(item => item.cardData?.datasets?.includes(selectedDataset));
-        }
-    } else if (currentRepoType === 'spaces') {
-        const selectedSDK = sdkFilterSelect.value;
-        const selectedModel = spaceModelFilterSelect.value;
-        const selectedDataset = spaceDatasetFilterSelect.value;
-        if (selectedSDK) {
-            filteredItems = filteredItems.filter(item => item.cardData?.sdk === selectedSDK);
-        }
-        if (selectedModel) {
-            filteredItems = filteredItems.filter(item => item.cardData?.models?.includes(selectedModel));
-        }
-        if (selectedDataset) {
-            filteredItems = filteredItems.filter(item => item.cardData?.datasets?.includes(selectedDataset));
-        }
-    }
-
-    // Filter by search term across multiple fields (name, description, tags, etc.).
-    if (searchTerm) {
-        filteredItems = filteredItems.filter(item => {
-            const prettyName = item.cardData?.pretty_name || item.id.split('/')[1];
-            const description = item.cardData?.description || '';
-            const allIdentifiers = [
-                prettyName,
-                description,
-                ...(item.cardData?.tags || []),
-                ...(item.cardData?.tasks || []),
-                ...(item.cardData?.modalities || []),
-                item.cardData?.library_name,
-                ...(item.cardData?.datasets || []),
-                item.cardData?.sdk,
-                ...(item.cardData?.models || []),
-                item.cardData?.language
-            ].filter(Boolean).join(' ').toLowerCase();
-
-            return allIdentifiers.includes(searchTerm);
-        });
-    }
-
-    // Filter by the selected tag.
-    if (selectedTag) {
-        filteredItems = filteredItems.filter(item => item.cardData?.tags?.includes(selectedTag));
-    }
-    
-    // --- Sorting Logic ---
-    filteredItems.sort((a, b) => {
-        const aDate = new Date(a.lastModified);
-        const bDate = new Date(b.lastModified);
-        const aName = a.cardData?.pretty_name || a.id.split('/')[1];
-        const bName = b.cardData?.pretty_name || b.id.split('/')[1];
-
-        if (sortBy === 'lastModified') {
-            return bDate - aDate;
-        } else if (sortBy === 'createdAt') {
-            const aCreated = new Date(a.createdAt);
-            const bCreated = new Date(b.createdAt);
-            return bCreated - aCreated;
-        } else if (sortBy === 'alphabetical_asc') {
-            return aName.localeCompare(bName);
-        } else if (sortBy === 'alphabetical_desc') {
-            return bName.localeCompare(aName);
-        }
-    });
-
-    // --- Rendering Logic ---
-    // Clear the current item list.
+    const filteredAndSortedItems = filterAndSortData();
     itemList.innerHTML = '';
-    // Show the empty state message if no items are found, otherwise render the cards.
-    if (filteredItems.length === 0) {
+
+    if (filteredAndSortedItems.length === 0) {
         emptyState.classList.remove('hidden');
     } else {
         emptyState.classList.add('hidden');
-        filteredItems.forEach(item => {
-            const card = createCard(item);
+        filteredAndSortedItems.forEach(item => {
+            const card = createItemCard(item);
             itemList.appendChild(card);
         });
     }
 }
 
+// --- Filtering and Sorting Logic ---
 /**
- * Creates a single item card element with all relevant details.
- * @param {Object} item The repository item data.
+ * Filters and sorts the data based on the current values of the UI controls.
+ * @returns {Array} The filtered and sorted array of items.
+ */
+function filterAndSortData() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const repoType = repoTypeSelect.value;
+    const sortBy = sortBySelect.value;
+
+    // --- Get values from all filters ---
+    const selectedTag = tagFilterSelect.value;
+    // Dataset filters
+    const selectedTask = taskFilterSelect.value;
+    const selectedModality = modalityFilterSelect.value;
+    // Model filters
+    const selectedLibrary = libraryFilterSelect.value;
+    const selectedModelDataset = modelDatasetFilterSelect.value;
+    // Space filters
+    const selectedSdk = spaceSdkFilterSelect.value;
+    const selectedSpaceModel = spaceModelFilterSelect.value;
+    const selectedSpaceDataset = spaceDatasetFilterSelect.value;
+
+    let filtered = allItems.filter(item => {
+        const searchMatch = !searchTerm || item.id.toLowerCase().includes(searchTerm) || (item.cardData?.short_description || '').toLowerCase().includes(searchTerm);
+        const repoMatch = !repoType || item.repoType === repoType;
+
+        if (!searchMatch || !repoMatch) return false;
+
+        // General Tag Filter (applies to all)
+        if (selectedTag && (!item.tags || !item.tags.includes(selectedTag))) return false;
+
+        // Type-specific filters
+        switch (item.repoType) {
+            case 'dataset':
+                if (selectedTask && (!item.tags || !item.tags.includes(selectedTask))) return false;
+                if (selectedModality && (!item.tags || !item.tags.includes(selectedModality))) return false;
+                break;
+            case 'model':
+                if (selectedLibrary && item.library_name !== selectedLibrary) return false;
+                if (selectedModelDataset && (!item.tags || !(item.tags.includes(selectedModelDataset) || item.tags.includes(`dataset:${selectedModelDataset}`)))) return false;
+                break;
+            case 'space':
+                if (selectedSdk && item.sdk !== selectedSdk) return false;
+                if (selectedSpaceModel && (!item.tags || !(item.tags.includes(selectedSpaceModel) || item.tags.includes(`model:${selectedSpaceModel}`)))) return false;
+                if (selectedSpaceDataset && (!item.tags || !(item.tags.includes(selectedSpaceDataset) || item.tags.includes(`dataset:${selectedSpaceDataset}`)))) return false;
+                break;
+        }
+        return true;
+    });
+
+    // --- Sorting Logic ---
+    filtered.sort((a, b) => {
+        if (sortBy === 'id') {
+            return a.id.localeCompare(b.id);
+        } else if (sortBy === 'lastModified') {
+            return new Date(b.lastModified) - new Date(a.lastModified);
+        } else if (sortBy === 'created_at' && a.cardData?.created_at && b.cardData?.created_at) {
+            return new Date(b.cardData.created_at) - new Date(a.cardData.created_at);
+        }
+        return 0;
+    });
+
+    return filtered;
+}
+
+/**
+ * Populates all filter dropdowns with unique values extracted from the fetched data.
+ */
+function populateFilters() {
+    const allTags = new Set();
+    const datasetTasks = new Set();
+    const datasetModalities = new Set();
+    const modelLibraries = new Set();
+    const spaceSDKs = new Set();
+
+    // Extract all unique values from the data
+    allData.datasets.forEach(d => (d.tags || []).forEach(tag => {
+        allTags.add(tag);
+        datasetTasks.add(tag); // For datasets, tasks & modalities are just tags
+        datasetModalities.add(tag);
+    }));
+    allData.models.forEach(m => {
+        (m.tags || []).forEach(tag => allTags.add(tag));
+        if (m.library_name) modelLibraries.add(m.library_name);
+    });
+    allData.spaces.forEach(s => {
+        (s.tags || []).forEach(tag => allTags.add(tag));
+        if (s.sdk) spaceSDKs.add(s.sdk);
+    });
+
+    // --- Populate all dropdowns ---
+    populateSelect(tagFilterSelect, [...allTags].sort(), 'All Tags');
+    populateSelect(taskFilterSelect, [...datasetTasks].sort(), 'All Tasks');
+    populateSelect(modalityFilterSelect, [...datasetModalities].sort(), 'All Modalities');
+    populateSelect(libraryFilterSelect, [...modelLibraries].sort(), 'All Libraries');
+    populateSelect(spaceSdkFilterSelect, [...spaceSDKs].sort(), 'All SDKs');
+
+    // Populate cross-repo filters
+    const allDatasetIds = allData.datasets.map(d => d.id).sort();
+    const allModelIds = allData.models.map(m => m.id).sort();
+    populateSelect(modelDatasetFilterSelect, allDatasetIds, 'All Datasets');
+    populateSelect(spaceDatasetFilterSelect, allDatasetIds, 'All Datasets');
+    populateSelect(spaceModelFilterSelect, allModelIds, 'All Models');
+}
+
+// --- DOM Element Creation ---
+/**
+ * Helper function to populate a <select> element with options.
+ * @param {HTMLSelectElement} selectElement - The dropdown element to populate.
+ * @param {string[]} options - An array of strings to use as options.
+ * @param {string} defaultLabel - The label for the default "all" option.
+ */
+function populateSelect(selectElement, options, defaultLabel) {
+    const currentValue = selectElement.value;
+    selectElement.innerHTML = `<option value="">${defaultLabel}</option>`;
+    options.forEach(option => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option;
+        optionElement.textContent = option;
+        selectElement.appendChild(optionElement);
+    });
+    selectElement.value = currentValue; // Preserve selection
+}
+
+/**
+ * Creates an HTML element for a single catalog item.
+ * @param {object} item - The item data object from the API.
  * @returns {HTMLElement} The created card element.
  */
-function createCard(item) {
+function createItemCard(item) {
     const card = document.createElement('div');
-    card.className = 'item-card flex flex-col p-6 rounded-xl shadow-md transition-transform';
-
-    const prettyName = item.cardData?.pretty_name || item.id.split('/')[1];
-    const shortDescription = item.cardData?.description || 'No description provided.';
-    const createdDate = new Date(item.createdAt);
-    const lastModifiedDate = new Date(item.lastModified);
-    // Determine if the item is "new" (created within the last 7 days).
-    const isNew = (Date.now() - createdDate.getTime()) < (7 * 24 * 60 * 60 * 1000);
+    card.className = 'item-card relative flex flex-col bg-white rounded-xl shadow-md p-6 h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1';
 
     const repoUrl = `${GITHUB_PAGES_BASE_URL}/${item.id}`;
+    const prettyName = item.id.split('/')[1];
+    const shortDescription = item.cardData?.short_description || 'No description available.';
+    const createdAt = item.cardData?.created_at ? new Date(item.cardData.created_at) : null;
+    const isNew = createdAt && (new Date() - createdAt) < 7 * 24 * 60 * 60 * 1000; // Is it newer than 7 days?
 
-    // Get all identifiers and categorize them to be displayed on the card.
-    const allIdentifiers = {
-        tags: item.cardData?.tags || [],
-        tasks: item.cardData?.tasks || [],
-        modalities: item.cardData?.modalities || [],
-        libraries: item.cardData?.library_name ? [item.cardData.library_name] : [],
-        datasets: item.cardData?.datasets || [],
-        sdk: item.cardData?.sdk ? [item.cardData.sdk] : [],
-        models: item.cardData?.models || [],
-        language: item.cardData?.language ? [item.cardData.language] : [],
-        license: item.cardData?.license ? [item.cardData.license] : [],
-    };
-    
-    // Sort and filter out empty categories for display.
-    const identifierSections = Object.entries(allIdentifiers)
-        .filter(([, value]) => value.length > 0)
-        .map(([key, value]) => {
-            const displayKey = key.charAt(0).toUpperCase() + key.slice(1);
-            const identifierList = value.map(id => `<span class="bg-gray-100 rounded-full px-2 py-0.5">${id}</span>`).join('');
-            return `
-                <div class="flex flex-wrap gap-2 text-xs font-medium text-gray-700">
-                    <span class="font-bold">${displayKey}:</span>
-                    <div class="flex-grow overflow-x-auto tag-container">
-                        <div class="flex flex-nowrap gap-2">
-                            ${identifierList}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
+    // --- Create sections for identifiers like library, SDK, etc. ---
+    const identifiers = {};
+    if (item.repoType === 'model' && item.library_name) identifiers['Library'] = [item.library_name];
+    if (item.repoType === 'space' && item.sdk) identifiers['SDK'] = [item.sdk];
 
-    // Construct the final HTML for the card.
+    const identifierSections = Object.entries(identifiers).map(([key, value]) => {
+        const displayKey = key.charAt(0).toUpperCase() + key.slice(1);
+        const identifierList = value.map(id => `<span class="bg-gray-100 rounded-full px-2 py-0.5">${id}</span>`).join('');
+        return `
+            <div class="flex flex-wrap gap-2 text-xs font-medium text-gray-700">
+                <span class="font-bold">${displayKey}:</span>
+                <div class="flex-grow overflow-x-auto tag-container"><div class="flex flex-nowrap gap-2">${identifierList}</div></div>
+            </div>`;
+    }).join('');
+
     card.innerHTML = `
         <div class="flex-grow">
             <h2 class="text-xl font-bold mb-2">
-                <a href="${repoUrl}" class="text-[#5d8095] hover:underline" target="_blank">${prettyName}</a>
+                <a href="${repoUrl}" class="text-[#5d8095] hover:underline" target="_blank" rel="noopener noreferrer">${prettyName}</a>
             </h2>
             ${isNew ? '<span class="new-badge absolute top-4 right-4 bg-[#9bcb5e] text-[#92991c] text-xs font-semibold px-2.5 py-1 rounded-full">NEW!</span>' : ''}
             <p class="text-gray-500 text-sm mb-4 line-clamp-3 overflow-y-auto max-h-24">${shortDescription}</p>
-            
-            <div class="space-y-2 mb-4">
-                ${identifierSections}
-            </div>
+            <div class="space-y-2 mb-4">${identifierSections}</div>
         </div>
-        
         <div class="text-xs text-gray-400 mt-2">
-            <p>Created: ${createdDate.toLocaleDateString()}</p>
-            <p>Updated: ${lastModifiedDate.toLocaleDateString()}</p>
+            <p>Created: ${createdAt ? createdAt.toLocaleDateString() : 'N/A'}</p>
+            <p>Last Updated: ${new Date(item.lastModified).toLocaleDateString()}</p>
         </div>
     `;
-
     return card;
 }

@@ -13,7 +13,7 @@
     <!-- Custom stylesheet for additional, non-Tailwind styles -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="p-8">
+<body class="p-8 bg-gray-100">
 
     <!-- Main Content Container: This div holds the entire application layout -->
     <div class="container mx-auto">
@@ -24,102 +24,103 @@
         </header>
 
         <!-- Search and Filter Section: The interactive controls for the catalog -->
-        <section class="mb-8">
-            <!-- Top row of controls (search, repository type, sort by) -->
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4 p-6 bg-white shadow-md rounded-xl">
-                <!-- Search Input: Allows users to search for keywords -->
-                <div class="relative w-full md:w-1/3">
-                    <input type="text" id="searchInput" placeholder="Search by keyword or tag..."
-                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent transition-all">
-                    <!-- Search icon for visual clarity -->
-                    <svg class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-md">
+            <!-- Top Row: Main search, repository type, and sorting controls -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <!-- Search Input: Allows users to search by keyword -->
+                <div class="lg:col-span-2">
+                    <label for="searchInput" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                    <input type="text" id="searchInput" placeholder="Search by name or keyword..." class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
                 </div>
-
-                <!-- Filters: Dropdown menus for filtering and sorting -->
-                <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-                    <!-- Repository Type Dropdown: Selects datasets, models, or spaces -->
-                    <div class="w-full sm:w-auto">
-                        <label for="repoType" class="sr-only">Repository Type</label>
-                        <select id="repoType" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
-                            <option value="datasets">Datasets</option>
-                            <option value="models">Models</option>
-                            <option value="spaces">Spaces</option>
-                        </select>
-                    </div>
-
-                    <!-- Sort by Dropdown: Changes the order of the displayed items -->
-                    <div class="w-full sm:w-auto">
-                        <label for="sortBy" class="sr-only">Sort By</label>
-                        <select id="sortBy" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
-                            <option value="lastModified">Last Updated (Newest)</option>
-                            <option value="createdAt">Date Created (Newest)</option>
-                            <option value="alphabetical_asc">Alphabetical (A-Z)</option>
-                            <option value="alphabetical_desc">Alphabetical (Z-A)</option>
-                        </select>
-                    </div>
+                <!-- Repository Type Filter: Allows users to select between datasets, models, or spaces -->
+                <div>
+                    <label for="repoType" class="block text-sm font-medium text-gray-700 mb-1">Repository Type</label>
+                    <select id="repoType" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
+                        <option value="">All Types</option>
+                        <option value="dataset">Datasets</option>
+                        <option value="model">Models</option>
+                        <option value="space">Spaces</option>
+                    </select>
+                </div>
+                <!-- Sort By Filter: Allows users to sort the results -->
+                <div>
+                    <label for="sortBy" class="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+                    <select id="sortBy" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
+                        <option value="lastModified">Last Updated</option>
+                        <option value="created_at">Date Created</option>
+                        <option value="id">Alphabetical</option>
+                    </select>
                 </div>
             </div>
-            
-            <!-- Dynamic Filters Row: This div contains the filters that change based on repo type -->
-            <div id="dynamicFilters" class="flex flex-col md:flex-row items-center justify-start gap-4 p-6 bg-white shadow-md rounded-xl mt-4">
-                <!-- Tag Filter (Always shown): Allows filtering by tags common to all types -->
-                <div class="w-full sm:w-auto">
-                    <label for="tagFilter" class="sr-only">Filter By Tag</label>
+
+            <!-- Bottom Row: Dynamic filters that change based on the repository type -->
+            <div class="border-t border-gray-200 pt-4">
+                <!-- General Tag Filter (Visible for all repository types) -->
+                 <div class="w-full md:w-1/3 lg:w-1/4">
+                    <label for="tagFilter" class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
                     <select id="tagFilter" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
                         <option value="">All Tags</option>
                     </select>
                 </div>
 
-                <!-- Dataset Specific Filters: Hidden by default, shown when 'Datasets' is selected -->
-                <div id="datasetFilters" class="flex flex-col sm:flex-row gap-4 w-full md:w-auto hidden">
-                    <div class="w-full sm:w-auto">
-                        <label for="taskFilter" class="sr-only">Filter By Task</label>
+                <!-- Spacer for visual separation -->
+                <div id="filterSpacer" class="my-4 border-t border-gray-200 hidden"></div>
+
+                <!-- Dataset Filters (Shown when 'Datasets' is selected) -->
+                <div id="datasetFilters" class="hidden mt-4 space-y-4 md:space-y-0 md:flex md:space-x-4">
+                    <!-- Task Filter -->
+                    <div>
+                        <label for="taskFilter" class="block text-sm font-medium text-gray-700 mb-1">Tasks</label>
                         <select id="taskFilter" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
                             <option value="">All Tasks</option>
                         </select>
                     </div>
-                    <div class="w-full sm:w-auto">
-                        <label for="modalityFilter" class="sr-only">Filter By Modality</label>
+                    <!-- Modality Filter -->
+                    <div>
+                        <label for="modalityFilter" class="block text-sm font-medium text-gray-700 mb-1">Modalities</label>
                         <select id="modalityFilter" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
                             <option value="">All Modalities</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Model Specific Filters: Hidden by default, shown when 'Models' is selected -->
-                <div id="modelFilters" class="flex flex-col sm:flex-row gap-4 w-full md:w-auto hidden">
-                    <div class="w-full sm:w-auto">
-                        <label for="libraryFilter" class="sr-only">Filter By Library</label>
+                <!-- Model Filters (Shown when 'Models' is selected) -->
+                <div id="modelFilters" class="hidden mt-4 space-y-4 md:space-y-0 md:flex md:space-x-4">
+                    <!-- Library Filter -->
+                    <div>
+                        <label for="libraryFilter" class="block text-sm font-medium text-gray-700 mb-1">Libraries</label>
                         <select id="libraryFilter" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
                             <option value="">All Libraries</option>
                         </select>
                     </div>
-                    <div class="w-full sm:w-auto">
-                        <label for="modelDatasetFilter" class="sr-only">Filter By Dataset</label>
+                    <!-- Model Dataset Filter -->
+                    <div>
+                        <label for="modelDatasetFilter" class="block text-sm font-medium text-gray-700 mb-1">Dataset</label>
                         <select id="modelDatasetFilter" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
                             <option value="">All Datasets</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Space Specific Filters: Hidden by default, shown when 'Spaces' is selected -->
-                <div id="spaceFilters" class="flex flex-col sm:flex-row gap-4 w-full md:w-auto hidden">
-                    <div class="w-full sm:w-auto">
-                        <label for="sdkFilter" class="sr-only">Filter By SDK</label>
-                        <select id="sdkFilter" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
+                <!-- Spaces Filters (Shown when 'Spaces' is selected) -->
+                <div id="spaceFilters" class="hidden mt-4 space-y-4 md:space-y-0 md:flex md:space-x-4">
+                    <!-- Space SDK Filter -->
+                    <div>
+                        <label for="spaceSdkFilter" class="block text-sm font-medium text-gray-700 mb-1">SDK</label>
+                        <select id="spaceSdkFilter" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
                             <option value="">All SDKs</option>
                         </select>
                     </div>
-                    <div class="w-full sm:w-auto">
-                        <label for="spaceModelFilter" class="sr-only">Filter By Model</label>
+                    <!-- Space Model Filter -->
+                    <div>
+                        <label for="spaceModelFilter" class="block text-sm font-medium text-gray-700 mb-1">Model</label>
                         <select id="spaceModelFilter" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
                             <option value="">All Models</option>
                         </select>
                     </div>
-                    <div class="w-full sm:w-auto">
-                        <label for="spaceDatasetFilter" class="sr-only">Filter By Dataset</label>
+                    <!-- Space Dataset Filter -->
+                    <div>
+                        <label for="spaceDatasetFilter" class="block text-sm font-medium text-gray-700 mb-1">Dataset</label>
                         <select id="spaceDatasetFilter" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
                             <option value="">All Datasets</option>
                         </select>
