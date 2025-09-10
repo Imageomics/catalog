@@ -27,7 +27,7 @@ const spaceFilters = document.getElementById('spaceFilters');
 
 // Dataset-specific dropdowns
 const taskFilterSelect = document.getElementById('taskFilter');
-const modalityFilterSelect = document.getElementById('modalityFilter');
+const sizeFilterSelect = document.getElementById('sizeFilter');
 
 // Model-specific dropdowns
 const libraryFilterSelect = document.getElementById('libraryFilter');
@@ -89,22 +89,27 @@ async function fetchAllData() {
  */
 function setupEventListeners() {
     const triggers = [
-        searchInput, repoTypeSelect, sortBySelect, tagFilterSelect,
-        taskFilterSelect, modalityFilterSelect, libraryFilterSelect,
+        searchInput, sortBySelect, tagFilterSelect,
+        taskFilterSelect, sizeFilterSelect, libraryFilterSelect,
         modelDatasetFilterSelect, spaceSdkFilterSelect, spaceModelFilterSelect,
         spaceDatasetFilterSelect
     ];
     triggers.forEach(el => el.addEventListener('input', renderItems));
-    repoTypeSelect.addEventListener('change', toggleFilterVisibility);
+
+    // Handle repository type change separately to re-populate filters
+    repoTypeSelect.addEventListener('change', () => {
+        toggleFilterVisibility();
+        populateFilters();
+        renderItems();
+    });
 }
 
 // --- UI Rendering and State Management ---
 /**
  * Toggles the visibility of filter sections based on the selected repository type.
- * @param {Event} event - The change event from the repoType select dropdown.
  */
-function toggleFilterVisibility(event) {
-    const selectedType = event.target.value;
+function toggleFilterVisibility() {
+    const selectedType = repoTypeSelect.value;
     datasetFilters.classList.toggle('hidden', selectedType !== 'dataset');
     modelFilters.classList.toggle('hidden', selectedType !== 'model');
     spaceFilters.classList.toggle('hidden', selectedType !== 'space');
@@ -160,7 +165,7 @@ function filterAndSortData() {
     const selectedTag = tagFilterSelect.value;
     // Dataset filters
     const selectedTask = taskFilterSelect.value;
-    const selectedModality = modalityFilterSelect.value;
+    const selectedSize = sizeFilterSelect.value;
     // Model filters
     const selectedLibrary = libraryFilterSelect.value;
     const selectedModelDataset = modelDatasetFilterSelect.value;
@@ -170,28 +175,28 @@ function filterAndSortData() {
     const selectedSpaceDataset = spaceDatasetFilterSelect.value;
 
     let filtered = allItems.filter(item => {
-        const searchMatch = !searchTerm || item.id.toLowerCase().includes(searchTerm) || (item.cardData?.short_description || '').toLowerCase().includes(searchTerm);
+        const searchMatch = !searchTerm || item.id.toLowerCase().includes(searchTerm) || (item.cardData?.short_description || '').toLowerCase().includes(searchTerm) || (item.cardData?.pretty_name || '').toLowerCase().includes(searchTerm);
         const repoMatch = !repoType || item.repoType === repoType;
 
         if (!searchMatch || !repoMatch) return false;
 
         // General Tag Filter (applies to all)
-        if (selectedTag && (!item.tags || !item.tags.includes(selectedTag))) return false;
+        if (selectedTag && (!item.cardData?.tags || !item.cardData.tags.includes(selectedTag))) return false;
 
-        // Type-specific filters
+        // Type-specific filters based on YAML data
         switch (item.repoType) {
             case 'dataset':
-                if (selectedTask && (!item.tags || !item.tags.includes(selectedTask))) return false;
-                if (selectedModality && (!item.tags || !item.tags.includes(selectedModality))) return false;
+                if (selectedTask && (!item.cardData?.task_categories || !item.cardData.task_categories.includes(selectedTask))) return false;
+                if (selectedSize && (!item.cardData?.size_categories || !item.cardData.size_categories.includes(selectedSize))) return false;
                 break;
             case 'model':
                 if (selectedLibrary && item.library_name !== selectedLibrary) return false;
-                if (selectedModelDataset && (!item.tags || !(item.tags.includes(selectedModelDataset) || item.tags.includes(`dataset:${selectedModelDataset}`)))) return false;
+                if (selectedModelDataset && (!item.cardData?.datasets || !item.cardData.datasets.includes(selectedModelDataset))) return false;
                 break;
             case 'space':
                 if (selectedSdk && item.sdk !== selectedSdk) return false;
-                if (selectedSpaceModel && (!item.tags || !(item.tags.includes(selectedSpaceModel) || item.tags.includes(`model:${selectedSpaceModel}`)))) return false;
-                if (selectedSpaceDataset && (!item.tags || !(item.tags.includes(selectedSpaceDataset) || item.tags.includes(`dataset:${selectedSpaceDataset}`)))) return false;
+                if (selectedSpaceModel && (!item.cardData?.models || !item.cardData.models.includes(selectedSpaceModel))) return false;
+                if (selectedSpaceDataset && (!item.cardData?.datasets || !item.cardData.datasets.includes(selectedSpaceDataset))) return false;
                 break;
         }
         return true;
@@ -213,62 +218,94 @@ function filterAndSortData() {
 }
 
 /**
- * Populates all filter dropdowns with unique values extracted from the fetched data.
+ * Populates filter dropdowns dynamically based on the selected repository type.
+ * It also hides filters that have no available options.
  */
 function populateFilters() {
+    const repoType = repoTypeSelect.value;
+
+    // Clear all specific filters to start fresh
+    const allSpecificSelects = [
+        taskFilterSelect, sizeFilterSelect, libraryFilterSelect, modelDatasetFilterSelect,
+        spaceSdkFilterSelect, spaceModelFilterSelect, spaceDatasetFilterSelect
+    ];
+    allSpecificSelects.forEach(sel => {
+        sel.innerHTML = '';
+        sel.parentElement.classList.add('hidden'); // Hide wrapper by default
+    });
+
+    // Determine which items to scan for populating filters
+    const itemsToScan = repoType ? allData[repoType + 's'] : allItems;
+    
+    // Populate the generic "Tags" dropdown from the 'tags' YAML key
     const allTags = new Set();
-    const datasetTasks = new Set();
-    const datasetModalities = new Set();
-    const modelLibraries = new Set();
-    const spaceSDKs = new Set();
-
-    // Extract all unique values from the data
-    allData.datasets.forEach(d => (d.tags || []).forEach(tag => {
-        allTags.add(tag);
-        datasetTasks.add(tag); // For datasets, tasks & modalities are just tags
-        datasetModalities.add(tag);
-    }));
-    allData.models.forEach(m => {
-        (m.tags || []).forEach(tag => allTags.add(tag));
-        if (m.library_name) modelLibraries.add(m.library_name);
+    itemsToScan.forEach(item => {
+        (item.cardData?.tags || []).forEach(tag => allTags.add(tag));
     });
-    allData.spaces.forEach(s => {
-        (s.tags || []).forEach(tag => allTags.add(tag));
-        if (s.sdk) spaceSDKs.add(s.sdk);
-    });
+    populateSelect(tagFilterSelect, [...allTags].sort(), "All Tags");
 
-    // --- Populate all dropdowns ---
-    populateSelect(tagFilterSelect, [...allTags].sort(), 'All Tags');
-    populateSelect(taskFilterSelect, [...datasetTasks].sort(), 'All Tasks');
-    populateSelect(modalityFilterSelect, [...datasetModalities].sort(), 'All Modalities');
-    populateSelect(libraryFilterSelect, [...modelLibraries].sort(), 'All Libraries');
-    populateSelect(spaceSdkFilterSelect, [...spaceSDKs].sort(), 'All SDKs');
-
-    // Populate cross-repo filters
-    const allDatasetIds = allData.datasets.map(d => d.id).sort();
-    const allModelIds = allData.models.map(m => m.id).sort();
-    populateSelect(modelDatasetFilterSelect, allDatasetIds, 'All Datasets');
-    populateSelect(spaceDatasetFilterSelect, allDatasetIds, 'All Datasets');
-    populateSelect(spaceModelFilterSelect, allModelIds, 'All Models');
+    // Populate repo-specific filters only if a type is selected
+    if (repoType === 'dataset') {
+        const tasks = new Set();
+        const sizes = new Set();
+        allData.datasets.forEach(d => {
+            (d.cardData?.task_categories || []).forEach(task => tasks.add(task));
+            (d.cardData?.size_categories || []).forEach(size => sizes.add(size));
+        });
+        populateSelect(taskFilterSelect, [...tasks].sort(), "All Tasks");
+        populateSelect(sizeFilterSelect, [...sizes].sort(), "All Sizes");
+    } else if (repoType === 'model') {
+        const libraries = new Set();
+        const datasets = new Set();
+        allData.models.forEach(m => {
+            if (m.library_name) libraries.add(m.library_name);
+            (m.cardData?.datasets || []).forEach(ds => datasets.add(ds));
+        });
+        populateSelect(libraryFilterSelect, [...libraries].sort(), "All Libraries");
+        populateSelect(modelDatasetFilterSelect, [...datasets].sort(), "All Datasets");
+    } else if (repoType === 'space') {
+        const sdks = new Set();
+        const models = new Set();
+        const datasets = new Set();
+        allData.spaces.forEach(s => {
+            if (s.sdk) sdks.add(s.sdk);
+            (s.cardData?.models || []).forEach(model => models.add(model));
+            (s.cardData?.datasets || []).forEach(ds => datasets.add(ds));
+        });
+        populateSelect(spaceSdkFilterSelect, [...sdks].sort(), "All SDKs");
+        populateSelect(spaceModelFilterSelect, [...models].sort(), "All Models");
+        populateSelect(spaceDatasetFilterSelect, [...datasets].sort(), "All Datasets");
+    }
 }
+
 
 // --- DOM Element Creation ---
 /**
- * Helper function to populate a <select> element with options.
+ * Helper function to populate a <select> element and hide its parent if it has no options.
  * @param {HTMLSelectElement} selectElement - The dropdown element to populate.
- * @param {string[]} options - An array of strings to use as options.
+ * @param {Array<string>} options - An array of strings to use as options.
  * @param {string} defaultLabel - The label for the default "all" option.
  */
 function populateSelect(selectElement, options, defaultLabel) {
+    const parentWrapper = selectElement.parentElement;
     const currentValue = selectElement.value;
+    
     selectElement.innerHTML = `<option value="">${defaultLabel}</option>`;
-    options.forEach(option => {
+    options.forEach(optionText => {
         const optionElement = document.createElement('option');
-        optionElement.value = option;
-        optionElement.textContent = option;
+        optionElement.value = optionText;
+        optionElement.textContent = optionText;
         selectElement.appendChild(optionElement);
     });
-    selectElement.value = currentValue; // Preserve selection
+    
+    selectElement.value = currentValue;
+
+    // Hide/show parent wrapper (which includes the label) if there are no options
+    if (options.length > 0) {
+        parentWrapper.classList.remove('hidden');
+    } else {
+        parentWrapper.classList.add('hidden');
+    }
 }
 
 /**
@@ -281,7 +318,8 @@ function createItemCard(item) {
     card.className = 'item-card relative flex flex-col bg-white rounded-xl shadow-md p-6 h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1';
 
     const repoUrl = `${GITHUB_PAGES_BASE_URL}/${item.id}`;
-    const prettyName = item.id.split('/')[1];
+    // Prioritize pretty_name from metadata, fall back to parsing the ID.
+    const prettyName = item.cardData?.pretty_name || item.id.split('/')[1];
     const shortDescription = item.cardData?.short_description || 'No description available.';
     const createdAt = item.cardData?.created_at ? new Date(item.cardData.created_at) : null;
     const isNew = createdAt && (new Date() - createdAt) < 7 * 24 * 60 * 60 * 1000; // Is it newer than 7 days?
