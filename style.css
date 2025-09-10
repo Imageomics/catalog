@@ -1,0 +1,93 @@
+/*
+ * Imageomics Official Color Palette
+ * Imageomics Green: #92991c
+ * Imageomics Blue: #5d8095
+ * Dark Teal: #0097b2
+ * Light Green: #9bcb5e
+*/
+
+/* Overall body and typography styles, controlling the font, background color, and text color of the entire page. */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6; /* Light gray background */
+    color: #1f2937; /* Dark gray text */
+}
+
+/* Main content container for centering the content and setting a maximum width. */
+.container {
+    max-width: 1200px;
+}
+
+/* Styles for the main content cards, controlling their background color, border, and transition effects. */
+.item-card {
+    background-color: #ffffff; /* White card background */
+    border: 1px solid #e5e7eb; /* Light gray border */
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Adds a subtle lift and shadow on hover for a tactile effect. */
+.item-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for individual tags, controlling their background color and text color. */
+.tag {
+    background-color: #9bcb5e; /* Light Green */
+    color: #92991c; /* Imageomics Green */
+}
+
+/* Animation for the "New!" badge. */
+.new-badge {
+    animation: pulse 1.5s infinite;
+}
+
+/* Defines the pulsating animation for the new badge. */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Styles for the loading state skeleton cards, controlling their background color and animation. */
+.skeleton {
+    background-color: #e5e7eb;
+    background-image: linear-gradient(90deg, #e5e7eb 0px, #f9fafb 50%, #e5e7eb 100%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite linear;
+}
+
+/* Defines the animation for the skeleton cards to simulate loading. */
+@keyframes skeleton-loading {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+/* Custom scrollbar for the tag container, controlling its height. */
+.tag-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+/* Styles the scrollbar track, controlling its background color and border radius. */
+.tag-container::-webkit-scrollbar-track {
+    background-color: #f3f4f6;
+    border-radius: 3px;
+}
+
+/* Styles the scrollbar thumb (the part you drag), controlling its background color and border radius. */
+.tag-container::-webkit-scrollbar-thumb {
+    background-color: #9ca3af;
+    border-radius: 3px;
+}
+
+/* Hover state for the scrollbar thumb, changing its background color. */
+.tag-container::-webkit-scrollbar-thumb:hover {
+    background-color: #6b7280;
+}
