@@ -31,6 +31,12 @@ The project has been refactored into three separate files for improved organizat
 
 ### How to Run
 
-To run this application, simply ensure that all three files (`index.html`, `style.css`, and `main.js`) are located in the same directory. You can then open the `index.html` file directly in a web browser.
+For local testing, run
+
+```console
+python -m http.server 8080
+```
+
+Then open <http://[::]:8080/> in your browser of choice.
 
 For hosting on a platform like GitHub Pages, you just need to upload these three files to your repository and enable the Pages feature.
