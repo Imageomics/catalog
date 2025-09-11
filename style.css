@@ -21,7 +21,7 @@ body {
 /* Styles for the main content cards, controlling their background color, border, and transition effects. */
 .item-card {
     background-color: #ffffff; /* White card background */
-    border: 1px solid #e5e7eb; /* Light gray border */
+    border: 1px solid #5d8095; /* Imageomics blue border */
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -34,11 +34,12 @@ body {
 /* Styling for individual tags, controlling their background color and text color. */
 .tag {
     background-color: #9bcb5e; /* Light Green */
-    color: #92991c; /* Imageomics Green */
+    color: #222222; /* Dark text for contrast */
 }
 
 /* Animation for the "New!" badge. */
 .new-badge {
+    background-color: #0097b2; /* Dark Teal */
     animation: pulse 1.5s infinite;
 }
 
@@ -83,7 +84,7 @@ body {
 
 /* Styles the scrollbar thumb (the part you drag), controlling its background color and border radius. */
 .tag-container::-webkit-scrollbar-thumb {
-    background-color: #9ca3af;
+    background-color: #5d8095;
     border-radius: 3px;
 }
 
