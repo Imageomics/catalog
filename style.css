@@ -90,5 +90,5 @@ body {
 
 /* Hover state for the scrollbar thumb, changing its background color. */
 .tag-container::-webkit-scrollbar-thumb:hover {
-    background-color: #6b7280;
+    background-color: #0097b2;
 }

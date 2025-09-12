@@ -126,7 +126,7 @@ const renderHubItemCard = (item, repoType) => {
             <div>
                 <div class="flex items-center justify-between mb-2">
                     <h2 class="text-xl font-bold text-gray-800 break-words">${prettyName}</h2>
-                    ${item.isNew ? `<span class="new-badge inline-block text-xs font-bold text-white bg-green-500 rounded-full px-2 py-1">New!</span>` : ''}
+                    ${item.isNew ? `<span class="new-badge inline-block text-xs font-bold text-white rounded-full px-2 py-1">New!</span>` : ''}
                 </div>
                 <p class="text-sm text-gray-600 h-20 overflow-y-auto mb-4">
                     ${displayDescription}
