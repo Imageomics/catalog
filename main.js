@@ -108,7 +108,9 @@ const renderHubItemCard = (item, repoType) => {
     ).join('');
 
     // Use pretty_name for the heading, with a fallback
-    const prettyName = item.cardData?.pretty_name || item.id.split('/')[1];
+    // HF API keys for CardData: https://huggingface.co/docs/huggingface_hub/main/en/package_reference/cards#huggingface_hub.CardData
+    // datasets have prett_name, models have model_name, spaces have title
+    const prettyName = item.cardData?.pretty_name || item.cardData?.model_name || item.cardData?.title || item.id.split('/')[1];
 
     // Use the description from cardData, with fallbacks
     const displayDescription = item.cardData?.description || item.description || 'No description provided.';
