@@ -113,7 +113,7 @@ const renderHubItemCard = (item, repoType) => {
     const prettyName = item.cardData?.pretty_name || item.cardData?.model_name || item.cardData?.title || item.id.split('/')[1];
 
     // Use the description from cardData, with fallbacks
-    const displayDescription = item.cardData?.description || item.description || 'No description provided.';
+    const displayDescription = item.cardData?.description || item.cardData?.model_description || item.description || 'No description provided.';
 
     // Construct the correct URL based on the repository type
     let itemUrl = `https://huggingface.co/${item.id}`;
