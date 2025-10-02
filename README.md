@@ -1,8 +1,8 @@
 # Imageomics Catalog
 
-Repository for Imageomics data, model, and code catalog.
+Repository for Imageomics data, model, spaces, and code catalog.
 
-This project is being initialized with the help of Gemini 2.5, accessed [through OSU](https://ai.osu.edu/faculty-staff-students/approved-ai-tools).
+This project was initialized with the help of Gemini 2.5, accessed [through OSU](https://ai.osu.edu/faculty-staff-students/approved-ai-tools). In addition to speeding up the development of this site, I was curious about how much Gemini could do and where it would falter; see the [full prompt/discussion](catalog-generation-prompt-Gemini2.5Flash.md) for more information.
 
 # Project Description from Gemini:
 
