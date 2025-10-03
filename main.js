@@ -58,7 +58,26 @@ const fetchHubItems = async (repoType) => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const items = await response.json();
+        let items = await response.json();
+
+        // Step 2: If we are fetching models, get the full details for each one.
+        if (repoType === 'models') {
+            const detailPromises = items.map(item =>
+                fetch(`${API_BASE_URL}models/${item.id}`).then(res => {
+                    if (!res.ok) {
+                        console.error(`Failed to fetch details for ${item.id}`);
+                        return null; // Return null for failed requests
+                    }
+                    return res.json();
+                })
+            );
+
+            // Wait for all detail requests to complete in parallel.
+            const detailedItems = await Promise.all(detailPromises);
+            
+            // Filter out any models that failed to fetch and assign the detailed list.
+            items = detailedItems.filter(Boolean);
+        }
 
         // Process the data to include metadata and a 'new' flag
         const processedItems = items.slice(0, MAX_ITEMS).map(item => {
@@ -113,7 +132,7 @@ const renderHubItemCard = (item, repoType) => {
     const prettyName = item.cardData?.pretty_name || item.cardData?.model_name || item.cardData?.title || item.id.split('/')[1];
 
     // Use the description from cardData, with fallbacks
-    const displayDescription = item.cardData?.description || item.cardData?.model_description || item.description || 'No description provided.';
+    const displayDescription = item.cardData?.description ||  item.cardData?.model_description ||  item.description || 'No description provided.';
 
     // Construct the correct URL based on the repository type
     let itemUrl = `https://huggingface.co/${item.id}`;
