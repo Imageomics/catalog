@@ -1,0 +1,29 @@
+abstract: "Catalog site for Imageomics data, models, and spaces hosted on Hugging Face. It was designed for improved discoverability and searchability of Imageomics products, and is updated in real-time through calls to the Hugging Face API."
+authors:
+- family-names: "Campolongo"
+  given-names: "Elizabeth G."
+  orcid: "https://orcid.org/0000-0003-0846-2413"
+cff-version: 1.2.0
+date-released: "2025-11-13"
+identifiers:
+  - description: "The GitHub release URL of tag v1.0.0."
+    type: url
+    value: "https://github.com/Imageomics/catalog/releases/tag/v1.0.0"
+  - description: "The GitHub URL of the commit tagged with v1.0.0."
+    type: url
+    value: "https://github.com/Imageomics/catalog/tree/<commit-hash>" # update on release
+keywords:
+  - imageomics
+  - data
+  - models
+  - "Hugging Face"
+  - APIs
+  - inventory
+  - catalog
+license: MIT
+message: "If you use this software, please cite it as below."
+repository-code: "https://github.com/Imageomics/catalog"
+title: "Imageomics Catalog"
+version: "1.0.0"
+# doi: add version-agnostic DOI from Zenodo on release
+type: software
