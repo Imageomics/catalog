@@ -16,10 +16,14 @@ keywords:
   - imageomics
   - data
   - models
+  - spaces
   - "Hugging Face"
   - APIs
   - inventory
   - catalog
+  - "keyword search"
+  - discoverability
+  - searchability
 license: MIT
 message: "If you use this software, please cite it as below."
 repository-code: "https://github.com/Imageomics/catalog"

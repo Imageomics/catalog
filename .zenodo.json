@@ -11,10 +11,14 @@
       "imageomics",
       "data",
       "models",
+      "spaces",
       "Hugging Face",
       "APIs",
       "inventory",
-      "catalog"
+      "catalog",
+      "keyword search",
+      "discoverability",
+      "searchability"
     ],
     "title": "Imageomics Catalog",
     "version": "1.0.0",
