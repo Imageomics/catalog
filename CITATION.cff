@@ -11,7 +11,7 @@ identifiers:
     value: "https://github.com/Imageomics/catalog/releases/tag/v1.0.0"
   - description: "The GitHub URL of the commit tagged with v1.0.0."
     type: url
-    value: "https://github.com/Imageomics/catalog/tree/<commit-hash>" # update on release
+    value: "https://github.com/Imageomics/catalog/tree/e852eed1dcf2c45ad4a06b0b51617e9bab65e505"
 keywords:
   - imageomics
   - data
@@ -29,5 +29,5 @@ message: "If you use this software, please cite it as below."
 repository-code: "https://github.com/Imageomics/catalog"
 title: "Imageomics Catalog"
 version: "1.0.0"
-# doi: add version-agnostic DOI from Zenodo on release
+doi: "10.5281/zenodo.17602801"
 type: software
