@@ -1,4 +1,4 @@
-# Imageomics Catalog
+# Imageomics Catalog [![DOI](https://zenodo.org/badge/1054290236.svg)](https://doi.org/10.5281/zenodo.17602801)
 
 Repository for web-based Imageomics data, model, spaces, and code catalog. This catalog is designed to use the Hugging Face API for searching all dataset, model, and spaces repositories created under the [Imageomics Hugging Face Organization](https://huggingface.co/imageomics). Code integration through the GitHub API is the next stage of development.
 
