@@ -1,0 +1,32 @@
+{
+    "creators": [
+      {
+          "name": "Campolongo, Elizabeth G.",
+          "orcid": "https://orcid.org/0000-0003-0846-2413",
+          "affiliation": "The Ohio State University"
+      }
+    ],
+    "description": "Catalog app for Imageomics data, models, and spaces hosted on Hugging Face. It was designed for improved discoverability and searchability of Imageomics products, and the content is updated in real-time through calls to the Hugging Face API.",
+    "keywords": [
+      "imageomics",
+      "data",
+      "models",
+      "spaces",
+      "Hugging Face",
+      "APIs",
+      "inventory",
+      "catalog",
+      "keyword search",
+      "discoverability",
+      "searchability"
+    ],
+    "title": "Imageomics Catalog",
+    "version": "1.0.0",
+    "license": "MIT",
+    "publication_date": "2025-11-13",
+    "grants": [
+        {
+            "id": "021nxhr62::2118240"
+        }
+    ] 
+}
