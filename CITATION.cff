@@ -1,4 +1,4 @@
-abstract: "Catalog site for Imageomics data, models, and spaces hosted on Hugging Face. It was designed for improved discoverability and searchability of Imageomics products, and is updated in real-time through calls to the Hugging Face API."
+abstract: "Catalog app for Imageomics data, models, and spaces hosted on Hugging Face. It was designed for improved discoverability and searchability of Imageomics products, and the content is updated in real-time through calls to the Hugging Face API."
 authors:
 - family-names: "Campolongo"
   given-names: "Elizabeth G."
