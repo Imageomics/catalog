@@ -224,9 +224,13 @@ const renderHubItemCard = (item, repoType) => {
     return `
         <div class="item-card rounded-xl shadow-lg p-6 flex flex-col justify-between">
             <div>
-                <div class="flex items-center justify-between mb-2">
-                    <h2 class="text-xl font-bold text-gray-800 break-words">${prettyName}</h2>
-                    ${badgeHtml}
+                <div class="flex items-start justify-between mb-2 gap-2">
+                    <h2 class="text-xl font-bold text-gray-800 break-all flex-1">
+                        ${prettyName}
+                    </h2>
+                    <div class="flex-shrink-0">
+                        ${badgeHtml}
+                    </div>
                 </div>
                 <p class="text-sm text-gray-600 h-20 overflow-y-auto mb-4">
                     ${displayDescription}
