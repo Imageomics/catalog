@@ -10,16 +10,19 @@ const REFRESH_INTERVAL_DAYS = 30; // Define what "new" means
 const MAX_ITEMS = 100; // Limit the number of items to fetch
 
 let allItems = {
+    code: [],
     datasets: [],
     models: [],
     spaces: []
 };
 let tagsMap = {
+    code: new Set(),
     datasets: new Set(),
     models: new Set(),
     spaces: new Set()
 };
 let fetchedData = {
+    code: false,
     datasets: false,
     models: false,
     spaces: false
@@ -42,7 +45,7 @@ const handleError = (error, message) => {
 /**
  * Fetches items (datasets, models, or spaces) for a given organization from the Hugging Face API.
  * @async
- * @param {string} repoType - The type of repository to fetch ("datasets", "models", or "spaces").
+ * @param {string} repoType - The type of repository to fetch ("code", "datasets", "models", or "spaces").
  * @returns {Promise<Array>} An array of item objects.
  */
 const fetchHubItems = async (repoType) => {
@@ -54,15 +57,63 @@ const fetchHubItems = async (repoType) => {
     skeletons.forEach(s => s.classList.remove('hidden'));
 
     try {
+        let items = [];
+
+        // github api requests for code
+        if (repoType == "code") {
+            
+            const ghResponse = await fetch(
+                `https://api.github.com/orgs/${ORGANISATION_NAME}/repos?type=public&per_page=100`
+            );
+
+            if (!ghResponse.ok) {
+                throw new Error(`GitHub error: ${ghResponse.status}`);
+            }
+
+            const repos = await ghResponse.json();
+
+            items = repos.slice(0, MAX_ITEMS).map(repo => {
+                const createdAt = new Date(repo.created_at);
+                const lastModified = new Date(repo.updated_at);
+                const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
+
+                const tags = repo.topics || [];
+                tags.forEach(tag => tagsMap.code.add(tag));
+
+                return {
+                    id: repo.full_name,                    // "imageomics/repo-name"
+                    createdAt,
+                    lastModified,
+                    isNew,
+                    tags,
+                    description: repo.description || "No description provided.",
+                    html_url: repo.html_url,
+                    cardData: {
+                        pretty_name: repo.name,
+                        description: repo.description,
+                        stars: repo.stargazers_count
+                    }
+                };
+            });
+
+            allItems.code = items;
+            fetchedData.code = true;
+
+            skeletons.forEach(s => s.classList.add('hidden'));
+
+            return items;
+        }
+
+        // hugging face api requests for datasets/models/spaces
         const response = await fetch(`${API_BASE_URL}${repoType}?author=${ORGANISATION_NAME}&full=true`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        let items = await response.json();
+        let hfItems = await response.json();
 
         // Step 2: If we are fetching models, get the full details for each one.
         if (repoType === 'models') {
-            const detailPromises = items.map(item =>
+            const detailPromises = hfItems.map(item =>
                 fetch(`${API_BASE_URL}models/${item.id}`).then(res => {
                     if (!res.ok) {
                         console.error(`Failed to fetch details for ${item.id}`);
@@ -76,11 +127,11 @@ const fetchHubItems = async (repoType) => {
             const detailedItems = await Promise.all(detailPromises);
             
             // Filter out any models that failed to fetch and assign the detailed list.
-            items = detailedItems.filter(Boolean);
+            hfItems = detailedItems.filter(Boolean);
         }
 
         // Process the data to include metadata and a 'new' flag
-        const processedItems = items.slice(0, MAX_ITEMS).map(item => {
+        const processedItems = hfItems.slice(0, MAX_ITEMS).map(item => {
             const createdAt = new Date(item.createdAt);
             const lastModified = new Date(item.lastModified);
             const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
@@ -94,6 +145,7 @@ const fetchHubItems = async (repoType) => {
                 createdAt,
                 lastModified,
                 isNew,
+                likes: item.likes || 0,
                 tags: tags
             };
         });
@@ -136,18 +188,45 @@ const renderHubItemCard = (item, repoType) => {
 
     // Construct the correct URL based on the repository type
     let itemUrl = `https://huggingface.co/${item.id}`;
-    if (repoType === 'datasets') {
+    if (repoType === 'code') {
+        itemUrl = item.html_url;
+    } else if (repoType === 'datasets') {
         itemUrl = `https://huggingface.co/datasets/${item.id}`;
     } else if (repoType === 'spaces') {
         itemUrl = `https://huggingface.co/spaces/${item.id}`;
     }
+
+    // stars for GitHub repos
+    const badgeHtml = (() => {
+        if (item.isNew) {
+            return `<span class="new-badge inline-block text-xs font-bold text-white rounded-full px-2 py-1">
+                        New!
+                    </span>`;
+        }
+
+        if (typeof item.cardData.stars === "number") {
+            return `<span class="text-sm font-semibold text-gray-700 flex items-center gap-1">
+                        ⭐ ${item.cardData.stars}
+                    </span>`;
+        }
+
+        if (typeof item.likes === "number" && item.likes > 0) {
+        return `
+        <span class="text-sm font-semibold text-gray-700 flex items-center gap-1">
+            ❤️ ${item.likes}
+        </span>`;
+    }
+        return "";
+    })();
+
+    
 
     return `
         <div class="item-card rounded-xl shadow-lg p-6 flex flex-col justify-between">
             <div>
                 <div class="flex items-center justify-between mb-2">
                     <h2 class="text-xl font-bold text-gray-800 break-words">${prettyName}</h2>
-                    ${item.isNew ? `<span class="new-badge inline-block text-xs font-bold text-white rounded-full px-2 py-1">New!</span>` : ''}
+                    ${badgeHtml}
                 </div>
                 <p class="text-sm text-gray-600 h-20 overflow-y-auto mb-4">
                     ${displayDescription}
