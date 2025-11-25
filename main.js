@@ -66,7 +66,7 @@ const fetchHubItems = async (repoType) => {
         let items = [];
 
         // github api requests for code
-        if (repoType === "code" || repoType === "forked-code") {
+        if (repoType === "code") {
             if (fetchedData.code) return allItems.code // reuse if already fetched
             
             const ghResponse = await fetch(
@@ -79,29 +79,33 @@ const fetchHubItems = async (repoType) => {
 
             const repos = await ghResponse.json();
 
-            items = repos.slice(0, MAX_ITEMS).map(repo => {
-                const createdAt = new Date(repo.created_at);
-                const lastModified = new Date(repo.updated_at);
-                const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
+            items = repos
+                .filter(repo => repo.name !== ".github") // skip .github repo
+                .filter(repo => !repo.fork || FORKED_REPOS.includes(repo.name)) // keep non-forks + only specific forks
+                .slice(0, MAX_ITEMS)
+                .map(repo => {
+                    const createdAt = new Date(repo.created_at);
+                    const lastModified = new Date(repo.updated_at);
+                    const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
 
-                const tags = repo.topics || [];
-                tags.forEach(tag => tagsMap.code.add(tag));
+                    const tags = repo.topics || [];
+                    tags.forEach(tag => tagsMap.code.add(tag)); // stores globally for use in tags filter
 
-                return {
-                    id: repo.full_name,                    // "Imageomics/<repo-name>", used in backend as backup
-                    createdAt,
-                    lastModified,
-                    isNew,
-                    tags, // repo.topics
-                    description: repo.description || "No description provided.",
-                    html_url: repo.html_url,
-                    cardData: {
-                        pretty_name: repo.name, // <repo-name>, the one used for card title display
-                        description: repo.description,
-                        stars: repo.stargazers_count
-                    }
-                };
-            });
+                    return {
+                        id: repo.full_name, // "Imageomics/<repo-name>", used as backup if can't get repo.name
+                        createdAt,
+                        lastModified,
+                        isNew,
+                        tags,
+                        description: repo.description || "No description provided.",
+                        html_url: repo.html_url,
+                        cardData: {
+                            pretty_name: repo.name, // <repo-name>, the one used for card title display
+                            description: repo.description,
+                            stars: repo.stargazers_count
+                        }
+                    };
+                });
 
             allItems.code = items;
             fetchedData.code = true;
@@ -196,7 +200,7 @@ const renderHubItemCard = (item, repoType) => {
     // Construct the correct URL based on the repository type
     let itemUrl = `https://huggingface.co/${item.id}`;
     let linkText = "View on Hub"; // default
-    if (repoType === 'code' || repoType === "forked-code") {
+    if (repoType === 'code') {
         itemUrl = item.html_url;
         linkText = "View Repo";
     } else if (repoType === 'datasets') {
@@ -288,19 +292,7 @@ const applyFiltersAndSort = async () => {
     const sortBy = document.getElementById('sortBy').value;
     const tagFilter = document.getElementById('tagFilter').value;
     const repoType = document.getElementById('repoType').value;
-    let currentItems;
-    if (repoType === "forked-code") {
-        // ensure code repos are loaded before filtering
-        if (!fetchedData.code) {
-            await fetchHubItems("code"); 
-        }
-        currentItems = allItems.code.filter(item => {
-            // checks pretty-name or converts full_name to repo name only as backup
-            return FORKED_REPOS.some(forked => forked.toLowerCase() === (item.cardData?.pretty_name || item.id.split('/')[1]).toLowerCase());
-        });
-    } else {
-        currentItems = allItems[repoType];
-    }
+    let currentItems = allItems[repoType];
 
     // Step 1: Filter the items based on the search and tag filters
     const filtered = currentItems.filter(item => {
@@ -341,10 +333,7 @@ const applyFiltersAndSort = async () => {
 const populateTagFilter = (repoType) => {
     const tagFilterElement = document.getElementById('tagFilter');
     tagFilterElement.innerHTML = '<option value="">All Tags</option>'; // Reset the options
-
-    // Use "code" tags for "forked-code"
-    const mapKey = repoType === "forked-code" ? "code" : repoType;
-    const sortedTags = Array.from(tagsMap[mapKey]).sort();
+    const sortedTags = Array.from(tagsMap[repoType]).sort();
 
     sortedTags.forEach(tag => {
         const option = document.createElement('option');
