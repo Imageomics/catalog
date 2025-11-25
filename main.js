@@ -8,18 +8,27 @@ const ORGANISATION_NAME = "imageomics";
 const API_BASE_URL = "https://huggingface.co/api/";
 const REFRESH_INTERVAL_DAYS = 30; // Define what "new" means
 const MAX_ITEMS = 100; // Limit the number of items to fetch
+const FORKED_REPOS = [
+    "Fish-Vista",
+    "PhyloNN",
+    "telemetry-dashboard",
+    "docker-workshop"
+];
 
 let allItems = {
+    code: [],
     datasets: [],
     models: [],
     spaces: []
 };
 let tagsMap = {
+    code: new Set(),
     datasets: new Set(),
     models: new Set(),
     spaces: new Set()
 };
 let fetchedData = {
+    code: false,
     datasets: false,
     models: false,
     spaces: false
@@ -42,7 +51,7 @@ const handleError = (error, message) => {
 /**
  * Fetches items (datasets, models, or spaces) for a given organization from the Hugging Face API.
  * @async
- * @param {string} repoType - The type of repository to fetch ("datasets", "models", or "spaces").
+ * @param {string} repoType - The type of repository to fetch ("code", "datasets", "models", or "spaces").
  * @returns {Promise<Array>} An array of item objects.
  */
 const fetchHubItems = async (repoType) => {
@@ -54,15 +63,68 @@ const fetchHubItems = async (repoType) => {
     skeletons.forEach(s => s.classList.remove('hidden'));
 
     try {
+        let items = [];
+
+        // github api requests for code
+        if (repoType === "code") {
+            if (fetchedData.code) return allItems.code // reuse if already fetched
+            
+            const ghResponse = await fetch(
+                `https://api.github.com/orgs/${ORGANISATION_NAME}/repos?type=public&per_page=100`
+            );
+
+            if (!ghResponse.ok) {
+                throw new Error(`GitHub error: ${ghResponse.status}`);
+            }
+
+            const repos = await ghResponse.json();
+
+            items = repos
+                .filter(repo => repo.name !== ".github") // skip .github repo
+                .filter(repo => !repo.fork || FORKED_REPOS.includes(repo.name)) // keep non-forks + only specific forks
+                .slice(0, MAX_ITEMS)
+                .map(repo => {
+                    const createdAt = new Date(repo.created_at);
+                    const lastModified = new Date(repo.updated_at);
+                    const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
+
+                    const tags = repo.topics || [];
+                    tags.forEach(tag => tagsMap.code.add(tag)); // stores globally for use in tags filter
+
+                    return {
+                        id: repo.full_name, // "Imageomics/<repo-name>", used as backup if can't get repo.name
+                        createdAt,
+                        lastModified,
+                        isNew,
+                        tags,
+                        description: repo.description || "No description provided.",
+                        html_url: repo.html_url,
+                        cardData: {
+                            pretty_name: repo.name, // <repo-name>, the one used for card title display
+                            description: repo.description,
+                            stars: repo.stargazers_count
+                        }
+                    };
+                });
+
+            allItems.code = items;
+            fetchedData.code = true;
+
+            skeletons.forEach(s => s.classList.add('hidden'));
+
+            return items;
+        }
+
+        // hugging face api requests for datasets/models/spaces
         const response = await fetch(`${API_BASE_URL}${repoType}?author=${ORGANISATION_NAME}&full=true`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        let items = await response.json();
+        let hfItems = await response.json();
 
         // Step 2: If we are fetching models, get the full details for each one.
         if (repoType === 'models') {
-            const detailPromises = items.map(item =>
+            const detailPromises = hfItems.map(item =>
                 fetch(`${API_BASE_URL}models/${item.id}`).then(res => {
                     if (!res.ok) {
                         console.error(`Failed to fetch details for ${item.id}`);
@@ -76,11 +138,11 @@ const fetchHubItems = async (repoType) => {
             const detailedItems = await Promise.all(detailPromises);
             
             // Filter out any models that failed to fetch and assign the detailed list.
-            items = detailedItems.filter(Boolean);
+            hfItems = detailedItems.filter(Boolean);
         }
 
         // Process the data to include metadata and a 'new' flag
-        const processedItems = items.slice(0, MAX_ITEMS).map(item => {
+        const processedItems = hfItems.slice(0, MAX_ITEMS).map(item => {
             const createdAt = new Date(item.createdAt);
             const lastModified = new Date(item.lastModified);
             const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
@@ -94,6 +156,7 @@ const fetchHubItems = async (repoType) => {
                 createdAt,
                 lastModified,
                 isNew,
+                likes: item.likes || 0,
                 tags: tags
             };
         });
@@ -105,7 +168,7 @@ const fetchHubItems = async (repoType) => {
 
         return processedItems;
     } catch (error) {
-        handleError(error, `Failed to fetch ${repoType} from Hugging Face. Please check your network connection or the API.`);
+        handleError(error, `Failed to fetch ${repoType}. Please check your network connection or the API.`);
         return [];
     }
 };
@@ -136,18 +199,49 @@ const renderHubItemCard = (item, repoType) => {
 
     // Construct the correct URL based on the repository type
     let itemUrl = `https://huggingface.co/${item.id}`;
-    if (repoType === 'datasets') {
+    let linkText = "View on Hub"; // default
+    if (repoType === 'code') {
+        itemUrl = item.html_url;
+        linkText = "View Repo";
+    } else if (repoType === 'datasets') {
         itemUrl = `https://huggingface.co/datasets/${item.id}`;
     } else if (repoType === 'spaces') {
         itemUrl = `https://huggingface.co/spaces/${item.id}`;
     }
 
+    // stars for GitHub repos
+    const badgeHtml = (() => {
+        if (item.isNew) {
+            return `<span class="new-badge inline-block text-xs font-bold text-white rounded-full px-2 py-1">
+                        New!
+                    </span>`;
+        }
+
+        if (typeof item.cardData.stars === "number" && item.cardData.stars > 0) {
+            return `<span class="text-sm font-semibold text-gray-700 flex items-center gap-1">
+                        ⭐ ${item.cardData.stars}
+                    </span>`;
+        }
+
+        if (typeof item.likes === "number" && item.likes > 0) {
+        return `
+        <span class="text-sm font-semibold text-gray-700 flex items-center gap-1">
+            ❤️ ${item.likes}
+        </span>`;
+    }
+        return "";
+    })();
+
     return `
         <div class="item-card rounded-xl shadow-lg p-6 flex flex-col justify-between">
             <div>
-                <div class="flex items-center justify-between mb-2">
-                    <h2 class="text-xl font-bold text-gray-800 break-words">${prettyName}</h2>
-                    ${item.isNew ? `<span class="new-badge inline-block text-xs font-bold text-white rounded-full px-2 py-1">New!</span>` : ''}
+                <div class="flex justify-between items-start gap-2 mb-2">
+                    <h2 class="text-xl font-bold text-gray-800 flex-1 overflow-hidden">
+                        <span class="break-words">${prettyName}</span>
+                    </h2>
+                    <div class="flex-shrink-0 ml-2">
+                        ${badgeHtml}
+                    </div>
                 </div>
                 <p class="text-sm text-gray-600 h-20 overflow-y-auto mb-4">
                     ${displayDescription}
@@ -160,7 +254,7 @@ const renderHubItemCard = (item, repoType) => {
                 <div class="flex justify-between items-center mt-4 text-xs text-gray-400">
                     <span>Updated: ${lastUpdatedDate}</span>
                     <a href="${itemUrl}" target="_blank" class="text-[#5d8095] hover:text-[#0097b2] font-medium transition-colors">
-                        View on Hub
+                        ${linkText}
                     </a>
                 </div>
             </div>
@@ -193,12 +287,12 @@ const renderItemList = (items, repoType) => {
 /**
  * Applies all filters and sorting to the items and re-renders the list.
  */
-const applyFiltersAndSort = () => {
+const applyFiltersAndSort = async () => {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const sortBy = document.getElementById('sortBy').value;
     const tagFilter = document.getElementById('tagFilter').value;
     const repoType = document.getElementById('repoType').value;
-    const currentItems = allItems[repoType];
+    let currentItems = allItems[repoType];
 
     // Step 1: Filter the items based on the search and tag filters
     const filtered = currentItems.filter(item => {
@@ -268,11 +362,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const newRepoType = event.target.value;
         await fetchHubItems(newRepoType);
         populateTagFilter(newRepoType);
-        applyFiltersAndSort();
+        await applyFiltersAndSort();
     });
 
     // Initial fetch for "datasets"
     await fetchHubItems(repoTypeSelect.value);
     populateTagFilter(repoTypeSelect.value);
-    applyFiltersAndSort(); // Initial render with default filters
+    await applyFiltersAndSort(); // Initial render with default filters
 });
