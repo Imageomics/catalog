@@ -195,8 +195,10 @@ const renderHubItemCard = (item, repoType) => {
 
     // Construct the correct URL based on the repository type
     let itemUrl = `https://huggingface.co/${item.id}`;
-    if (repoType === 'code') {
+    let linkText = "View on Hub"; // default
+    if (repoType === 'code' || repoType === "forked-code") {
         itemUrl = item.html_url;
+        linkText = "View Repo";
     } else if (repoType === 'datasets') {
         itemUrl = `https://huggingface.co/datasets/${item.id}`;
     } else if (repoType === 'spaces') {
@@ -226,8 +228,6 @@ const renderHubItemCard = (item, repoType) => {
         return "";
     })();
 
-    
-
     return `
         <div class="item-card rounded-xl shadow-lg p-6 flex flex-col justify-between">
             <div>
@@ -250,7 +250,7 @@ const renderHubItemCard = (item, repoType) => {
                 <div class="flex justify-between items-center mt-4 text-xs text-gray-400">
                     <span>Updated: ${lastUpdatedDate}</span>
                     <a href="${itemUrl}" target="_blank" class="text-[#5d8095] hover:text-[#0097b2] font-medium transition-colors">
-                        View on Hub
+                        ${linkText}
                     </a>
                 </div>
             </div>
