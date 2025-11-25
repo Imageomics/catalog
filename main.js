@@ -81,7 +81,7 @@ const fetchHubItems = async (repoType) => {
                 tags.forEach(tag => tagsMap.code.add(tag));
 
                 return {
-                    id: repo.full_name,                    // "imageomics/repo-name"
+                    id: repo.full_name,                    // repo name from "imageomics/repo-name"
                     createdAt,
                     lastModified,
                     isNew,
