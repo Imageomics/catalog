@@ -292,7 +292,18 @@ const applyFiltersAndSort = async () => {
     const sortBy = document.getElementById('sortBy').value;
     const tagFilter = document.getElementById('tagFilter').value;
     const repoType = document.getElementById('repoType').value;
-    let currentItems = allItems[repoType];
+    let currentItems;
+
+    if (repoType === "all") {
+        currentItems = [
+            ...allItems.code,
+            ...allItems.datasets,
+            ...allItems.models,
+            ...allItems.spaces
+        ];
+    } else {
+        currentItems = allItems[repoType];
+    }
 
     // Step 1: Filter the items based on the search and tag filters
     const filtered = currentItems.filter(item => {
@@ -333,7 +344,23 @@ const applyFiltersAndSort = async () => {
 const populateTagFilter = (repoType) => {
     const tagFilterElement = document.getElementById('tagFilter');
     tagFilterElement.innerHTML = '<option value="">All Tags</option>'; // Reset the options
-    const sortedTags = Array.from(tagsMap[repoType]).sort();
+
+    let allTags = [];
+
+    if (repoType === "all") {
+        // Merge tags from ALL repo types
+        allTags = [
+            ...tagsMap.code,
+            ...tagsMap.datasets,
+            ...tagsMap.models,
+            ...tagsMap.spaces
+        ];
+    } else {
+        allTags = [...tagsMap[repoType]];
+    }
+
+    // remove duplicates and sort tags
+    const sortedTags = Array.from(new Set(allTags)).sort();
 
     sortedTags.forEach(tag => {
         const option = document.createElement('option');
@@ -348,10 +375,13 @@ const populateTagFilter = (repoType) => {
 //
 
 document.addEventListener('DOMContentLoaded', async () => {
+
     const searchInput = document.getElementById('searchInput');
     const sortBySelect = document.getElementById('sortBy');
     const tagFilterSelect = document.getElementById('tagFilter');
     const repoTypeSelect = document.getElementById('repoType');
+
+    const initialType = repoTypeSelect.value; // <-- Now repoTypeSelect exists
 
     // Add input and change event listeners
     searchInput.addEventListener('input', applyFiltersAndSort);
@@ -360,13 +390,43 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     repoTypeSelect.addEventListener('change', async (event) => {
         const newRepoType = event.target.value;
-        await fetchHubItems(newRepoType);
-        populateTagFilter(newRepoType);
+
+        if (newRepoType === "all") {
+            // Fetch EVERYTHING
+            await Promise.all([
+                fetchHubItems("code"),
+                fetchHubItems("datasets"),
+                fetchHubItems("models"),
+                fetchHubItems("spaces")
+            ]);
+
+            populateTagFilter("all");
+        } else {
+            await fetchHubItems(newRepoType);
+            populateTagFilter(newRepoType);
+        }
+
         await applyFiltersAndSort();
     });
 
-    // Initial fetch for "datasets"
-    await fetchHubItems(repoTypeSelect.value);
-    populateTagFilter(repoTypeSelect.value);
-    await applyFiltersAndSort(); // Initial render with default filters
+    //
+    // >>> INITIAL PAGE LOAD HANDLING <<<
+    //
+    if (initialType === "all") {
+        // If default is ALL, fetch everything at startup
+        await Promise.all([
+            fetchHubItems("code"),
+            fetchHubItems("datasets"),
+            fetchHubItems("models"),
+            fetchHubItems("spaces")
+        ]);
+
+        populateTagFilter("all");
+    } else {
+        // Otherwise fetch just the default repo
+        await fetchHubItems(initialType);
+        populateTagFilter(initialType);
+    }
+
+    await applyFiltersAndSort(); // render initially
 });
