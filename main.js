@@ -210,7 +210,7 @@ const renderHubItemCard = (item, repoType) => {
                     </span>`;
         }
 
-        if (typeof item.likes === "number" && item.likes > 0) {
+        if (typeof item.likes === "number") {
         return `
         <span class="text-sm font-semibold text-gray-700 flex items-center gap-1">
             ❤️ ${item.likes}
