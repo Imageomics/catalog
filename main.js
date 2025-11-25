@@ -88,15 +88,15 @@ const fetchHubItems = async (repoType) => {
                 tags.forEach(tag => tagsMap.code.add(tag));
 
                 return {
-                    id: repo.full_name,                    // repo name from "imageomics/repo-name"
+                    id: repo.full_name,                    // "Imageomics/<repo-name>", used in backend as backup
                     createdAt,
                     lastModified,
                     isNew,
-                    tags,
+                    tags, // repo.topics
                     description: repo.description || "No description provided.",
                     html_url: repo.html_url,
                     cardData: {
-                        pretty_name: repo.name,
+                        pretty_name: repo.name, // <repo-name>, the one used for card title display
                         description: repo.description,
                         stars: repo.stargazers_count
                     }
