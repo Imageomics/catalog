@@ -93,6 +93,7 @@ const fetchHubItems = async (repoType) => {
 
                     return {
                         id: repo.full_name, // "Imageomics/<repo-name>", used as backup if can't get repo.name
+                        repoType: "code",
                         createdAt,
                         lastModified,
                         isNew,
@@ -153,6 +154,7 @@ const fetchHubItems = async (repoType) => {
 
             return {
                 ...item,
+                repoType,
                 createdAt,
                 lastModified,
                 isNew,
@@ -198,15 +200,31 @@ const renderHubItemCard = (item, repoType) => {
     const displayDescription = item.cardData?.description ||  item.cardData?.model_description ||  item.description || 'No description provided.';
 
     // Construct the correct URL based on the repository type
-    let itemUrl = `https://huggingface.co/${item.id}`;
-    let linkText = "View on Hub"; // default
-    if (repoType === 'code') {
-        itemUrl = item.html_url;
-        linkText = "View Repo";
-    } else if (repoType === 'datasets') {
-        itemUrl = `https://huggingface.co/datasets/${item.id}`;
-    } else if (repoType === 'spaces') {
-        itemUrl = `https://huggingface.co/spaces/${item.id}`;
+    let itemUrl;
+    let linkText;
+
+    switch (item.repoType) {
+        case "code":
+            itemUrl = item.html_url;
+            linkText = "View Repo";
+            break;
+        case "datasets":
+            itemUrl = `https://huggingface.co/datasets/${item.id}`;
+            linkText = "View on Hub";
+            break;
+        case "spaces":
+            itemUrl = `https://huggingface.co/spaces/${item.id}`;
+            linkText = "View on Hub";
+            break;
+        case "models":
+            itemUrl = `https://huggingface.co/${item.id}`;
+            linkText = "View on Hub";
+            break;
+        default:
+            // fallback for "all"
+            itemUrl = `https://huggingface.co/${item.id}`;
+            linkText = "View on Hub";
+            break;
     }
 
     // stars for GitHub repos
