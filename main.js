@@ -217,13 +217,13 @@ const renderHubItemCard = (item, repoType) => {
                     </span>`;
         }
 
-        if (typeof item.cardData.stars === "number") {
+        if (typeof item.cardData.stars === "number" && item.cardData.stars > 0) {
             return `<span class="text-sm font-semibold text-gray-700 flex items-center gap-1">
                         ⭐ ${item.cardData.stars}
                     </span>`;
         }
 
-        if (typeof item.likes === "number") {
+        if (typeof item.likes === "number" && item.likes > 0) {
         return `
         <span class="text-sm font-semibold text-gray-700 flex items-center gap-1">
             ❤️ ${item.likes}
