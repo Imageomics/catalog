@@ -250,6 +250,29 @@ const renderHubItemCard = (item, repoType) => {
         return "";
     })();
 
+    // stars for GitHub repos
+    const badgeHtml = (() => {
+        if (item.isNew) {
+            return `<span class="new-badge inline-block text-xs font-bold text-white rounded-full px-2 py-1">
+                        New!
+                    </span>`;
+        }
+
+        if (typeof item.cardData.stars === "number" && item.cardData.stars > 0) {
+            return `<span class="text-sm font-semibold text-gray-700 flex items-center gap-1">
+                        ⭐ ${item.cardData.stars}
+                    </span>`;
+        }
+
+        if (typeof item.likes === "number" && item.likes > 0) {
+        return `
+        <span class="text-sm font-semibold text-gray-700 flex items-center gap-1">
+            ❤️ ${item.likes}
+        </span>`;
+    }
+        return "";
+    })();
+
     return `
         <div class="item-card rounded-xl shadow-lg p-6 flex flex-col justify-between">
             <div>
