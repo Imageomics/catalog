@@ -8,6 +8,12 @@ const ORGANISATION_NAME = "imageomics";
 const API_BASE_URL = "https://huggingface.co/api/";
 const REFRESH_INTERVAL_DAYS = 30; // Define what "new" means
 const MAX_ITEMS = 100; // Limit the number of items to fetch
+const FORKED_REPOS = [
+    "Fish-Vista",
+    "PhyloNN",
+    "telemetry-dashboard",
+    "docker-workshop"
+];
 
 let allItems = {
     code: [],
@@ -60,7 +66,8 @@ const fetchHubItems = async (repoType) => {
         let items = [];
 
         // github api requests for code
-        if (repoType == "code") {
+        if (repoType === "code" || repoType === "forked-code") {
+            if (fetchedData.code) return allItems.code // reuse if already fetched
             
             const ghResponse = await fetch(
                 `https://api.github.com/orgs/${ORGANISATION_NAME}/repos?type=public&per_page=100`
@@ -157,7 +164,7 @@ const fetchHubItems = async (repoType) => {
 
         return processedItems;
     } catch (error) {
-        handleError(error, `Failed to fetch ${repoType} from Hugging Face. Please check your network connection or the API.`);
+        handleError(error, `Failed to fetch ${repoType}. Please check your network connection or the API.`);
         return [];
     }
 };
@@ -276,12 +283,24 @@ const renderItemList = (items, repoType) => {
 /**
  * Applies all filters and sorting to the items and re-renders the list.
  */
-const applyFiltersAndSort = () => {
+const applyFiltersAndSort = async () => {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const sortBy = document.getElementById('sortBy').value;
     const tagFilter = document.getElementById('tagFilter').value;
     const repoType = document.getElementById('repoType').value;
-    const currentItems = allItems[repoType];
+    let currentItems;
+    if (repoType === "forked-code") {
+        // ensure code repos are loaded before filtering
+        if (!fetchedData.code) {
+            await fetchHubItems("code"); 
+        }
+        currentItems = allItems.code.filter(item => {
+            // checks pretty-name or converts full_name to repo name only as backup
+            return FORKED_REPOS.some(forked => forked.toLowerCase() === (item.cardData?.pretty_name || item.id.split('/')[1]).toLowerCase());
+        });
+    } else {
+        currentItems = allItems[repoType];
+    }
 
     // Step 1: Filter the items based on the search and tag filters
     const filtered = currentItems.filter(item => {
@@ -322,7 +341,10 @@ const applyFiltersAndSort = () => {
 const populateTagFilter = (repoType) => {
     const tagFilterElement = document.getElementById('tagFilter');
     tagFilterElement.innerHTML = '<option value="">All Tags</option>'; // Reset the options
-    const sortedTags = Array.from(tagsMap[repoType]).sort();
+
+    // Use "code" tags for "forked-code"
+    const mapKey = repoType === "forked-code" ? "code" : repoType;
+    const sortedTags = Array.from(tagsMap[mapKey]).sort();
 
     sortedTags.forEach(tag => {
         const option = document.createElement('option');
@@ -351,11 +373,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const newRepoType = event.target.value;
         await fetchHubItems(newRepoType);
         populateTagFilter(newRepoType);
-        applyFiltersAndSort();
+        await applyFiltersAndSort();
     });
 
     // Initial fetch for "datasets"
     await fetchHubItems(repoTypeSelect.value);
     populateTagFilter(repoTypeSelect.value);
-    applyFiltersAndSort(); // Initial render with default filters
+    await applyFiltersAndSort(); // Initial render with default filters
 });
