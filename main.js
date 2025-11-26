@@ -49,7 +49,7 @@ const handleError = (error, message) => {
 //
 
 /**
- * Fetches items (code,datasets, models, or spaces) for a given organization from the GitHub or Hugging Face API.
+ * Fetches items (code, datasets, models, or spaces) for a given organization from the GitHub or Hugging Face API.
  * @async
  * @param {string} repoType - The type of repository to fetch ("code", "datasets", "models", or "spaces").
  * @returns {Promise<Array>} An array of item objects.
