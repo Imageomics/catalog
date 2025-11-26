@@ -8,7 +8,7 @@ This project was initialized with the help of Gemini 2.5, accessed [through OSU]
 
 The website is styled using the [tailwindcss](https://tailwindcss.com/) pacakge.
 
-* **Real-time Data Fetching:** Displays all public Imageomics repositories directly from both the GitHub API and Hugging Face API. Includes a "New" badge for products created within the last 30 days. Includes stars for GitHub repos and likes for Hugging Face repos.
+* **Real-time Data Fetching:** Displays all public Imageomics repositories, fetched through the GitHub and Hugging Face APIs. Includes a "New" badge for products created within the last 30 days; for older repos, star (⭐️) or like (❤️) counts are included for GitHub or Hugging Face repos, respectively.
 * **Search Functionality:** Quickly find items by keyword.
 * **Filtering:** Filter by repository type (Code, Datasets, Models, Spaces) and tags.
 * **Sorting:** Sort items by last updated, date created, stars/likes ascending, descending or alphabetically.
