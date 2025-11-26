@@ -1,6 +1,6 @@
 //
-// Hugging Face Hub Catalog - Frontend Logic
-// This script handles data fetching, searching, filtering, and rendering for Hugging Face datasets, models, and spaces.
+// Imageomics Catalog - Frontend Logic
+// This script handles data fetching, searching, filtering, and rendering for Imageomics code, datasets, models, and spaces.
 //
 // SECTION 1: CONFIGURATION AND STATE MANAGEMENT
 //
@@ -49,7 +49,7 @@ const handleError = (error, message) => {
 //
 
 /**
- * Fetches items (datasets, models, or spaces) for a given organization from the Hugging Face API.
+ * Fetches items (code, datasets, models, or spaces) for a given organization from the GitHub or Hugging Face API.
  * @async
  * @param {string} repoType - The type of repository to fetch ("code", "datasets", "models", or "spaces").
  * @returns {Promise<Array>} An array of item objects.
@@ -93,6 +93,7 @@ const fetchHubItems = async (repoType) => {
 
                     return {
                         id: repo.full_name, // "Imageomics/<repo-name>", used as backup if can't get repo.name
+                        repoType: "code",
                         createdAt,
                         lastModified,
                         isNew,
@@ -153,6 +154,7 @@ const fetchHubItems = async (repoType) => {
 
             return {
                 ...item,
+                repoType,
                 createdAt,
                 lastModified,
                 isNew,
@@ -178,7 +180,7 @@ const fetchHubItems = async (repoType) => {
 //
 
 /**
- * Renders a single item card (dataset, model, or space) to HTML.
+ * Renders a single item card (code, dataset, model, or space) to HTML.
  * @param {Object} item - The item object to render.
  * @param {string} repoType - The type of repository.
  * @returns {string} The HTML string for the item card.
@@ -191,22 +193,38 @@ const renderHubItemCard = (item, repoType) => {
 
     // Use pretty_name for the heading, with a fallback
     // HF API keys for CardData: https://huggingface.co/docs/huggingface_hub/main/en/package_reference/cards#huggingface_hub.CardData
-    // datasets have prett_name, models have model_name, spaces have title
+    // datasets have pretty_name, models have model_name, spaces have title
     const prettyName = item.cardData?.pretty_name || item.cardData?.model_name || item.cardData?.title || item.id.split('/')[1];
 
     // Use the description from cardData, with fallbacks
     const displayDescription = item.cardData?.description ||  item.cardData?.model_description ||  item.description || 'No description provided.';
 
     // Construct the correct URL based on the repository type
-    let itemUrl = `https://huggingface.co/${item.id}`;
-    let linkText = "View on Hub"; // default
-    if (repoType === 'code') {
-        itemUrl = item.html_url;
-        linkText = "View Repo";
-    } else if (repoType === 'datasets') {
-        itemUrl = `https://huggingface.co/datasets/${item.id}`;
-    } else if (repoType === 'spaces') {
-        itemUrl = `https://huggingface.co/spaces/${item.id}`;
+    let itemUrl;
+    let linkText;
+
+    switch (item.repoType) {
+        case "code":
+            itemUrl = item.html_url;
+            linkText = "View Repo";
+            break;
+        case "datasets":
+            itemUrl = `https://huggingface.co/datasets/${item.id}`;
+            linkText = "View on Hub";
+            break;
+        case "spaces":
+            itemUrl = `https://huggingface.co/spaces/${item.id}`;
+            linkText = "View on Hub";
+            break;
+        case "models":
+            itemUrl = `https://huggingface.co/${item.id}`;
+            linkText = "View on Hub";
+            break;
+        default:
+            // fallback for "all"
+            itemUrl = `https://huggingface.co/${item.id}`;
+            linkText = "View on Hub";
+            break;
     }
 
     // stars for GitHub repos
@@ -292,7 +310,18 @@ const applyFiltersAndSort = async () => {
     const sortBy = document.getElementById('sortBy').value;
     const tagFilter = document.getElementById('tagFilter').value;
     const repoType = document.getElementById('repoType').value;
-    let currentItems = allItems[repoType];
+    let currentItems;
+
+    if (repoType === "all") {
+        currentItems = [
+            ...allItems.code,
+            ...allItems.datasets,
+            ...allItems.models,
+            ...allItems.spaces
+        ];
+    } else {
+        currentItems = allItems[repoType];
+    }
 
     // Step 1: Filter the items based on the search and tag filters
     const filtered = currentItems.filter(item => {
@@ -311,14 +340,36 @@ const applyFiltersAndSort = async () => {
         case 'alphabetical_asc':
             sorted.sort((a, b) => a.id.localeCompare(b.id));
             break;
+
         case 'alphabetical_desc':
             sorted.sort((a, b) => b.id.localeCompare(a.id));
             break;
+
+        case 'stars_desc':
+            sorted.sort((a, b) => {
+                const aVal = a.cardData.stars ?? a.likes ?? 0;
+                const bVal = b.cardData.stars ?? b.likes ?? 0;
+                return bVal - aVal; // highest to lowest
+            });
+            break;
+
+        case 'stars_asc':
+            sorted.sort((a, b) => {
+                const aVal = a.cardData.stars ?? a.likes ?? 0;
+                const bVal = b.cardData.stars ?? b.likes ?? 0;
+                return aVal - bVal; // lowest to highest
+            });
+            break;
+
         case 'createdAt':
             sorted.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
             break;
+
         case 'lastModified':
-        default:
+            sorted.sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
+            break;
+
+        default: // default to lastModified logic
             sorted.sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
             break;
     }
@@ -333,7 +384,23 @@ const applyFiltersAndSort = async () => {
 const populateTagFilter = (repoType) => {
     const tagFilterElement = document.getElementById('tagFilter');
     tagFilterElement.innerHTML = '<option value="">All Tags</option>'; // Reset the options
-    const sortedTags = Array.from(tagsMap[repoType]).sort();
+
+    let allTags = [];
+
+    if (repoType === "all") {
+        // Merge tags from ALL repo types
+        allTags = [
+            ...tagsMap.code,
+            ...tagsMap.datasets,
+            ...tagsMap.models,
+            ...tagsMap.spaces
+        ];
+    } else {
+        allTags = [...tagsMap[repoType]];
+    }
+
+    // remove duplicates and sort tags
+    const sortedTags = Array.from(new Set(allTags)).sort();
 
     sortedTags.forEach(tag => {
         const option = document.createElement('option');
@@ -348,10 +415,13 @@ const populateTagFilter = (repoType) => {
 //
 
 document.addEventListener('DOMContentLoaded', async () => {
+
     const searchInput = document.getElementById('searchInput');
     const sortBySelect = document.getElementById('sortBy');
     const tagFilterSelect = document.getElementById('tagFilter');
     const repoTypeSelect = document.getElementById('repoType');
+
+    const initialType = repoTypeSelect.value; // <-- Now repoTypeSelect exists
 
     // Add input and change event listeners
     searchInput.addEventListener('input', applyFiltersAndSort);
@@ -360,13 +430,43 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     repoTypeSelect.addEventListener('change', async (event) => {
         const newRepoType = event.target.value;
-        await fetchHubItems(newRepoType);
-        populateTagFilter(newRepoType);
+
+        if (newRepoType === "all") {
+            // Fetch EVERYTHING
+            await Promise.all([
+                fetchHubItems("code"),
+                fetchHubItems("datasets"),
+                fetchHubItems("models"),
+                fetchHubItems("spaces")
+            ]);
+
+            populateTagFilter("all");
+        } else {
+            await fetchHubItems(newRepoType);
+            populateTagFilter(newRepoType);
+        }
+
         await applyFiltersAndSort();
     });
 
-    // Initial fetch for "datasets"
-    await fetchHubItems(repoTypeSelect.value);
-    populateTagFilter(repoTypeSelect.value);
-    await applyFiltersAndSort(); // Initial render with default filters
+    //
+    // >>> INITIAL PAGE LOAD HANDLING <<<
+    //
+    if (initialType === "all") {
+        // If default is ALL, fetch everything at startup
+        await Promise.all([
+            fetchHubItems("code"),
+            fetchHubItems("datasets"),
+            fetchHubItems("models"),
+            fetchHubItems("spaces")
+        ]);
+
+        populateTagFilter("all");
+    } else {
+        // Otherwise fetch just the default repo
+        await fetchHubItems(initialType);
+        populateTagFilter(initialType);
+    }
+
+    await applyFiltersAndSort(); // render initially
 });

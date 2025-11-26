@@ -1,6 +1,6 @@
 # Imageomics Catalog [![DOI](https://zenodo.org/badge/1054290236.svg)](https://doi.org/10.5281/zenodo.17602801)
 
-Repository for web-based Imageomics data, model, spaces, and code catalog. This catalog is designed to use the Hugging Face API for searching all dataset, model, and spaces repositories created under the [Imageomics Hugging Face Organization](https://huggingface.co/imageomics). Code integration through the GitHub API is the next stage of development.
+Repository for web-based Imageomics code, data, model, and spaces catalog. This catalog is designed to use the GitHub API for searching all code repositories created under the [Imageomics GitHub Organization](https://github.com/Imageomics) and the Hugging Face API for searching all dataset, model, and spaces repositories created under the [Imageomics Hugging Face Organization](https://huggingface.co/imageomics).
 
 This project was initialized with the help of Gemini 2.5, accessed [through OSU](https://ai.osu.edu/faculty-staff-students/approved-ai-tools). In addition to speeding up the development of this site, I was curious about how much Gemini could do and where it would falter; see the [full prompt/discussion](catalog-generation-prompt-Gemini2.5Flash.md) for more information.
 
@@ -8,10 +8,10 @@ This project was initialized with the help of Gemini 2.5, accessed [through OSU]
 
 The website is styled using the [tailwindcss](https://tailwindcss.com/) pacakge.
 
-* **Real-time Data Fetching:** Displays all public Imageomics repositories directly from the Hugging Face API. Includes a "New" badge for products created within the last 30 days.
+* **Real-time Data Fetching:** Displays all public Imageomics repositories, fetched through the GitHub and Hugging Face APIs. Includes a "New" badge for products created within the last 30 days; for older repos, star (⭐️) or like (❤️) counts are included for GitHub or Hugging Face repos, respectively.
 * **Search Functionality:** Quickly find items by keyword.
-* **Filtering:** Filter by repository type (Datasets, Models, Spaces) and tags.
-* **Sorting:** Sort items by last updated, date created, or alphabetically.
+* **Filtering:** Filter by repository type (Code, Datasets, Models, Spaces) and tags.
+* **Sorting:** Sort items by last updated, date created, stars/likes ascending or descending, or alphabetically.
 * **Responsive Design:** The layout is optimized for use on computers and mobile devices.
 * **Thematic Styling:** Uses Imageomics color scheme for a cohesive look and feel.
 * **Longevity:** This site is run through GitHub Pages, ensuring continued access through GitHub without needing to otherwise provision dedicated infrastructure.
