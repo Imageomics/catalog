@@ -340,14 +340,36 @@ const applyFiltersAndSort = async () => {
         case 'alphabetical_asc':
             sorted.sort((a, b) => a.id.localeCompare(b.id));
             break;
+
         case 'alphabetical_desc':
             sorted.sort((a, b) => b.id.localeCompare(a.id));
             break;
+
+        case 'stars_desc':
+            sorted.sort((a, b) => {
+                const aVal = a.cardData.stars ?? a.likes ?? 0;
+                const bVal = b.cardData.stars ?? b.likes ?? 0;
+                return bVal - aVal; // highest to lowest
+            });
+            break;
+
+        case 'stars_asc':
+            sorted.sort((a, b) => {
+                const aVal = a.cardData.stars ?? a.likes ?? 0;
+                const bVal = b.cardData.stars ?? b.likes ?? 0;
+                return aVal - bVal; // lowest to highest
+            });
+            break;
+
         case 'createdAt':
             sorted.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
             break;
+
         case 'lastModified':
-        default:
+            sorted.sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
+            break;
+
+        default: // default to lastModified logic
             sorted.sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
             break;
     }
