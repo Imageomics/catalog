@@ -1,6 +1,6 @@
 //
-// Hugging Face Hub Catalog - Frontend Logic
-// This script handles data fetching, searching, filtering, and rendering for Hugging Face datasets, models, and spaces.
+// Imageomics Catalog - Frontend Logic
+// This script handles data fetching, searching, filtering, and rendering for Imageomics code, datasets, models, and spaces.
 //
 // SECTION 1: CONFIGURATION AND STATE MANAGEMENT
 //
@@ -49,7 +49,7 @@ const handleError = (error, message) => {
 //
 
 /**
- * Fetches items (datasets, models, or spaces) for a given organization from the Hugging Face API.
+ * Fetches items (code,datasets, models, or spaces) for a given organization from the GitHub or Hugging Face API.
  * @async
  * @param {string} repoType - The type of repository to fetch ("code", "datasets", "models", or "spaces").
  * @returns {Promise<Array>} An array of item objects.
@@ -180,7 +180,7 @@ const fetchHubItems = async (repoType) => {
 //
 
 /**
- * Renders a single item card (dataset, model, or space) to HTML.
+ * Renders a single item card (code, dataset, model, or space) to HTML.
  * @param {Object} item - The item object to render.
  * @param {string} repoType - The type of repository.
  * @returns {string} The HTML string for the item card.
@@ -193,7 +193,7 @@ const renderHubItemCard = (item, repoType) => {
 
     // Use pretty_name for the heading, with a fallback
     // HF API keys for CardData: https://huggingface.co/docs/huggingface_hub/main/en/package_reference/cards#huggingface_hub.CardData
-    // datasets have prett_name, models have model_name, spaces have title
+    // datasets have pretty_name, models have model_name, spaces have title
     const prettyName = item.cardData?.pretty_name || item.cardData?.model_name || item.cardData?.title || item.id.split('/')[1];
 
     // Use the description from cardData, with fallbacks
