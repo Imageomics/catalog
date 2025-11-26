@@ -11,7 +11,7 @@ The website is styled using the [tailwindcss](https://tailwindcss.com/) pacakge.
 * **Real-time Data Fetching:** Displays all public Imageomics repositories, fetched through the GitHub and Hugging Face APIs. Includes a "New" badge for products created within the last 30 days; for older repos, star (⭐️) or like (❤️) counts are included for GitHub or Hugging Face repos, respectively.
 * **Search Functionality:** Quickly find items by keyword.
 * **Filtering:** Filter by repository type (Code, Datasets, Models, Spaces) and tags.
-* **Sorting:** Sort items by last updated, date created, stars/likes ascending, descending or alphabetically.
+* **Sorting:** Sort items by last updated, date created, stars/likes ascending or descending, or alphabetically.
 * **Responsive Design:** The layout is optimized for use on computers and mobile devices.
 * **Thematic Styling:** Uses Imageomics color scheme for a cohesive look and feel.
 * **Longevity:** This site is run through GitHub Pages, ensuring continued access through GitHub without needing to otherwise provision dedicated infrastructure.
