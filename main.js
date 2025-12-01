@@ -101,9 +101,14 @@ const updateUrlParams = (state) => {
     const paramString = params.toString();
     const newHash = paramString ? `#${paramString}` : '';
     
+    // Build the new URL preserving the pathname and any query parameters when clearing hash
+    const baseUrl = window.location.pathname + window.location.search;
+    const newUrl = newHash ? baseUrl + newHash : baseUrl;
+    
     // Update the URL without triggering a page reload
-    if (window.location.hash !== newHash) {
-        history.replaceState(null, '', newHash || window.location.pathname);
+    const currentUrl = window.location.pathname + window.location.search + window.location.hash;
+    if (currentUrl !== newUrl) {
+        history.replaceState(null, '', newUrl);
     }
 };
 
@@ -577,9 +582,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Render initially without updating URL (to preserve the original URL on first load)
+    // Render initially without updating URL, then sync URL once to reflect actual applied state
+    // (handles cases where URL params were invalid and not applied)
     await applyFiltersAndSort(false);
-    
-    // Now update URL to reflect the actual applied state (in case some params were invalid)
     updateUrlParams(getCurrentState());
 });
