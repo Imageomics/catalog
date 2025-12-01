@@ -12,6 +12,7 @@ The website is styled using the [tailwindcss](https://tailwindcss.com/) pacakge.
 * **Search Functionality:** Quickly find items by keyword.
 * **Filtering:** Filter by repository type (Code, Datasets, Models, Spaces) and tags.
 * **Sorting:** Sort items by last updated, date created, stars/likes ascending or descending, or alphabetically.
+* **URL Parameter Support:** Persist and share search states via URL hash (`#type=datasets&q=fish`) or query parameters (`?type=datasets`). Supports `type`, `q` (search query), `sort`, and `tag` parameters.
 * **Responsive Design:** The layout is optimized for use on computers and mobile devices.
 * **Thematic Styling:** Uses Imageomics color scheme for a cohesive look and feel.
 * **Longevity:** This site is run through GitHub Pages, ensuring continued access through GitHub without needing to otherwise provision dedicated infrastructure.
