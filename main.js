@@ -45,6 +45,87 @@ const handleError = (error, message) => {
 };
 
 //
+// SECTION 1B: URL PARAMETER HANDLING
+//
+
+/**
+ * Parses URL parameters from both query string (?key=value) and hash (#key=value).
+ * Query parameters take precedence over hash parameters.
+ * @returns {Object} An object containing the parsed parameters.
+ */
+const parseUrlParams = () => {
+    const params = {};
+    
+    // Parse query string parameters (e.g., ?type=datasets&q=fish)
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    
+    // Parse hash parameters (e.g., #type=datasets&q=fish)
+    const hash = window.location.hash.slice(1); // Remove the leading '#'
+    const hashParams = new URLSearchParams(hash);
+    
+    // Hash parameters first (lower precedence)
+    for (const [key, value] of hashParams) {
+        params[key] = value;
+    }
+    
+    // Query parameters override hash parameters (higher precedence)
+    for (const [key, value] of urlParams) {
+        params[key] = value;
+    }
+    
+    return params;
+};
+
+/**
+ * Updates the URL hash with the current filter state without triggering a page reload.
+ * @param {Object} state - The current state object with type, q, sort, tag properties.
+ */
+const updateUrlParams = (state) => {
+    const params = new URLSearchParams();
+    
+    // Only add non-default values to the URL
+    if (state.type && state.type !== 'all') {
+        params.set('type', state.type);
+    }
+    if (state.q && state.q.trim() !== '') {
+        params.set('q', state.q);
+    }
+    if (state.sort && state.sort !== 'lastModified') {
+        params.set('sort', state.sort);
+    }
+    if (state.tag && state.tag !== '') {
+        params.set('tag', state.tag);
+    }
+    
+    const paramString = params.toString();
+    const newHash = paramString ? `#${paramString}` : '';
+    
+    // Build the new URL preserving the pathname and any query parameters when clearing hash
+    const baseUrl = window.location.pathname + window.location.search;
+    const newUrl = newHash ? baseUrl + newHash : baseUrl;
+    
+    // Update the URL without triggering a page reload
+    const currentUrl = window.location.pathname + window.location.search + window.location.hash;
+    if (currentUrl !== newUrl) {
+        history.replaceState(null, '', newUrl);
+    }
+};
+
+/**
+ * Gets the current filter state from form elements.
+ * @returns {Object} The current state object.
+ */
+const getCurrentState = () => {
+    return {
+        type: document.getElementById('repoType')?.value || 'all',
+        q: document.getElementById('searchInput')?.value || '',
+        sort: document.getElementById('sortBy')?.value || 'lastModified',
+        tag: document.getElementById('tagFilter')?.value || ''
+    };
+};
+
+//
 // SECTION 2: DATA FETCHING LOGIC
 //
 
@@ -304,13 +385,19 @@ const renderItemList = (items, repoType) => {
 
 /**
  * Applies all filters and sorting to the items and re-renders the list.
+ * @param {boolean} updateUrl - Whether to update the URL with the current state (default: true).
  */
-const applyFiltersAndSort = async () => {
+const applyFiltersAndSort = async (updateUrl = true) => {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const sortBy = document.getElementById('sortBy').value;
     const tagFilter = document.getElementById('tagFilter').value;
     const repoType = document.getElementById('repoType').value;
     let currentItems;
+
+    // Update URL with current state if requested
+    if (updateUrl) {
+        updateUrlParams(getCurrentState());
+    }
 
     if (repoType === "all") {
         currentItems = [
@@ -421,7 +508,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tagFilterSelect = document.getElementById('tagFilter');
     const repoTypeSelect = document.getElementById('repoType');
 
-    const initialType = repoTypeSelect.value; // <-- Now repoTypeSelect exists
+    // Parse URL parameters to restore state
+    const urlParams = parseUrlParams();
+    
+    // Apply URL parameters to form elements if they exist
+    const validRepoTypes = ['all', 'code', 'datasets', 'models', 'spaces'];
+    if (urlParams.type && validRepoTypes.includes(urlParams.type)) {
+        repoTypeSelect.value = urlParams.type;
+    }
+    
+    if (urlParams.q) {
+        searchInput.value = urlParams.q;
+    }
+    
+    const validSortValues = ['lastModified', 'createdAt', 'stars_desc', 'stars_asc', 'alphabetical_asc', 'alphabetical_desc'];
+    if (urlParams.sort && validSortValues.includes(urlParams.sort)) {
+        sortBySelect.value = urlParams.sort;
+    }
+
+    const initialType = repoTypeSelect.value;
 
     // Add input and change event listeners
     searchInput.addEventListener('input', applyFiltersAndSort);
@@ -468,5 +573,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         populateTagFilter(initialType);
     }
 
-    await applyFiltersAndSort(); // render initially
+    // Apply tag filter from URL after tags have been populated
+    if (urlParams.tag) {
+        // Check if the tag exists in the options
+        const tagOption = Array.from(tagFilterSelect.options).find(opt => opt.value === urlParams.tag);
+        if (tagOption) {
+            tagFilterSelect.value = urlParams.tag;
+        }
+    }
+
+    // Render initially without updating URL, then sync URL once to reflect actual applied state
+    // (handles cases where URL params were invalid and not applied)
+    await applyFiltersAndSort(false);
+    updateUrlParams(getCurrentState());
 });
