@@ -256,6 +256,39 @@ const fetchHubItems = async (repoType) => {
     }
 };
 
+/**
+ * Fetches statistics for the Catalog repository itself (Stars, Forks, Version)
+ * populates the badge in the top right corner.
+ */
+const fetchCatalogStats = async () => {
+    // Helper: Updates text, shows the specific stat, and ensures the divider is visible
+    const update = (textId, containerId, value) => {
+        const el = document.getElementById(textId);
+        const container = document.getElementById(containerId);
+        if (el && container && value !== undefined) {
+            el.innerText = value;
+            container.classList.remove('hidden');
+            container.classList.add('flex');
+            // If we are showing a stat, we need the divider
+            document.getElementById('gh-divider')?.classList.remove('hidden');
+        }
+    };
+
+    try {
+        // 1. Get Stars & Forks
+        const repo = await fetch('https://api.github.com/repos/Imageomics/catalog').then(r => r.ok ? r.json() : {});
+        if (repo.stargazers_count !== undefined) update('gh-stars', 'gh-star-container', repo.stargazers_count);
+        if (repo.forks_count !== undefined) update('gh-forks', 'gh-fork-container', repo.forks_count);
+
+        // 2. Get Version (Tag)
+        const release = await fetch('https://api.github.com/repos/Imageomics/catalog/releases/latest').then(r => r.ok ? r.json() : {});
+        if (release.tag_name) update('gh-tag', 'gh-version-container', release.tag_name);
+
+    } catch (e) { 
+        console.warn("Could not fetch GitHub stats", e); 
+    }
+};
+
 //
 // SECTION 3: RENDERING LOGIC
 //
@@ -553,6 +586,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         await applyFiltersAndSort();
     });
+
+    // Initialize the Catalog Badge (Stars/Forks/Version)
+    fetchCatalogStats();
 
     //
     // >>> INITIAL PAGE LOAD HANDLING <<<
