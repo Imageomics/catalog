@@ -267,10 +267,12 @@ const fetchCatalogStats = async () => {
         const container = document.getElementById(containerId);
         if (el && container && value !== undefined) {
             el.innerText = value;
-            container.classList.remove('hidden');
-            container.classList.add('flex');
-            // If we are showing a stat, we need the divider
-            document.getElementById('gh-divider')?.classList.remove('hidden');
+            if (value != 0) {
+                container.classList.remove('hidden');
+                container.classList.add('flex');
+                // If we are showing a stat, we need the divider
+                document.getElementById('gh-divider')?.classList.remove('hidden');
+            } 
         }
     };
 
