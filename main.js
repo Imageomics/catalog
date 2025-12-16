@@ -270,8 +270,6 @@ const fetchCatalogStats = async () => {
             if (value != 0) {
                 container.classList.remove('hidden');
                 container.classList.add('flex');
-                // If we are showing a stat, we need the divider
-                document.getElementById('gh-divider')?.classList.remove('hidden');
             } 
         }
     };
