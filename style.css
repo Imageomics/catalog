@@ -61,6 +61,11 @@ body {
     animation: skeleton-loading 1.5s infinite linear;
 }
 
+.dark .skeleton {
+    background-color: #1f2937;
+    background-image: linear-gradient(90deg, #1f2937 0px, #374151 50%, #1f2937 100%);
+}
+
 /* Defines the animation for the skeleton cards to simulate loading. */
 @keyframes skeleton-loading {
     0% {
@@ -91,4 +96,18 @@ body {
 /* Hover state for the scrollbar thumb, changing its background color. */
 .tag-container::-webkit-scrollbar-thumb:hover {
     background-color: #0097b2;
+}
+
+.dark .tag-container::-webkit-scrollbar-track {
+    background-color: #374151;
+}
+
+/* Changes the thumb (drag handle) to a lighter gray for contrast */
+.dark .tag-container::-webkit-scrollbar-thumb {
+    background-color: #9ca3af;
+}
+
+/* Changes the hover color */
+.dark .tag-container::-webkit-scrollbar-thumb:hover {
+    background-color: #d1d5db;
 }

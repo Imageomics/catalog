@@ -350,14 +350,14 @@ const renderHubItemCard = (item, repoType) => {
         }
 
         if (typeof item.cardData.stars === "number" && item.cardData.stars > 0) {
-            return `<span class="text-sm font-semibold text-gray-700 flex items-center gap-1">
+            return `<span class="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1">
                         ⭐ ${item.cardData.stars}
                     </span>`;
         }
 
         if (typeof item.likes === "number" && item.likes > 0) {
         return `
-        <span class="text-sm font-semibold text-gray-700 flex items-center gap-1">
+        <span class="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1">
             ❤️ ${item.likes}
         </span>`;
     }
@@ -365,27 +365,27 @@ const renderHubItemCard = (item, repoType) => {
     })();
 
     return `
-        <div class="item-card rounded-xl shadow-lg p-6 flex flex-col justify-between">
+        <div class="item-card rounded-xl shadow-lg p-6 flex flex-col justify-between dark:bg-slate-800 transition-colors duration-200">
             <div>
                 <div class="flex justify-between items-start gap-2 mb-2">
-                    <h2 class="text-xl font-bold text-gray-800 flex-1 overflow-hidden">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 flex-1 overflow-hidden">
                         <span class="break-words">${prettyName}</span>
                     </h2>
                     <div class="flex-shrink-0 ml-2">
                         ${badgeHtml}
                     </div>
                 </div>
-                <p class="text-sm text-gray-600 h-20 overflow-y-auto mb-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400 h-20 overflow-y-auto mb-4 dark:[color-scheme:dark]">
                     ${displayDescription}
                 </p>
             </div>
             <div>
-                <div class="flex flex-wrap gap-2 max-h-[2.5rem] overflow-y-auto tag-container pb-2">
+                <div class="flex flex-wrap gap-2 max-h-[2.5rem] overflow-y-auto tag-container pb-2 dark:[color-scheme:dark]">
                     ${tagsHtml}
                 </div>
-                <div class="flex justify-between items-center mt-4 text-xs text-gray-400">
+                <div class="flex justify-between items-center mt-4 text-xs text-gray-400 dark:text-gray-500">
                     <span>Updated: ${lastUpdatedDate}</span>
-                    <a href="${itemUrl}" target="_blank" class="text-[#5d8095] hover:text-[#0097b2] font-medium transition-colors">
+                    <a href="${itemUrl}" target="_blank" class="text-[#5d8095] hover:text-[#0097b2] dark:text-[#4fd1eb] dark:hover:text-[#8ae6f5] font-medium transition-colors">
                         ${linkText}
                     </a>
                 </div>
@@ -622,4 +622,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     // (handles cases where URL params were invalid and not applied)
     await applyFiltersAndSort(false);
     updateUrlParams(getCurrentState());
+});
+
+//
+// THEME TOGGLE LOGIC
+//
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+themeToggleBtn.addEventListener('click', () => {
+    if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.theme = 'light';
+    } else {
+        document.documentElement.classList.add('dark');
+        localStorage.theme = 'dark';
+    }
 });

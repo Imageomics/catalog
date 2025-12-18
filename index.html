@@ -5,13 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Imageomics Catalog</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = { darkMode: 'selector' }
+    </script>
+    <script>
+        // Check localStorage or System Preference on load to avoid FOUC
+        document.documentElement.classList.toggle(
+          "dark",
+          localStorage.theme === "dark" ||
+            (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches),
+        );
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="https://github.com/Imageomics/Imageomics-guide/raw/3478acc0068a87a5604069d04a29bdb0795c2045/docs/logos/Imageomics_logo_butterfly.png" type="image/png">
 </head>
-<body class="p-8">
+<body class="p-8 dark:bg-slate-900 transition-colors duration-200">
     <!-- GitHub Ribbon -->
     <a href="https://github.com/Imageomics/catalog" target="_blank" 
         class="fixed top-6 right-6 hidden md:flex items-center gap-3 bg-[#5d8095] text-white py-2 px-4 rounded-lg shadow-md hover:bg-[#92991c] transition-all z-50 no-underline group font-sans border border-white/10">
@@ -44,22 +55,29 @@
             </div>
         </div>
     </a>
+    <button id="themeToggleBtn" 
+            class="fixed top-6 left-6 z-50 p-2 rounded-lg bg-gray-200 dark:bg-slate-700 text-gray-800 dark:text-yellow-400 shadow-md hover:bg-gray-300 dark:hover:bg-slate-600 transition-all"
+            aria-label="Toggle Dark Mode">
+        <svg class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+        <svg class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+    </button>
+
     <!-- Main Content Container -->
     <div class="container mx-auto">
         <!-- Header Section -->
         <header class="mb-8 text-center">
             <img src="https://github.com/Imageomics/Imageomics-guide/raw/3478acc0068a87a5604069d04a29bdb0795c2045/docs/logos/Imageomics_logo_butterfly.png" alt="Imageomics Logo" class="mx-auto mb-4 w-28">
             <h1 class="text-4xl font-extrabold text-[#92991c] mb-2">Imageomics Catalog</h1>
-            <p class="text-xl text-gray-600">Explore and discover public code, datasets, models, and spaces.</p>
+            <p class="text-xl text-gray-600 dark:text-gray-400">Explore and discover public code, datasets, models, and spaces.</p>
         </header>
 
         <!-- Search and Filter Section -->
         <section class="mb-8">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4 p-6 bg-white shadow-md rounded-xl">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 p-6 bg-white dark:bg-slate-800 shadow-md rounded-xl transition-colors duration-200">
                 <!-- Search Input -->
                 <div class="relative w-full md:w-1/3">
                     <input type="text" id="searchInput" placeholder="Search by keyword or tag..."
-                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent transition-all">
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-[#0097b2] focus:border-transparent transition-all">
                     <svg class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
@@ -70,7 +88,7 @@
                     <!-- Repository Type Dropdown -->
                     <div class="w-full sm:w-auto">
                         <label for="repoType" class="sr-only">Repository Type</label>
-                        <select id="repoType" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
+                        <select id="repoType" class="w-full py-2 px-4 border border-gray-300 dark:border-slate-600 rounded-lg bg-gray-50 dark:bg-slate-700 text-gray-700 dark:text-white transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
                             <option value="all">Search All</option>
                             <option value="code">Code</option>
                             <option value="datasets">Datasets</option>
@@ -82,7 +100,7 @@
                     <!-- Sort by Dropdown -->
                     <div class="w-full sm:w-auto">
                         <label for="sortBy" class="sr-only">Sort By</label>
-                        <select id="sortBy" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
+                        <select id="sortBy" class="w-full py-2 px-4 border border-gray-300 dark:border-slate-600 rounded-lg bg-gray-50 dark:bg-slate-700 text-gray-700 dark:text-white transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
                             <option value="lastModified">Last Updated (Newest)</option>
                             <option value="createdAt">Date Created (Newest)</option>
                             <option value="stars_desc">Stars / Likes (Highest)</option>
@@ -95,7 +113,7 @@
                     <!-- Filter by Tags (Optional) -->
                     <div class="w-full sm:w-auto">
                         <label for="tagFilter" class="sr-only">Filter By Tag</label>
-                        <select id="tagFilter" class="w-full py-2 px-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
+                        <select id="tagFilter" class="w-full py-2 px-4 border border-gray-300 dark:border-slate-600 rounded-lg bg-gray-50 dark:bg-slate-700 text-gray-700 dark:text-white transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
                             <option value="">All Tags</option>
                         </select>
                     </div>
@@ -108,9 +126,9 @@
             <div id="itemList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 <!-- Skeleton Loading State (Initially displayed) -->
                 <div class="skeleton-card skeleton rounded-xl p-6 h-64"></div>
-                <div class="skeleton-card skeleton rounded-xl p-6 h-64 hidden sm:block"></div>
-                <div class="skeleton-card skeleton rounded-xl p-6 h-64 hidden lg:block"></div>
-                <div class="skeleton-card skeleton rounded-xl p-6 h-64 hidden xl:block"></div>
+                <div class="skeleton-card skeleton rounded-xl p-6 h-64 hidden sm:block bg-gray-200 dark:bg-slate-800"></div>
+                <div class="skeleton-card skeleton rounded-xl p-6 h-64 hidden lg:block bg-gray-200 dark:bg-slate-800"></div>
+                <div class="skeleton-card skeleton rounded-xl p-6 h-64 hidden xl:block bg-gray-200 dark:bg-slate-800"></div>
             </div>
             <!-- Empty State Message -->
             <div id="emptyState" class="hidden text-center text-gray-500 text-lg mt-10">
