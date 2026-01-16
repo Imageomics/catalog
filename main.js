@@ -170,7 +170,7 @@ const fetchHubItems = async (repoType) => {
                     const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
 
                     const tags = repo.topics || [];
-                    tags.forEach(tag => tagsMap.code.add(tag)); // stores globally for use in tags filter
+                    tags.forEach(tag => tagsMap.code.add(tag.toLowerCase())); // stores globally for use in tags filter
 
                     return {
                         id: repo.full_name, // "Imageomics/<repo-name>", used as backup if can't get repo.name
@@ -231,7 +231,7 @@ const fetchHubItems = async (repoType) => {
 
             // Extract tags from the YAML metadata (handling different structures)
             const tags = item.cardData?.tags || item.tags || [];
-            tags.forEach(tag => tagsMap[repoType].add(tag));
+            tags.forEach(tag => tagsMap[repoType].add(tag.toLowerCase()));
 
             return {
                 ...item,
@@ -442,7 +442,7 @@ const applyFiltersAndSort = async (updateUrl = true) => {
             item.description?.toLowerCase().includes(searchTerm) ||
             item.tags.some(tag => tag.toLowerCase().includes(searchTerm));
 
-        const matchesTag = tagFilter === "" || item.tags.includes(tagFilter);
+        const matchesTag = tagFilter === "" || item.tags.some(tag => tag.toLowerCase() === tagFilter.toLowerCase());
 
         return matchesSearch && matchesTag;
     });
@@ -513,6 +513,7 @@ const populateTagFilter = (repoType) => {
     }
 
     // remove duplicates and sort tags
+    // tagsMap already contains normalized (lowercase) tags, so Set automatically handles duplicates
     const sortedTags = Array.from(new Set(allTags)).sort();
 
     sortedTags.forEach(tag => {
@@ -605,9 +606,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Apply tag filter from URL after tags have been populated
     if (urlParams.tag) {
         // Check if the tag exists in the options
-        const tagOption = Array.from(tagFilterSelect.options).find(opt => opt.value === urlParams.tag);
+        const normalizedUrlTag = urlParams.tag.toLowerCase();
+        const tagOption = Array.from(tagFilterSelect.options).find(opt => opt.value.toLowerCase() === normalizedUrlTag);
         if (tagOption) {
-            tagFilterSelect.value = urlParams.tag;
+            tagFilterSelect.value = tagOption.value;
         }
     }
 
