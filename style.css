@@ -9,8 +9,10 @@
 /* Overall body and typography styles, controlling the font, background color, and text color of the entire page. */
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #f3f4f6; /* Light gray background */
-    color: #1f2937; /* Dark gray text */
+    /* Light gray background */
+    background-color: #f3f4f6;
+    /* Dark gray text */
+    color: #1f2937;
 }
 
 /* Main content container for centering the content and setting a maximum width. */
@@ -20,8 +22,10 @@ body {
 
 /* Styles for the main content cards, controlling their background color, border, and transition effects. */
 .item-card {
-    background-color: #ffffff; /* White card background */
-    border: 1px solid #5d8095; /* Imageomics blue border */
+    /* White card background */
+    background-color: #ffffff;
+    /* Imageomics blue border */
+    border: 1px solid #5d8095;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -33,21 +37,27 @@ body {
 
 /* Styling for individual tags, controlling their background color and text color. */
 .tag {
-    background-color: #9bcb5e; /* Light Green */
-    color: #222222; /* Dark text for contrast */
+    /* Light Green */
+    background-color: #9bcb5e;
+    /* Dark text for contrast */
+    color: #222222;
 }
 
 /* Animation for the "New!" badge. */
 .new-badge {
-    background-color: #0097b2; /* Dark Teal */
+    /* Dark Teal */
+    background-color: #0097b2;
     animation: pulse 1.5s infinite;
 }
 
 /* Defines the pulsating animation for the new badge. */
 @keyframes pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.1);
     }
@@ -71,6 +81,7 @@ body {
     0% {
         background-position: 100% 0;
     }
+
     100% {
         background-position: -100% 0;
     }

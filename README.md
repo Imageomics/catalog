@@ -22,10 +22,17 @@ The website is styled using the [tailwindcss](https://tailwindcss.com/) pacakge.
 The site runs based on three primary files:
 
 * `index.html`: The main HTML file that provides the structure of the webpage and links to the CSS and JavaScript files, though it still has some manual color/style definitions.
-* `style.css`: Custom styling for the application, including color schemes, layout, and animations. 
-    * **Note:** Color defined in `index.html` for specific portions of the site will overwrite those defined in this file.
+* `style.css`: Custom styling for the application, including color schemes, layout, and animations.
+  * **Note:** Color defined in `index.html` for specific portions of the site will overwrite those defined in this file.
 * `main.js`: Handles the application's logic, including API calls, data filtering, sorting, and dynamic rendering of the catalog items.
-    * **Note:** Model API calls do ***not*** return `cardData` unless explicitly fetched _by model_, so there is extra logic required to fetch Model metadata. This was not accounted for until [commit a8d3000](https://github.com/Imageomics/catalog/commit/a8d30009f58a11e708f36d54b9bf4a228bdf1538), as it took updates related to issue #3 to discover.
+  * **Note:** Model API calls do ***not*** return `cardData` unless explicitly fetched *by model*, so there is extra logic required to fetch Model metadata. This was not accounted for until [commit a8d3000](https://github.com/Imageomics/catalog/commit/a8d30009f58a11e708f36d54b9bf4a228bdf1538), as it took updates related to issue #3 to discover.
+
+  ### Formatting Standard
+
+  * **What is needed:** VS Code "Format on Save" enabled with CSS & HTML format enabled.
+  * **Indent Size:** 4
+  * **Wrap Line Length:** 120
+  * **Rules:** Remove trailing whitespace and empty tabs.
 
 ## Local Testing
 
@@ -43,4 +50,4 @@ It is important to provide the relevant code and preface with something along th
 
 > Based on this project, without changing the structure of existing code more than necessary for efficient design, can you identify...
 
-Then ask for a plan of how to reolve the issue. In my debugging experience, it did not demonstrate the ability to recognize or distinguish between a fix of "robustness" to handle outliers (which already existed at the precise location to which it pointed) and actually fixing the code to get the information that should have been fetched. Additionally, it has a tendency to rewrite an entire function and forget about tasks that are done in that function that are not _directly_ related to the bug it is attempting to fix.
+Then ask for a plan of how to reolve the issue. In my debugging experience, it did not demonstrate the ability to recognize or distinguish between a fix of "robustness" to handle outliers (which already existed at the precise location to which it pointed) and actually fixing the code to get the information that should have been fetched. Additionally, it has a tendency to rewrite an entire function and forget about tasks that are done in that function that are not *directly* related to the bug it is attempting to fix.
