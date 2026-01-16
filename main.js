@@ -359,10 +359,10 @@ const renderHubItemCard = (item, repoType) => {
     })();
 
     return `
-        <div class="item-card rounded-xl shadow-lg p-6 flex flex-col dark:bg-slate-800 transition-colors duration-200">
+        <div class="item-card rounded-xl shadow-lg p-6 flex flex-col justify-between dark:bg-slate-800 transition-colors duration-200">
             <div>
                 <div class="flex justify-between items-start gap-2 mb-2">
-                    <h2 title="${prettyName}" class="text-xl font-bold text-gray-800 dark:text-gray-100 flex-1 line-clamp-3 leading-tight">
+                    <h2 title="${prettyName}" class="text-xl font-bold text-gray-800 dark:text-gray-100 flex-1 line-clamp-3">
                         <a href="${itemUrl}" target="_blank" class="break-words hover:underline hover:text-[#0097b2] dark:hover:text-[#4fd1eb] transition-colors">
                             ${prettyName}
                         </a>
@@ -373,7 +373,7 @@ const renderHubItemCard = (item, repoType) => {
                 </div>
             </div>
 
-            <p class="flex-grow basis-0 min-h-[5rem] overflow-y-auto text-sm text-gray-600 dark:text-gray-400 mb-4 dark:[color-scheme:dark] leading-relaxed">
+            <p class="flex-grow basis-0 min-h-[5rem] overflow-y-auto text-sm text-gray-600 dark:text-gray-400 mb-4 dark:[color-scheme:dark]">
                 ${displayDescription}
             </p>
 
