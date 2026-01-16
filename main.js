@@ -55,25 +55,25 @@ const handleError = (error, message) => {
  */
 const parseUrlParams = () => {
     const params = {};
-    
+
     // Parse query string parameters (e.g., ?type=datasets&q=fish)
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    
+
     // Parse hash parameters (e.g., #type=datasets&q=fish)
     const hash = window.location.hash.slice(1); // Remove the leading '#'
     const hashParams = new URLSearchParams(hash);
-    
+
     // Hash parameters first (lower precedence)
     for (const [key, value] of hashParams) {
         params[key] = value;
     }
-    
+
     // Query parameters override hash parameters (higher precedence)
     for (const [key, value] of urlParams) {
         params[key] = value;
     }
-    
+
     return params;
 };
 
@@ -83,7 +83,7 @@ const parseUrlParams = () => {
  */
 const updateUrlParams = (state) => {
     const params = new URLSearchParams();
-    
+
     // Only add non-default values to the URL
     if (state.type && state.type !== 'all') {
         params.set('type', state.type);
@@ -97,14 +97,14 @@ const updateUrlParams = (state) => {
     if (state.tag && state.tag !== '') {
         params.set('tag', state.tag);
     }
-    
+
     const paramString = params.toString();
     const newHash = paramString ? `#${paramString}` : '';
-    
+
     // Build the new URL preserving the pathname and any query parameters when clearing hash
     const baseUrl = window.location.pathname + window.location.search;
     const newUrl = newHash ? baseUrl + newHash : baseUrl;
-    
+
     // Update the URL without triggering a page reload
     const currentUrl = window.location.pathname + window.location.search + window.location.hash;
     if (currentUrl !== newUrl) {
@@ -149,7 +149,7 @@ const fetchHubItems = async (repoType) => {
         // github api requests for code
         if (repoType === "code") {
             if (fetchedData.code) return allItems.code // reuse if already fetched
-            
+
             const ghResponse = await fetch(
                 `https://api.github.com/orgs/${ORGANISATION_NAME}/repos?type=public&per_page=100`
             );
@@ -218,7 +218,7 @@ const fetchHubItems = async (repoType) => {
 
             // Wait for all detail requests to complete in parallel.
             const detailedItems = await Promise.all(detailPromises);
-            
+
             // Filter out any models that failed to fetch and assign the detailed list.
             hfItems = detailedItems.filter(Boolean);
         }
@@ -270,7 +270,7 @@ const fetchCatalogStats = async () => {
             if (value != 0) {
                 container.classList.remove('hidden');
                 container.classList.add('flex');
-            } 
+            }
         }
     };
 
@@ -284,8 +284,8 @@ const fetchCatalogStats = async () => {
         const release = await fetch('https://api.github.com/repos/Imageomics/catalog/releases/latest').then(r => r.ok ? r.json() : {});
         if (release.tag_name) update('gh-tag', 'gh-version-container', release.tag_name);
 
-    } catch (e) { 
-        console.warn("Could not fetch GitHub stats", e); 
+    } catch (e) {
+        console.warn("Could not fetch GitHub stats", e);
     }
 };
 
@@ -311,33 +311,27 @@ const renderHubItemCard = (item, repoType) => {
     const prettyName = item.cardData?.pretty_name || item.cardData?.model_name || item.cardData?.title || item.id.split('/')[1];
 
     // Use the description from cardData, with fallbacks
-    const displayDescription = item.cardData?.description ||  item.cardData?.model_description ||  item.description || 'No description provided.';
+    const displayDescription = item.cardData?.description || item.cardData?.model_description || item.description || 'No description provided.';
 
     // Construct the correct URL based on the repository type
     let itemUrl;
-    let linkText;
 
     switch (item.repoType) {
         case "code":
             itemUrl = item.html_url;
-            linkText = "View Repo";
             break;
         case "datasets":
             itemUrl = `https://huggingface.co/datasets/${item.id}`;
-            linkText = "View on Hub";
             break;
         case "spaces":
             itemUrl = `https://huggingface.co/spaces/${item.id}`;
-            linkText = "View on Hub";
             break;
         case "models":
             itemUrl = `https://huggingface.co/${item.id}`;
-            linkText = "View on Hub";
             break;
         default:
             // fallback for "all"
             itemUrl = `https://huggingface.co/${item.id}`;
-            linkText = "View on Hub";
             break;
     }
 
@@ -356,11 +350,11 @@ const renderHubItemCard = (item, repoType) => {
         }
 
         if (typeof item.likes === "number" && item.likes > 0) {
-        return `
+            return `
         <span class="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1">
             ❤️ ${item.likes}
         </span>`;
-    }
+        }
         return "";
     })();
 
@@ -369,7 +363,9 @@ const renderHubItemCard = (item, repoType) => {
             <div>
                 <div class="flex justify-between items-start gap-2 mb-2">
                     <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 flex-1 overflow-hidden">
-                        <span class="break-words">${prettyName}</span>
+                        <a href="${itemUrl}" target="_blank" class="break-words hover:underline hover:text-[#0097b2] dark:hover:text-[#4fd1eb] transition-colors">
+                            ${prettyName}
+                        </a>
                     </h2>
                     <div class="flex-shrink-0 ml-2">
                         ${badgeHtml}
@@ -385,9 +381,6 @@ const renderHubItemCard = (item, repoType) => {
                 </div>
                 <div class="flex justify-between items-center mt-4 text-xs text-gray-400 dark:text-gray-500">
                     <span>Updated: ${lastUpdatedDate}</span>
-                    <a href="${itemUrl}" target="_blank" class="text-[#5d8095] hover:text-[#0097b2] dark:text-[#4fd1eb] dark:hover:text-[#8ae6f5] font-medium transition-colors">
-                        ${linkText}
-                    </a>
                 </div>
             </div>
         </div>
@@ -446,8 +439,8 @@ const applyFiltersAndSort = async (updateUrl = true) => {
     // Step 1: Filter the items based on the search and tag filters
     const filtered = currentItems.filter(item => {
         const matchesSearch = item.id.toLowerCase().includes(searchTerm) ||
-                              item.description?.toLowerCase().includes(searchTerm) ||
-                              item.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+            item.description?.toLowerCase().includes(searchTerm) ||
+            item.tags.some(tag => tag.toLowerCase().includes(searchTerm));
 
         const matchesTag = tagFilter === "" || item.tags.includes(tagFilter);
 
@@ -543,17 +536,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Parse URL parameters to restore state
     const urlParams = parseUrlParams();
-    
+
     // Apply URL parameters to form elements if they exist
     const validRepoTypes = ['all', 'code', 'datasets', 'models', 'spaces'];
     if (urlParams.type && validRepoTypes.includes(urlParams.type)) {
         repoTypeSelect.value = urlParams.type;
     }
-    
+
     if (urlParams.q) {
         searchInput.value = urlParams.q;
     }
-    
+
     const validSortValues = ['lastModified', 'createdAt', 'stars_desc', 'stars_asc', 'alphabetical_asc', 'alphabetical_desc'];
     if (urlParams.sort && validSortValues.includes(urlParams.sort)) {
         sortBySelect.value = urlParams.sort;
