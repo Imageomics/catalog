@@ -294,6 +294,22 @@ const fetchCatalogStats = async () => {
 //
 
 /**
+ * Escapes HTML special characters in a string to prevent XSS.
+ * @param {string} str - The input string.
+ * @returns {string} The escaped string.
+ */
+const escapeHTML = (str) => {
+    if (!str) return "";
+    return str.replace(/[&<>"']/g, (m) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    }[m]));
+};
+
+/**
  * Renders a single item card (code, dataset, model, or space) to HTML.
  * @param {Object} item - The item object to render.
  * @param {string} repoType - The type of repository.
@@ -358,11 +374,13 @@ const renderHubItemCard = (item, repoType) => {
         return "";
     })();
 
+    const escapedTitle = escapeHTML(prettyName);
+
     return `
         <div class="item-card rounded-xl shadow-lg p-6 flex flex-col justify-between dark:bg-slate-800 transition-colors duration-200">
             <div>
                 <div class="flex justify-between items-start gap-2 mb-2">
-                    <h2 title="${prettyName}" class="text-xl font-bold text-gray-800 dark:text-gray-100 flex-1 line-clamp-3">
+                    <h2 title="${escapedTitle}" class="text-xl font-bold text-gray-800 dark:text-gray-100 flex-1 line-clamp-3">
                         <a href="${itemUrl}" target="_blank" class="break-words hover:underline hover:text-[#0097b2] dark:hover:text-[#4fd1eb] transition-colors">
                             ${prettyName}
                         </a>
