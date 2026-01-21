@@ -1,19 +1,16 @@
 //
-// Imageomics Catalog - Frontend Logic
-// This script handles data fetching, searching, filtering, and rendering for Imageomics code, datasets, models, and spaces.
+// Catalog - Frontend Logic
+// This script handles data fetching, searching, filtering, and rendering for code, datasets, models, and spaces.
+// Configuration is loaded from config.js
 //
 // SECTION 1: CONFIGURATION AND STATE MANAGEMENT
 //
-const ORGANISATION_NAME = "imageomics";
-const API_BASE_URL = "https://huggingface.co/api/";
-const REFRESH_INTERVAL_DAYS = 30; // Define what "new" means
-const MAX_ITEMS = 100; // Limit the number of items to fetch
-const FORKED_REPOS = [
-    "Fish-Vista",
-    "PhyloNN",
-    "telemetry-dashboard",
-    "docker-workshop"
-];
+// Note: CONFIG is defined in config.js and must be loaded before this script
+const ORGANISATION_NAME = CONFIG.ORGANISATION_NAME;
+const API_BASE_URL = CONFIG.API_BASE_URL;
+const REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
+const MAX_ITEMS = CONFIG.MAX_ITEMS;
+const FORKED_REPOS = CONFIG.FORKED_REPOS;
 
 let allItems = {
     code: [],
@@ -275,13 +272,18 @@ const fetchCatalogStats = async () => {
     };
 
     try {
+        // Extract owner and repo name from GITHUB_REPO_URL (format: https://github.com/owner/repo)
+        const repoUrlParts = CONFIG.GITHUB_REPO_URL.split('/');
+        const repoOwner = repoUrlParts[repoUrlParts.length - 2];
+        const repoName = CONFIG.CATALOG_REPO_NAME || repoUrlParts[repoUrlParts.length - 1];
+
         // 1. Get Stars & Forks
-        const repo = await fetch('https://api.github.com/repos/Imageomics/catalog').then(r => r.ok ? r.json() : {});
+        const repo = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}`).then(r => r.ok ? r.json() : {});
         if (repo.stargazers_count !== undefined) update('gh-stars', 'gh-star-container', repo.stargazers_count);
         if (repo.forks_count !== undefined) update('gh-forks', 'gh-fork-container', repo.forks_count);
 
         // 2. Get Version (Tag)
-        const release = await fetch('https://api.github.com/repos/Imageomics/catalog/releases/latest').then(r => r.ok ? r.json() : {});
+        const release = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`).then(r => r.ok ? r.json() : {});
         if (release.tag_name) update('gh-tag', 'gh-version-container', release.tag_name);
 
     } catch (e) {
@@ -381,7 +383,7 @@ const renderHubItemCard = (item, repoType) => {
             <div>
                 <div class="flex justify-between items-start gap-2 mb-2">
                     <h2 title="${escapedTitle}" class="text-xl font-bold text-gray-800 dark:text-gray-100 flex-1 line-clamp-3">
-                        <a href="${itemUrl}" target="_blank" class="break-words hover:underline hover:text-[#0097b2] dark:hover:text-[#4fd1eb] transition-colors">
+                        <a href="${itemUrl}" target="_blank" class="break-words hover:underline transition-colors item-link">
                             ${prettyName}
                         </a>
                     </h2>
@@ -548,7 +550,82 @@ const populateTagFilter = (repoType) => {
 // SECTION 5: EVENT LISTENERS AND INITIALIZATION
 //
 
+/**
+ * Initializes UI elements from configuration values.
+ * This sets up the header, logo, GitHub ribbon, footer, and dynamic styles.
+ */
+const initializeUIFromConfig = () => {
+    // Set header logo
+    const logoImg = document.getElementById('logo-img');
+    if (logoImg) {
+        logoImg.src = CONFIG.LOGO_URL;
+        logoImg.alt = CONFIG.GITHUB_ORG_NAME + ' Logo';
+    }
+
+    // Set header title and description
+    const headerTitle = document.getElementById('header-title');
+    if (headerTitle) {
+        headerTitle.textContent = CONFIG.CATALOG_TITLE;
+        headerTitle.style.color = CONFIG.COLORS.primary;
+    }
+
+    const headerDesc = document.getElementById('header-description');
+    if (headerDesc) {
+        headerDesc.textContent = CONFIG.CATALOG_DESCRIPTION;
+    }
+
+    // Set GitHub ribbon link and colors
+    const githubRibbon = document.getElementById('github-ribbon');
+    if (githubRibbon) {
+        githubRibbon.href = CONFIG.GITHUB_REPO_URL;
+        githubRibbon.style.backgroundColor = CONFIG.COLORS.secondary;
+        githubRibbon.style.setProperty('--hover-color', CONFIG.COLORS.primary);
+        githubRibbon.addEventListener('mouseenter', function () {
+            this.style.backgroundColor = CONFIG.COLORS.primary;
+        });
+        githubRibbon.addEventListener('mouseleave', function () {
+            this.style.backgroundColor = CONFIG.COLORS.secondary;
+        });
+    }
+
+    // Set focus ring colors for form inputs and link hover colors
+    const style = document.createElement('style');
+    style.textContent = `
+        .focus\\:ring-2:focus { --tw-ring-color: var(--color-accent) !important; }
+        .item-link:hover { color: var(--color-accent) !important; }
+        .dark .item-link:hover { color: #4fd1eb !important; }
+    `;
+    document.head.appendChild(style);
+
+    // Set footer content if enabled
+    if (CONFIG.FOOTER.show) {
+        const footerSection = document.getElementById('footer-section');
+        const footerContent = document.getElementById('footer-content');
+        if (footerSection && footerContent) {
+            footerSection.style.display = 'block';
+
+            let footerHtml = `This work was supported by the <a href="${CONFIG.FOOTER.instituteUrl}" target="_blank" 
+                class="hover:underline" style="color: ${CONFIG.COLORS.accent};">${CONFIG.FOOTER.instituteName}</a>.`;
+
+            if (CONFIG.FOOTER.grantInfo) {
+                const grant = CONFIG.FOOTER.grantInfo;
+                footerHtml += ` The ${CONFIG.FOOTER.instituteName} is funded by the ${grant.funder} under 
+                    <a href="${grant.awardUrl}" target="_blank" class="hover:underline" style="color: ${CONFIG.COLORS.accent};">Award #${grant.awardNumber}</a> 
+                    (${grant.description}).`;
+            }
+
+            if (CONFIG.FOOTER.disclaimer) {
+                footerHtml += ` ${CONFIG.FOOTER.disclaimer}`;
+            }
+
+            footerContent.innerHTML = footerHtml;
+        }
+    }
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize UI from config first
+    initializeUIFromConfig();
 
     const searchInput = document.getElementById('searchInput');
     const sortBySelect = document.getElementById('sortBy');
