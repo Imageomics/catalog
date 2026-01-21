@@ -22,21 +22,6 @@ const CONFIG = {
         tag: "#9bcb5e" // Tag background color (Light Green)
     },
 
-    // Footer/Grant Configuration
-    FOOTER: {
-        show: true, // Set to false to hide the footer entirely
-        instituteName: "Imageomics Institute", // Institute or organization name
-        instituteUrl: "https://imageomics.org", // Institute website URL
-        grantInfo: {
-            // Grant information object
-            funder: "US National Science Foundation's Harnessing the Data Revolution (HDR) program",
-            awardNumber: "2118240",
-            awardUrl: "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2118240",
-            description: "Imageomics: A New Frontier of Biological Information Powered by Knowledge-Guided Machine Learning"
-        },
-        disclaimer: "Any opinions, findings, conclusions, or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation."
-    },
-
     // API & Behavior Settings
     API_BASE_URL: "https://huggingface.co/api/", // Hugging Face API base URL
     REFRESH_INTERVAL_DAYS: 30, // Number of days to consider an item "new"

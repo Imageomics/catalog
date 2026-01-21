@@ -552,7 +552,7 @@ const populateTagFilter = (repoType) => {
 
 /**
  * Initializes UI elements from configuration values.
- * This sets up the header, logo, GitHub ribbon, footer, and dynamic styles.
+ * This sets up the header, logo, GitHub ribbon, and dynamic styles.
  */
 const initializeUIFromConfig = () => {
     // Set header logo
@@ -596,31 +596,6 @@ const initializeUIFromConfig = () => {
         .dark .item-link:hover { color: #4fd1eb !important; }
     `;
     document.head.appendChild(style);
-
-    // Set footer content if enabled
-    if (CONFIG.FOOTER.show) {
-        const footerSection = document.getElementById('footer-section');
-        const footerContent = document.getElementById('footer-content');
-        if (footerSection && footerContent) {
-            footerSection.style.display = 'block';
-
-            let footerHtml = `This work was supported by the <a href="${CONFIG.FOOTER.instituteUrl}" target="_blank" 
-                class="hover:underline" style="color: ${CONFIG.COLORS.accent};">${CONFIG.FOOTER.instituteName}</a>.`;
-
-            if (CONFIG.FOOTER.grantInfo) {
-                const grant = CONFIG.FOOTER.grantInfo;
-                footerHtml += ` The ${CONFIG.FOOTER.instituteName} is funded by the ${grant.funder} under 
-                    <a href="${grant.awardUrl}" target="_blank" class="hover:underline" style="color: ${CONFIG.COLORS.accent};">Award #${grant.awardNumber}</a> 
-                    (${grant.description}).`;
-            }
-
-            if (CONFIG.FOOTER.disclaimer) {
-                footerHtml += ` ${CONFIG.FOOTER.disclaimer}`;
-            }
-
-            footerContent.innerHTML = footerHtml;
-        }
-    }
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
