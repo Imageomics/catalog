@@ -43,7 +43,7 @@ This Catalog is set up as a template repository. To build a personalized version
 
 Welcome to your new catalog repo! The primary way to personalize this catalog is through the `config.js` file, which contains all customizable settings. After using the template, you'll need to update the following:
 
-### Primary Configuration File
+#### Primary Configuration File
 
 **`config.js`**: This is the main file to edit. It contains all configuration options with inline comments explaining each setting:
 
