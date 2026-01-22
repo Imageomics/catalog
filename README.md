@@ -69,7 +69,7 @@ Welcome to your new catalog repo! The primary way to personalize this catalog is
   * `API_BASE_URL`: Hugging Face API base URL (default: `"https://huggingface.co/api/"`)
   * `REFRESH_INTERVAL_DAYS`: Number of days to consider an item "new" (default: `30`)
   * `MAX_ITEMS`: Maximum number of items to fetch per category (default: `100`)
-  * `FORKED_REPOS`: Array of forked repository names to include (non-forks are included by default)
+  * `FORKED_REPOS`: Array of forked repository names to include (non-forks are included by default). Use `[]` if there are none you wish to include
 
 * **Typography:**
   * `FONT_FAMILY`: Font family for the site (default: `"Inter"`)
