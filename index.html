@@ -8,12 +8,36 @@
     <script src="config.js"></script>
     <script>
         // Immediate setup - must run before DOM/CSS
-        document.title = CONFIG.CATALOG_TITLE;
-        document.documentElement.style.setProperty('--color-primary', CONFIG.COLORS.primary);
-        document.documentElement.style.setProperty('--color-secondary', CONFIG.COLORS.secondary);
-        document.documentElement.style.setProperty('--color-accent', CONFIG.COLORS.accent);
-        document.documentElement.style.setProperty('--color-accent-dark', CONFIG.COLORS.accentDark);
-        document.documentElement.style.setProperty('--color-tag', CONFIG.COLORS.tag);
+        try {
+            if (typeof CONFIG === 'undefined') {
+                throw new Error('CONFIG object is not defined. Please ensure config.js is loaded correctly.');
+            }
+            document.title = CONFIG.CATALOG_TITLE || 'Catalog';
+            document.documentElement.style.setProperty('--color-primary', CONFIG.COLORS?.primary || '#92991c');
+            document.documentElement.style.setProperty('--color-secondary', CONFIG.COLORS?.secondary || '#5d8095');
+            document.documentElement.style.setProperty('--color-accent', CONFIG.COLORS?.accent || '#0097b2');
+            document.documentElement.style.setProperty('--color-accent-dark', CONFIG.COLORS?.accentDark || '#4fd1eb');
+            document.documentElement.style.setProperty('--color-tag', CONFIG.COLORS?.tag || '#9bcb5e');
+        } catch (error) {
+            console.error('Error loading configuration:', error);
+
+            // Set fallback values
+            document.title = 'Catalog';
+            document.documentElement.style.setProperty('--color-primary', '#92991c');
+            document.documentElement.style.setProperty('--color-secondary', '#5d8095');
+            document.documentElement.style.setProperty('--color-accent', '#0097b2');
+            document.documentElement.style.setProperty('--color-accent-dark', '#4fd1eb');
+            document.documentElement.style.setProperty('--color-tag', '#9bcb5e');
+
+            // Display error message
+            document.addEventListener('DOMContentLoaded', function () {
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #fee; color: #c33; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 10000; max-width: 90%; text-align: center;';
+                errorDiv.innerHTML = '<strong>Configuration Error:</strong> Failed to load config.js. Using default settings.';
+                document.body.appendChild(errorDiv);
+                setTimeout(() => errorDiv.remove(), 10000);
+            });
+        }
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -35,7 +59,13 @@
     <script>
         // Set favicon from config
         document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('favicon-link').href = CONFIG.FAVICON_URL;
+            try {
+                if (typeof CONFIG !== 'undefined' && CONFIG.FAVICON_URL) {
+                    document.getElementById('favicon-link').href = CONFIG.FAVICON_URL;
+                }
+            } catch (error) {
+                console.error('Error setting favicon:', error);
+            }
         });
     </script>
 </head>
