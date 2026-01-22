@@ -556,6 +556,10 @@ const initializeUIFromConfig = () => {
     if (logoImg) {
         logoImg.src = CONFIG.LOGO_URL;
         logoImg.alt = CONFIG.GITHUB_ORG_NAME + ' Logo';
+
+        logoImg.onload = () => {
+            logoImg.classList.remove('opacity-0');
+        };
     }
 
     // Set header title and description
