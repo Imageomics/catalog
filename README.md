@@ -55,8 +55,10 @@ Welcome to your new catalog repo! The primary way to personalize this catalog is
 * **Branding:**
   * `CATALOG_TITLE`: Page title and main heading
   * `CATALOG_DESCRIPTION`: Subtitle/description text displayed under the title
-  * `LOGO_URL`: URL to your organization's logo image
-  * `FAVICON_URL`: URL to your favicon image
+  * `LOGO_URL`: URL to your organization's logo image (used in `main.js` line 565)
+  * `FAVICON_URL`: URL to your favicon image (used in `index.html` line 80)
+  
+  For both `LOGO_URL` and `FAVICON_URL`, you can use an external URL, a relative path if the image is in your repo (e.g., `./images/logo.png` or `images/logo.png`), or GitHub's raw URL format (e.g., `https://github.com/username/repo/raw/branch/path/to/image.png`)
 
 * **Colors:**
   * `COLORS.primary`: Primary brand color (used for heading)
