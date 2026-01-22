@@ -15,7 +15,7 @@
 
 /* Overall body and typography styles, controlling the font, background color, and text color of the entire page. */
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-family, 'Inter'), sans-serif;
     /* Light gray background */
     background-color: #f3f4f6;
     /* Dark gray text */

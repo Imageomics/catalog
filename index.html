@@ -18,6 +18,7 @@
             document.documentElement.style.setProperty('--color-accent', CONFIG.COLORS?.accent || '#0097b2');
             document.documentElement.style.setProperty('--color-accent-dark', CONFIG.COLORS?.accentDark || '#4fd1eb');
             document.documentElement.style.setProperty('--color-tag', CONFIG.COLORS?.tag || '#9bcb5e');
+            document.documentElement.style.setProperty('--font-family', CONFIG.FONT_FAMILY || 'Inter');
         } catch (error) {
             console.error('Error loading configuration:', error);
 
@@ -28,6 +29,7 @@
             document.documentElement.style.setProperty('--color-accent', '#0097b2');
             document.documentElement.style.setProperty('--color-accent-dark', '#4fd1eb');
             document.documentElement.style.setProperty('--color-tag', '#9bcb5e');
+            document.documentElement.style.setProperty('--font-family', 'Inter');
 
             // Display error message
             document.addEventListener('DOMContentLoaded', function () {
@@ -53,7 +55,21 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link id="font-link" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // Update Google Fonts link based on config
+        try {
+            if (typeof CONFIG !== 'undefined' && CONFIG.FONT_FAMILY) {
+                const fontFamily = CONFIG.FONT_FAMILY.replace(/\s+/g, '+');
+                const fontLink = document.getElementById('font-link');
+                if (fontLink) {
+                    fontLink.href = `https://fonts.googleapis.com/css2?family=${fontFamily}:wght@400;500;600;700&display=swap`;
+                }
+            }
+        } catch (error) {
+            console.error('Error setting font:', error);
+        }
+    </script>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" id="favicon-link" href="" type="image/png">
     <script>
