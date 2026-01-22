@@ -7,6 +7,7 @@
 //
 // Note: CONFIG is defined in config.js and must be loaded before this script
 const ORGANISATION_NAME = CONFIG.ORGANISATION_NAME;
+const CATALOG_REPO_NAME = CONFIG.CATALOG_REPO_NAME;
 const API_BASE_URL = CONFIG.API_BASE_URL;
 const REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
 const MAX_ITEMS = CONFIG.MAX_ITEMS;
@@ -272,18 +273,13 @@ const fetchCatalogStats = async () => {
     };
 
     try {
-        // Extract owner and repo name from GITHUB_REPO_URL (format: https://github.com/owner/repo)
-        const repoUrlParts = CONFIG.GITHUB_REPO_URL.split('/');
-        const repoOwner = repoUrlParts[repoUrlParts.length - 2];
-        const repoName = CONFIG.CATALOG_REPO_NAME || repoUrlParts[repoUrlParts.length - 1];
-
         // 1. Get Stars & Forks
-        const repo = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}`).then(r => r.ok ? r.json() : {});
+        const repo = await fetch(`https://api.github.com/repos/${ORGANISATION_NAME}/${CATALOG_REPO_NAME}`).then(r => r.ok ? r.json() : {});
         if (repo.stargazers_count !== undefined) update('gh-stars', 'gh-star-container', repo.stargazers_count);
         if (repo.forks_count !== undefined) update('gh-forks', 'gh-fork-container', repo.forks_count);
 
         // 2. Get Version (Tag)
-        const release = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`).then(r => r.ok ? r.json() : {});
+        const release = await fetch(`https://api.github.com/repos/${ORGANISATION_NAME}/${CATALOG_REPO_NAME}/releases/latest`).then(r => r.ok ? r.json() : {});
         if (release.tag_name) update('gh-tag', 'gh-version-container', release.tag_name);
 
     } catch (e) {
@@ -577,7 +573,7 @@ const initializeUIFromConfig = () => {
     // Set GitHub ribbon link and colors
     const githubRibbon = document.getElementById('github-ribbon');
     if (githubRibbon) {
-        githubRibbon.href = CONFIG.GITHUB_REPO_URL;
+        githubRibbon.href = `https://github.com/${ORGANISATION_NAME}/${CATALOG_REPO_NAME}`;
         githubRibbon.style.backgroundColor = CONFIG.COLORS.secondary;
         githubRibbon.style.setProperty('--hover-color', CONFIG.COLORS.primary);
         githubRibbon.addEventListener('mouseenter', function () {

@@ -6,7 +6,6 @@ const CONFIG = {
     ORGANISATION_NAME: "imageomics", // GitHub/Hugging Face organization name (lowercase for API calls)
     GITHUB_ORG_NAME: "Imageomics", // Display name for GitHub organization (can differ from API name)
     CATALOG_REPO_NAME: "catalog", // Repository name for the catalog itself (used for stats badge)
-    GITHUB_REPO_URL: "https://github.com/Imageomics/catalog", // Full URL to the catalog repository
 
     // Branding
     CATALOG_TITLE: "Imageomics Catalog", // Page title and main heading

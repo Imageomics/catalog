@@ -51,7 +51,6 @@ Welcome to your new catalog repo! The primary way to personalize this catalog is
   * `ORGANISATION_NAME`: Your GitHub/Hugging Face organization name (lowercase for API calls)
   * `GITHUB_ORG_NAME`: Display name for your organization (can differ from API name)
   * `CATALOG_REPO_NAME`: Repository name for the catalog itself (used for stats badge)
-  * `GITHUB_REPO_URL`: Full URL to your catalog repository
 
 * **Branding:**
   * `CATALOG_TITLE`: Page title and main heading
