@@ -6,6 +6,14 @@
 // SECTION 1: CONFIGURATION AND STATE MANAGEMENT
 //
 // Note: CONFIG is defined in config.js and must be loaded before this script
+
+if (typeof CONFIG === 'undefined') {
+    throw new Error(
+        'CONFIG object is not defined. Please ensure config.js is loaded before main.js. ' +
+        'Check that config.js exists and contains a valid CONFIG object.'
+    );
+}
+
 const ORGANIZATION_NAME = CONFIG.ORGANIZATION_NAME;
 const CATALOG_REPO_NAME = CONFIG.CATALOG_REPO_NAME;
 const API_BASE_URL = CONFIG.API_BASE_URL;
