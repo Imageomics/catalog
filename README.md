@@ -36,7 +36,10 @@ The site runs based on four primary files:
 
 ## How to Use This Template
 
-This Catalog is set up as a template repository. To build a personalized version of the Catalog, select "Use this Template" at the top of the repo to generate your own version. This will create a new repository (generated from the template repo) that does not share the commit history of the template. Updates can still be added from the template upstream through `git cherry-pick`.
+This Catalog is set up as a template repository. To build a personalized version of the Catalog, select "Use this Template" at the top of the repo to generate your own version. This will create a new repository (generated from the template repo) that does not share the commit history of the template. Updates can still be added from the template upstream through `git cherry-pick`.[^1] 
+[^1]: We recommend following the [Git Cherry-pick Guide](https://imageomics.github.io/Collaborative-distributed-science-guide/wiki-guide/Git-Cherry-Pick-Guide/) from the [Collaborative Distributed Science Guide](https://imageomics.github.io/Collaborative-distributed-science-guide/) for those unfamiliar with this process.
+
+### Personalizing Your Catalog
 
 Welcome to your new catalog repo! The primary way to personalize this catalog is through the `config.js` file, which contains all customizable settings. After using the template, you'll need to update the following:
 
