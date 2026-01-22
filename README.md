@@ -48,7 +48,7 @@ Welcome to your new catalog repo! The primary way to personalize this catalog is
 **`config.js`**: This is the main file to edit. It contains all configuration options with inline comments explaining each setting:
 
 * **Organization & Repository Settings:**
-  * `ORGANISATION_NAME`: Your GitHub/Hugging Face organization name (lowercase for API calls)
+  * `ORGANIZATION_NAME`: Your GitHub/Hugging Face organization name (lowercase for API calls)
   * `GITHUB_ORG_NAME`: Display name for your organization (can differ from API name)
   * `CATALOG_REPO_NAME`: Repository name for the catalog itself (used for stats badge)
 

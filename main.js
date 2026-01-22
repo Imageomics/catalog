@@ -6,7 +6,7 @@
 // SECTION 1: CONFIGURATION AND STATE MANAGEMENT
 //
 // Note: CONFIG is defined in config.js and must be loaded before this script
-const ORGANISATION_NAME = CONFIG.ORGANISATION_NAME;
+const ORGANIZATION_NAME = CONFIG.ORGANIZATION_NAME;
 const CATALOG_REPO_NAME = CONFIG.CATALOG_REPO_NAME;
 const API_BASE_URL = CONFIG.API_BASE_URL;
 const REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
@@ -149,7 +149,7 @@ const fetchHubItems = async (repoType) => {
             if (fetchedData.code) return allItems.code // reuse if already fetched
 
             const ghResponse = await fetch(
-                `https://api.github.com/orgs/${ORGANISATION_NAME}/repos?type=public&per_page=100`
+                `https://api.github.com/orgs/${ORGANIZATION_NAME}/repos?type=public&per_page=100`
             );
 
             if (!ghResponse.ok) {
@@ -196,7 +196,7 @@ const fetchHubItems = async (repoType) => {
         }
 
         // hugging face api requests for datasets/models/spaces
-        const response = await fetch(`${API_BASE_URL}${repoType}?author=${ORGANISATION_NAME}&full=true`);
+        const response = await fetch(`${API_BASE_URL}${repoType}?author=${ORGANIZATION_NAME}&full=true`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -274,12 +274,12 @@ const fetchCatalogStats = async () => {
 
     try {
         // 1. Get Stars & Forks
-        const repo = await fetch(`https://api.github.com/repos/${ORGANISATION_NAME}/${CATALOG_REPO_NAME}`).then(r => r.ok ? r.json() : {});
+        const repo = await fetch(`https://api.github.com/repos/${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`).then(r => r.ok ? r.json() : {});
         if (repo.stargazers_count !== undefined) update('gh-stars', 'gh-star-container', repo.stargazers_count);
         if (repo.forks_count !== undefined) update('gh-forks', 'gh-fork-container', repo.forks_count);
 
         // 2. Get Version (Tag)
-        const release = await fetch(`https://api.github.com/repos/${ORGANISATION_NAME}/${CATALOG_REPO_NAME}/releases/latest`).then(r => r.ok ? r.json() : {});
+        const release = await fetch(`https://api.github.com/repos/${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}/releases/latest`).then(r => r.ok ? r.json() : {});
         if (release.tag_name) update('gh-tag', 'gh-version-container', release.tag_name);
 
     } catch (e) {
@@ -573,7 +573,7 @@ const initializeUIFromConfig = () => {
     // Set GitHub ribbon link and colors
     const githubRibbon = document.getElementById('github-ribbon');
     if (githubRibbon) {
-        githubRibbon.href = `https://github.com/${ORGANISATION_NAME}/${CATALOG_REPO_NAME}`;
+        githubRibbon.href = `https://github.com/${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`;
         githubRibbon.style.backgroundColor = CONFIG.COLORS.secondary;
         githubRibbon.style.setProperty('--hover-color', CONFIG.COLORS.primary);
         githubRibbon.addEventListener('mouseenter', function () {
