@@ -593,7 +593,7 @@ const initializeUIFromConfig = () => {
     style.textContent = `
         .focus\\:ring-2:focus { --tw-ring-color: var(--color-accent) !important; }
         .item-link:hover { color: var(--color-accent) !important; }
-        .dark .item-link:hover { color: #4fd1eb !important; }
+        .dark .item-link:hover { color: var(--color-accent-dark) !important; }
     `;
     document.head.appendChild(style);
 };

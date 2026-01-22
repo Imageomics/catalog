@@ -63,6 +63,7 @@ Welcome to your new catalog repo! The primary way to personalize this catalog is
   * `COLORS.primary`: Primary brand color (used for heading)
   * `COLORS.secondary`: Secondary brand color (used for borders, GitHub ribbon)
   * `COLORS.accent`: Accent color (used for links, focus states, "New" badge)
+  * `COLORS.accentDark`: Dark mode accent color (used for link hover states in dark mode)
   * `COLORS.tag`: Tag background color
 
 * **API & Behavior Settings:**

@@ -19,6 +19,7 @@ const CONFIG = {
         primary: "#92991c", // Primary brand color (Imageomics Green)
         secondary: "#5d8095", // Secondary brand color (Imageomics Blue)
         accent: "#0097b2", // Accent color (Dark Teal)
+        accentDark: "#4fd1eb", // Dark mode accent color (Light Cyan)
         tag: "#9bcb5e" // Tag background color (Light Green)
     },
 
