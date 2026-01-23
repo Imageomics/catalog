@@ -1,19 +1,25 @@
 //
-// Imageomics Catalog - Frontend Logic
-// This script handles data fetching, searching, filtering, and rendering for Imageomics code, datasets, models, and spaces.
+// Catalog - Frontend Logic
+// This script handles data fetching, searching, filtering, and rendering for code, datasets, models, and spaces.
+// Configuration is loaded from config.js
 //
 // SECTION 1: CONFIGURATION AND STATE MANAGEMENT
 //
-const ORGANISATION_NAME = "imageomics";
-const API_BASE_URL = "https://huggingface.co/api/";
-const REFRESH_INTERVAL_DAYS = 30; // Define what "new" means
-const MAX_ITEMS = 100; // Limit the number of items to fetch
-const FORKED_REPOS = [
-    "Fish-Vista",
-    "PhyloNN",
-    "telemetry-dashboard",
-    "docker-workshop"
-];
+// Note: CONFIG is defined in config.js and must be loaded before this script
+
+if (typeof CONFIG === 'undefined') {
+    throw new Error(
+        'CONFIG object is not defined. Please ensure config.js is loaded before main.js. ' +
+        'Check that config.js exists and contains a valid CONFIG object.'
+    );
+}
+
+const ORGANIZATION_NAME = CONFIG.ORGANIZATION_NAME;
+const CATALOG_REPO_NAME = CONFIG.CATALOG_REPO_NAME;
+const API_BASE_URL = CONFIG.API_BASE_URL;
+const REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
+const MAX_ITEMS = CONFIG.MAX_ITEMS;
+const FORKED_REPOS = CONFIG.FORKED_REPOS;
 
 let allItems = {
     code: [],
@@ -151,7 +157,7 @@ const fetchHubItems = async (repoType) => {
             if (fetchedData.code) return allItems.code // reuse if already fetched
 
             const ghResponse = await fetch(
-                `https://api.github.com/orgs/${ORGANISATION_NAME}/repos?type=public&per_page=100`
+                `https://api.github.com/orgs/${ORGANIZATION_NAME}/repos?type=public&per_page=100`
             );
 
             if (!ghResponse.ok) {
@@ -198,7 +204,7 @@ const fetchHubItems = async (repoType) => {
         }
 
         // hugging face api requests for datasets/models/spaces
-        const response = await fetch(`${API_BASE_URL}${repoType}?author=${ORGANISATION_NAME}&full=true`);
+        const response = await fetch(`${API_BASE_URL}${repoType}?author=${ORGANIZATION_NAME}&full=true`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -276,12 +282,12 @@ const fetchCatalogStats = async () => {
 
     try {
         // 1. Get Stars & Forks
-        const repo = await fetch('https://api.github.com/repos/Imageomics/catalog').then(r => r.ok ? r.json() : {});
+        const repo = await fetch(`https://api.github.com/repos/${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`).then(r => r.ok ? r.json() : {});
         if (repo.stargazers_count !== undefined) update('gh-stars', 'gh-star-container', repo.stargazers_count);
         if (repo.forks_count !== undefined) update('gh-forks', 'gh-fork-container', repo.forks_count);
 
         // 2. Get Version (Tag)
-        const release = await fetch('https://api.github.com/repos/Imageomics/catalog/releases/latest').then(r => r.ok ? r.json() : {});
+        const release = await fetch(`https://api.github.com/repos/${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}/releases/latest`).then(r => r.ok ? r.json() : {});
         if (release.tag_name) update('gh-tag', 'gh-version-container', release.tag_name);
 
     } catch (e) {
@@ -381,7 +387,7 @@ const renderHubItemCard = (item, repoType) => {
             <div>
                 <div class="flex justify-between items-start gap-2 mb-2">
                     <h2 title="${escapedTitle}" class="text-xl font-bold text-gray-800 dark:text-gray-100 flex-1 line-clamp-3">
-                        <a href="${itemUrl}" target="_blank" class="break-words hover:underline hover:text-[#0097b2] dark:hover:text-[#4fd1eb] transition-colors">
+                        <a href="${itemUrl}" target="_blank" class="break-words hover:underline transition-colors item-link">
                             ${prettyName}
                         </a>
                     </h2>
@@ -548,7 +554,61 @@ const populateTagFilter = (repoType) => {
 // SECTION 5: EVENT LISTENERS AND INITIALIZATION
 //
 
+/**
+ * Initializes UI elements from configuration values.
+ * This sets up the header, logo, GitHub ribbon, and dynamic styles.
+ */
+const initializeUIFromConfig = () => {
+    // Set header logo
+    const logoImg = document.getElementById('logo-img');
+    if (logoImg) {
+        logoImg.src = CONFIG.LOGO_URL;
+        logoImg.alt = CONFIG.GITHUB_ORG_NAME + ' Logo';
+
+        logoImg.onload = () => {
+            logoImg.classList.remove('opacity-0');
+        };
+    }
+
+    // Set header title and description
+    const headerTitle = document.getElementById('header-title');
+    if (headerTitle) {
+        headerTitle.textContent = CONFIG.CATALOG_TITLE;
+        headerTitle.style.color = CONFIG.COLORS.primary;
+    }
+
+    const headerDesc = document.getElementById('header-description');
+    if (headerDesc) {
+        headerDesc.textContent = CONFIG.CATALOG_DESCRIPTION;
+    }
+
+    // Set GitHub ribbon link and colors
+    const githubRibbon = document.getElementById('github-ribbon');
+    if (githubRibbon) {
+        githubRibbon.href = `https://github.com/${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`;
+        githubRibbon.style.backgroundColor = CONFIG.COLORS.secondary;
+        githubRibbon.style.setProperty('--hover-color', CONFIG.COLORS.primary);
+        githubRibbon.addEventListener('mouseenter', function () {
+            this.style.backgroundColor = CONFIG.COLORS.primary;
+        });
+        githubRibbon.addEventListener('mouseleave', function () {
+            this.style.backgroundColor = CONFIG.COLORS.secondary;
+        });
+    }
+
+    // Set focus ring colors for form inputs and link hover colors
+    const style = document.createElement('style');
+    style.textContent = `
+        .focus\\:ring-2:focus { --tw-ring-color: var(--color-accent) !important; }
+        .item-link:hover { color: var(--color-accent) !important; }
+        .dark .item-link:hover { color: var(--color-accent-dark) !important; }
+    `;
+    document.head.appendChild(style);
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize UI from config first
+    initializeUIFromConfig();
 
     const searchInput = document.getElementById('searchInput');
     const sortBySelect = document.getElementById('sortBy');

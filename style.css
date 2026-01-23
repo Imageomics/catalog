@@ -1,14 +1,21 @@
 /*
- * Imageomics Official Color Palette
- * Imageomics Green: #92991c
- * Imageomics Blue: #5d8095
- * Dark Teal: #0097b2
- * Light Green: #9bcb5e
-*/
+ * These variables are set from config.js and can be customized there.
+ * Default values (Imageomics colors) are provided as fallbacks.
+ */
+:root {
+    --color-primary: #92991c;
+    /* Primary brand color */
+    --color-secondary: #5d8095;
+    /* Secondary brand color */
+    --color-accent: #0097b2;
+    /* Accent color */
+    --color-tag: #9bcb5e;
+    /* Tag background color */
+}
 
 /* Overall body and typography styles, controlling the font, background color, and text color of the entire page. */
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-family, 'Inter'), sans-serif;
     /* Light gray background */
     background-color: #f3f4f6;
     /* Dark gray text */
@@ -24,8 +31,8 @@ body {
 .item-card {
     /* White card background */
     background-color: #ffffff;
-    /* Imageomics blue border */
-    border: 1px solid #5d8095;
+    /* Secondary color border */
+    border: 1px solid var(--color-secondary);
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -37,16 +44,16 @@ body {
 
 /* Styling for individual tags, controlling their background color and text color. */
 .tag {
-    /* Light Green */
-    background-color: #9bcb5e;
+    /* Tag color */
+    background-color: var(--color-tag);
     /* Dark text for contrast */
     color: #222222;
 }
 
 /* Animation for the "New!" badge. */
 .new-badge {
-    /* Dark Teal */
-    background-color: #0097b2;
+    /* Accent color  */
+    background-color: var(--color-accent);
     animation: pulse 1.5s infinite;
 }
 
@@ -100,13 +107,13 @@ body {
 
 /* Styles the scrollbar thumb (the part you drag), controlling its background color and border radius. */
 .tag-container::-webkit-scrollbar-thumb {
-    background-color: #5d8095;
+    background-color: var(--color-secondary);
     border-radius: 3px;
 }
 
 /* Hover state for the scrollbar thumb, changing its background color. */
 .tag-container::-webkit-scrollbar-thumb:hover {
-    background-color: #0097b2;
+    background-color: var(--color-accent);
 }
 
 .dark .tag-container::-webkit-scrollbar-track {

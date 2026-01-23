@@ -4,7 +4,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Imageomics Catalog</title>
+    <title id="page-title">Catalog</title>
+    <script src="config.js"></script>
+    <script>
+        // Immediate setup - must run before DOM/CSS
+        try {
+            if (typeof CONFIG === 'undefined') {
+                throw new Error('CONFIG object is not defined. Please ensure config.js is loaded correctly.');
+            }
+            document.title = CONFIG.CATALOG_TITLE || 'Catalog';
+            document.documentElement.style.setProperty('--color-primary', CONFIG.COLORS?.primary || '#92991c');
+            document.documentElement.style.setProperty('--color-secondary', CONFIG.COLORS?.secondary || '#5d8095');
+            document.documentElement.style.setProperty('--color-accent', CONFIG.COLORS?.accent || '#0097b2');
+            document.documentElement.style.setProperty('--color-accent-dark', CONFIG.COLORS?.accentDark || '#4fd1eb');
+            document.documentElement.style.setProperty('--color-tag', CONFIG.COLORS?.tag || '#9bcb5e');
+            document.documentElement.style.setProperty('--font-family', CONFIG.FONT_FAMILY || 'Inter');
+        } catch (error) {
+            console.error('Error loading configuration:', error);
+
+            // Set fallback values
+            document.title = 'Catalog';
+            document.documentElement.style.setProperty('--color-primary', '#92991c');
+            document.documentElement.style.setProperty('--color-secondary', '#5d8095');
+            document.documentElement.style.setProperty('--color-accent', '#0097b2');
+            document.documentElement.style.setProperty('--color-accent-dark', '#4fd1eb');
+            document.documentElement.style.setProperty('--color-tag', '#9bcb5e');
+            document.documentElement.style.setProperty('--font-family', 'Inter');
+
+            // Display error message
+            document.addEventListener('DOMContentLoaded', function () {
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #fee; color: #c33; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 10000; max-width: 90%; text-align: center;';
+                errorDiv.innerHTML = '<strong>Configuration Error:</strong> Failed to load config.js. Using default settings.';
+                document.body.appendChild(errorDiv);
+                setTimeout(() => errorDiv.remove(), 10000);
+            });
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = { darkMode: 'selector' }
@@ -19,17 +55,42 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link id="font-link" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script>
+        // Update Google Fonts link based on config
+        try {
+            if (typeof CONFIG !== 'undefined' && CONFIG.FONT_FAMILY) {
+                const fontFamily = CONFIG.FONT_FAMILY.replace(/\s+/g, '+');
+                const fontLink = document.getElementById('font-link');
+                if (fontLink) {
+                    fontLink.href = `https://fonts.googleapis.com/css2?family=${fontFamily}:wght@400;500;600;700&display=swap`;
+                }
+            }
+        } catch (error) {
+            console.error('Error setting font:', error);
+        }
+    </script>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon"
-        href="https://github.com/Imageomics/Imageomics-guide/raw/3478acc0068a87a5604069d04a29bdb0795c2045/docs/logos/Imageomics_logo_butterfly.png"
-        type="image/png">
+    <link rel="icon" id="favicon-link" href="" type="image/png">
+    <script>
+        // Set favicon from config
+        document.addEventListener('DOMContentLoaded', function () {
+            try {
+                if (typeof CONFIG !== 'undefined' && CONFIG.FAVICON_URL) {
+                    document.getElementById('favicon-link').href = CONFIG.FAVICON_URL;
+                }
+            } catch (error) {
+                console.error('Error setting favicon:', error);
+            }
+        });
+    </script>
 </head>
 
 <body class="p-8 dark:bg-slate-900 transition-colors duration-200">
     <!-- GitHub Ribbon -->
-    <a href="https://github.com/Imageomics/catalog" target="_blank"
-        class="fixed top-6 right-6 hidden md:flex items-center gap-3 bg-[#5d8095] text-white py-2 px-4 rounded-lg shadow-md hover:bg-[#92991c] transition-all z-50 no-underline group font-sans border border-white/10">
+    <a id="github-ribbon" href="#" target="_blank"
+        class="fixed top-6 right-6 hidden md:flex items-center gap-3 text-white py-2 px-4 rounded-lg shadow-md transition-all z-50 no-underline group font-sans border border-white/10">
         <!-- Github Logo -->
         <div class="flex-shrink-0">
             <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -95,11 +156,10 @@
     <div class="max-w-[95%] xl:max-w-[1440px] 2xl:max-w-[1600px] mx-auto">
         <!-- Header Section -->
         <header class="mb-8 text-center">
-            <img src="https://github.com/Imageomics/Imageomics-guide/raw/3478acc0068a87a5604069d04a29bdb0795c2045/docs/logos/Imageomics_logo_butterfly.png"
-                alt="Imageomics Logo" class="mx-auto mb-4 w-28">
-            <h1 class="text-4xl font-extrabold text-[#92991c] mb-2">Imageomics Catalog</h1>
-            <p class="text-xl text-gray-600 dark:text-gray-400">Explore and discover public code, datasets, models, and
-                spaces.</p>
+            <img id="logo-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                alt="Organization Logo" class="mx-auto mb-4 w-28 opacity-0 transition-opacity duration-300">
+            <h1 id="header-title" class="text-4xl font-extrabold mb-2"></h1>
+            <p id="header-description" class="text-xl text-gray-600 dark:text-gray-400"></p>
         </header>
 
         <!-- Search and Filter Section -->
@@ -109,7 +169,7 @@
                 <!-- Search Input -->
                 <div class="relative w-full md:w-1/3">
                     <input type="text" id="searchInput" placeholder="Search by keyword or tag..."
-                        class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-[#0097b2] focus:border-transparent transition-all">
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg dark:bg-slate-700 dark:text-white focus:ring-2 focus:border-transparent transition-all">
                     <svg class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -123,7 +183,7 @@
                     <div class="w-full sm:w-auto">
                         <label for="repoType" class="sr-only">Repository Type</label>
                         <select id="repoType"
-                            class="w-full py-2 px-4 border border-gray-300 dark:border-slate-600 rounded-lg bg-gray-50 dark:bg-slate-700 text-gray-700 dark:text-white transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
+                            class="w-full py-2 px-4 border border-gray-300 dark:border-slate-600 rounded-lg bg-gray-50 dark:bg-slate-700 text-gray-700 dark:text-white transition-all focus:ring-2 focus:border-transparent">
                             <option value="all">Search All</option>
                             <option value="code">Code</option>
                             <option value="datasets">Datasets</option>
@@ -136,7 +196,7 @@
                     <div class="w-full sm:w-auto">
                         <label for="sortBy" class="sr-only">Sort By</label>
                         <select id="sortBy"
-                            class="w-full py-2 px-4 border border-gray-300 dark:border-slate-600 rounded-lg bg-gray-50 dark:bg-slate-700 text-gray-700 dark:text-white transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
+                            class="w-full py-2 px-4 border border-gray-300 dark:border-slate-600 rounded-lg bg-gray-50 dark:bg-slate-700 text-gray-700 dark:text-white transition-all focus:ring-2 focus:border-transparent">
                             <option value="lastModified">Last Updated (Newest)</option>
                             <option value="createdAt">Date Created (Newest)</option>
                             <option value="stars_desc">Stars / Likes (Highest)</option>
@@ -150,7 +210,7 @@
                     <div class="w-full sm:w-auto">
                         <label for="tagFilter" class="sr-only">Filter By Tag</label>
                         <select id="tagFilter"
-                            class="w-full py-2 px-4 border border-gray-300 dark:border-slate-600 rounded-lg bg-gray-50 dark:bg-slate-700 text-gray-700 dark:text-white transition-all focus:ring-2 focus:ring-[#0097b2] focus:border-transparent">
+                            class="w-full py-2 px-4 border border-gray-300 dark:border-slate-600 rounded-lg bg-gray-50 dark:bg-slate-700 text-gray-700 dark:text-white transition-all focus:ring-2 focus:border-transparent">
                             <option value="">All Tags</option>
                         </select>
                     </div>
