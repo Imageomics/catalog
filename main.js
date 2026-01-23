@@ -316,6 +316,17 @@ const escapeHTML = (str) => {
 };
 
 /**
+ * Adds word break opportunities after underscores to allow proper text wrapping.
+ * @param {string} str - The input string.
+ * @returns {string} The string with <wbr> tags inserted after underscores.
+ */
+const addWordBreakOpportunities = (str) => {
+    if (!str) return "";
+    // Replace underscores with underscore + word break opportunity
+    return str.replace(/_/g, '_<wbr>');
+};
+
+/**
  * Renders a single item card (code, dataset, model, or space) to HTML.
  * @param {Object} item - The item object to render.
  * @param {string} repoType - The type of repository.
@@ -381,6 +392,7 @@ const renderHubItemCard = (item, repoType) => {
     })();
 
     const escapedTitle = escapeHTML(prettyName);
+    const displayTitle = addWordBreakOpportunities(escapedTitle);
 
     return `
         <div class="item-card rounded-xl shadow-lg p-6 flex flex-col justify-between dark:bg-slate-800 transition-colors duration-200">
@@ -388,7 +400,7 @@ const renderHubItemCard = (item, repoType) => {
                 <div class="flex justify-between items-start gap-2 mb-2">
                     <h2 title="${escapedTitle}" class="text-xl font-bold text-gray-800 dark:text-gray-100 flex-1 line-clamp-3">
                         <a href="${itemUrl}" target="_blank" class="break-words hover:underline transition-colors item-link">
-                            ${prettyName}
+                            ${displayTitle}
                         </a>
                     </h2>
                     <div class="flex-shrink-0 ml-2">
