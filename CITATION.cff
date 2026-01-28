@@ -11,7 +11,7 @@ authors:
   given-names: "Balaji"
   affiliation: "The Ohio State University"
 cff-version: 1.2.0
-date-released: "2026-01-27"
+date-released: "2026-01-28"
 identifiers:
   - description: "The GitHub release URL of tag v3.0.0."
     type: url
