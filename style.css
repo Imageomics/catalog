@@ -19,8 +19,6 @@
 /* Overall body and typography styles, controlling the font, background color, and text color of the entire page. */
 body {
     font-family: var(--font-family, 'Inter'), sans-serif;
-    /* Light gray background */
-    background-color: #f3f4f6;
     /* Dark gray text */
     color: #1f2937;
 }
@@ -32,8 +30,6 @@ body {
 
 /* Styles for the main content cards, controlling their background color, border, and transition effects. */
 .item-card {
-    /* White card background */
-    background-color: #ffffff;
     /* Secondary color border */
     border: 1px solid var(--color-secondary);
     transition: transform 0.2s, box-shadow 0.2s;
