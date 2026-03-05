@@ -25,7 +25,7 @@ const CONFIG = {
     // API & Behavior Settings
     API_BASE_URL: "https://huggingface.co/api/", // Hugging Face API base URL
     REFRESH_INTERVAL_DAYS: 30, // Number of days to consider an item "new"
-    MAX_ITEMS: 500, // Maximum number of items to fetch per category
+    MAX_ITEMS: 100, // Maximum number of items to fetch per category
     FORKED_REPOS: [
         // Array of forked repository names to include (non-forks are included by default)
         "Fish-Vista",
