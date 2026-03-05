@@ -15,6 +15,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">=24"
+  },
   "type": "module",
   "bugs": {
     "url": "https://github.com/Imageomics/catalog/issues"

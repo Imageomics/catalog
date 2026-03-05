@@ -87,7 +87,16 @@ After modifying `config.js`, refresh your browser to see changes. The color sche
 
 ## Local Testing
 
-This project uses [Vite](https://vite.dev/) as a build tool. Install dependencies and start the dev server from the repo root:
+This project uses [Vite](https://vite.dev/) as a build tool and requires **Node.js 24** (Active LTS). You can check your current version with `node --version`. To install or update Node, visit [nodejs.org](https://nodejs.org/en/download) or use a version manager like [nvm](https://github.com/nvm-sh/nvm):
+
+```console
+nvm install 24
+nvm use
+```
+
+A `.nvmrc` file is included, so `nvm use` will automatically select the correct version in the project directory.
+
+Install dependencies and start the dev server from the repo root:
 
 ```console
 npm install
