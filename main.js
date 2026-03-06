@@ -404,7 +404,7 @@ const renderHubItemCard = (item, repoType) => {
     const displayTitle = addWordBreakOpportunities(escapedTitle);
 
     return `
-        <div class="item-card rounded-xl shadow-lg p-6 flex flex-col justify-between dark:bg-slate-800 transition-colors duration-200">
+        <div class="item-card rounded-xl shadow-lg p-6 flex flex-col justify-between bg-white dark:bg-slate-800 transition-colors duration-200">
             <div>
                 <div class="flex justify-between items-start gap-2 mb-2">
                     <h2 title="${escapedTitle}" class="text-xl font-bold text-gray-800 dark:text-gray-100 flex-1 line-clamp-3">

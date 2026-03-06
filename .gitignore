@@ -1,2 +1,8 @@
 # Mac system
 .DS_Store
+
+# Dependencies
+node_modules
+
+# Build output
+dist
