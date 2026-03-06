@@ -156,17 +156,26 @@ const fetchHubItems = async (repoType) => {
         if (repoType === "code") {
             if (fetchedData.code) return allItems.code // reuse if already fetched
 
-            const ghResponse = await fetch(
-                `https://api.github.com/orgs/${ORGANIZATION_NAME}/repos?type=public&per_page=100`
-            );
+            // Paginate through all public repos (GitHub API returns max 100 per page)
+            let allRepos = [];
+            let nextUrl = `https://api.github.com/orgs/${ORGANIZATION_NAME}/repos?type=public&per_page=100`;
+            while (nextUrl) {
+                const ghResponse = await fetch(nextUrl);
 
-            if (!ghResponse.ok) {
-                throw new Error(`GitHub error: ${ghResponse.status}`);
+                if (!ghResponse.ok) {
+                    throw new Error(`GitHub error: ${ghResponse.status}`);
+                }
+
+                const page = await ghResponse.json();
+                allRepos = allRepos.concat(page);
+
+                // Parse the Link header to find the next page URL, if any
+                const linkHeader = ghResponse.headers.get('Link');
+                const match = linkHeader && linkHeader.match(/<([^>]+)>;\s*rel="next"/);
+                nextUrl = match ? match[1] : null;
             }
 
-            const repos = await ghResponse.json();
-
-            items = repos
+            items = allRepos
                 .filter(repo => repo.name !== ".github") // skip .github repo
                 .filter(repo => !repo.fork || FORKED_REPOS.includes(repo.name)) // keep non-forks + only specific forks
                 .slice(0, MAX_ITEMS)
