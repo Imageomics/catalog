@@ -198,8 +198,9 @@ const fetchHubItems = async (repoType) => {
             const orgRepoNames = new Set(additionalRepos.map(r => r.full_name));
             const orgNonForks = allRepos.filter(repo => repo.name !== ".github" && !repo.fork && !orgRepoNames.has(repo.full_name));
 
-            items = [...orgNonForks, ...additionalRepos]
-                .slice(0, MAX_ITEMS)
+            // Prioritize additional repos, then fill remaining slots from org non-forks
+            const remainingSlots = Math.max(0, MAX_ITEMS - additionalRepos.length);
+            items = [...additionalRepos, ...orgNonForks.slice(0, remainingSlots)]
                 .map(repo => {
                     const createdAt = new Date(repo.created_at);
                     const lastModified = new Date(repo.updated_at);
