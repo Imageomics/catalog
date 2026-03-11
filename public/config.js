@@ -26,12 +26,16 @@ const CONFIG = {
     API_BASE_URL: "https://huggingface.co/api/", // Hugging Face API base URL
     REFRESH_INTERVAL_DAYS: 30, // Number of days to consider an item "new"
     MAX_ITEMS: 100, // Maximum number of items to fetch per category
-    FORKED_REPOS: [
-        // Array of forked repository names to include (non-forks are included by default)
-        "Fish-Vista",
-        "PhyloNN",
-        "telemetry-dashboard",
-        "docker-workshop"
+    ADDITIONAL_REPOS: [
+        // Array of "owner/repo" strings to include in addition to non-forked org repos.
+        // Use this for forked repos within the org and repos outside the org entirely.
+        "Imageomics/Fish-Vista",
+        "Imageomics/PhyloNN",
+        "Imageomics/telemetry-dashboard",
+        "Imageomics/docker-workshop",
+        "jennamk14/autonomous_drone_simulator",
+        "OSU-NLP-Group/saev",
+        "ixlab/vidformer"
     ],
 
     // Typography

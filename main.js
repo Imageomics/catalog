@@ -19,7 +19,7 @@ const CATALOG_REPO_NAME = CONFIG.CATALOG_REPO_NAME;
 const API_BASE_URL = CONFIG.API_BASE_URL;
 const REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
 const MAX_ITEMS = CONFIG.MAX_ITEMS;
-const FORKED_REPOS = CONFIG.FORKED_REPOS;
+const ADDITIONAL_REPOS = CONFIG.ADDITIONAL_REPOS;
 
 let allItems = {
     code: [],
@@ -175,9 +175,21 @@ const fetchHubItems = async (repoType) => {
                 nextUrl = match ? match[1] : null;
             }
 
-            items = allRepos
-                .filter(repo => repo.name !== ".github") // skip .github repo
-                .filter(repo => !repo.fork || FORKED_REPOS.includes(repo.name)) // keep non-forks + only specific forks
+            // Fetch each additional repo (forked org repos + external repos) individually
+            const additionalRepoData = await Promise.all(
+                ADDITIONAL_REPOS.map(ownerRepo =>
+                    fetch(`https://api.github.com/repos/${ownerRepo}`)
+                        .then(r => r.ok ? r.json() : null)
+                        .catch(() => null)
+                )
+            );
+            const additionalRepos = additionalRepoData.filter(Boolean);
+
+            // Keep only non-forks from org; deduplicate against additional repos by full_name
+            const orgRepoNames = new Set(additionalRepos.map(r => r.full_name));
+            const orgNonForks = allRepos.filter(repo => repo.name !== ".github" && !repo.fork && !orgRepoNames.has(repo.full_name));
+
+            items = [...orgNonForks, ...additionalRepos]
                 .slice(0, MAX_ITEMS)
                 .map(repo => {
                     const createdAt = new Date(repo.created_at);
