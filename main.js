@@ -179,8 +179,17 @@ const fetchHubItems = async (repoType) => {
             const additionalRepoData = await Promise.all(
                 ADDITIONAL_REPOS.map(ownerRepo =>
                     fetch(`https://api.github.com/repos/${ownerRepo}`)
-                        .then(r => r.ok ? r.json() : null)
-                        .catch(() => null)
+                        .then(r => {
+                            if (!r.ok) {
+                                console.warn(`Failed to fetch additional repo "${ownerRepo}": HTTP ${r.status}`);
+                                return null;
+                            }
+                            return r.json();
+                        })
+                        .catch(err => {
+                            console.warn(`Network error fetching additional repo "${ownerRepo}":`, err);
+                            return null;
+                        })
                 )
             );
             const additionalRepos = additionalRepoData.filter(Boolean);
