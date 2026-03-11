@@ -175,9 +175,14 @@ const fetchHubItems = async (repoType) => {
                 nextUrl = match ? match[1] : null;
             }
 
-            // Fetch each additional repo (forked org repos + external repos) individually
-            const additionalRepoData = await Promise.all(
-                ADDITIONAL_REPOS.map(ownerRepo =>
+            // For org-owned entries in ADDITIONAL_REPOS, reuse data already in allRepos to avoid redundant API calls.
+            // Only fetch entries that belong to a different org (external repos).
+            const allReposByFullName = new Map(allRepos.map(r => [r.full_name, r]));
+            const toFetch = ADDITIONAL_REPOS.filter(ownerRepo => !allReposByFullName.has(ownerRepo));
+            const fromAllRepos = ADDITIONAL_REPOS.map(ownerRepo => allReposByFullName.get(ownerRepo)).filter(Boolean);
+
+            const fetchedExternalData = await Promise.all(
+                toFetch.map(ownerRepo =>
                     fetch(`https://api.github.com/repos/${ownerRepo}`)
                         .then(r => {
                             if (!r.ok) {
@@ -192,7 +197,7 @@ const fetchHubItems = async (repoType) => {
                         })
                 )
             );
-            const additionalRepos = additionalRepoData.filter(Boolean);
+            const additionalRepos = [...fromAllRepos, ...fetchedExternalData.filter(Boolean)];
 
             // Keep only non-forks from org; deduplicate against additional repos by full_name
             const orgRepoNames = new Set(additionalRepos.map(r => r.full_name));
