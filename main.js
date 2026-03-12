@@ -19,7 +19,7 @@ const CATALOG_REPO_NAME = CONFIG.CATALOG_REPO_NAME;
 const API_BASE_URL = CONFIG.API_BASE_URL;
 const REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
 const MAX_ITEMS = CONFIG.MAX_ITEMS;
-const FORKED_REPOS = CONFIG.FORKED_REPOS;
+const ADDITIONAL_REPOS = CONFIG.ADDITIONAL_REPOS;
 
 let allItems = {
     code: [],
@@ -175,10 +175,37 @@ const fetchHubItems = async (repoType) => {
                 nextUrl = match ? match[1] : null;
             }
 
-            items = allRepos
-                .filter(repo => repo.name !== ".github") // skip .github repo
-                .filter(repo => !repo.fork || FORKED_REPOS.includes(repo.name)) // keep non-forks + only specific forks
-                .slice(0, MAX_ITEMS)
+            // For org-owned entries in ADDITIONAL_REPOS, reuse data already in allRepos to avoid redundant API calls.
+            // Only fetch entries that belong to a different org (external repos).
+            const allReposByFullName = new Map(allRepos.map(r => [r.full_name, r]));
+            const toFetch = ADDITIONAL_REPOS.filter(ownerRepo => !allReposByFullName.has(ownerRepo));
+            const fromAllRepos = ADDITIONAL_REPOS.map(ownerRepo => allReposByFullName.get(ownerRepo)).filter(Boolean);
+
+            const fetchedExternalData = await Promise.all(
+                toFetch.map(ownerRepo =>
+                    fetch(`https://api.github.com/repos/${ownerRepo}`)
+                        .then(r => {
+                            if (!r.ok) {
+                                console.warn(`Failed to fetch additional repo "${ownerRepo}": HTTP ${r.status}`);
+                                return null;
+                            }
+                            return r.json();
+                        })
+                        .catch(err => {
+                            console.warn(`Network error fetching additional repo "${ownerRepo}":`, err);
+                            return null;
+                        })
+                )
+            );
+            const additionalRepos = [...fromAllRepos, ...fetchedExternalData.filter(Boolean)];
+
+            // Keep only non-forks from org; deduplicate against additional repos by full_name
+            const orgRepoNames = new Set(additionalRepos.map(r => r.full_name));
+            const orgNonForks = allRepos.filter(repo => repo.name !== ".github" && !repo.fork && !orgRepoNames.has(repo.full_name));
+
+            // Prioritize additional repos, then fill remaining slots from org non-forks
+            const remainingSlots = Math.max(0, MAX_ITEMS - additionalRepos.length);
+            items = [...additionalRepos, ...orgNonForks.slice(0, remainingSlots)]
                 .map(repo => {
                     const createdAt = new Date(repo.created_at);
                     const lastModified = new Date(repo.updated_at);
