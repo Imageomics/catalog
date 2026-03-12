@@ -8,7 +8,7 @@ This project was initialized with the help of Gemini 2.5, accessed [through OSU]
 
 ## Features
 
-The website is styled using the [tailwindcss](https://tailwindcss.com/) pacakge.
+The website is styled using the [tailwindcss](https://tailwindcss.com/) package.
 
 * **Real-time Data Fetching:** Displays all public Imageomics repositories, fetched through the GitHub and Hugging Face APIs. Includes a "New" badge for products created within the last 30 days; for older repos, star (⭐️) or like (❤️) counts are included for GitHub or Hugging Face repos, respectively.
 * **Search Functionality:** Quickly find items by keyword.
@@ -78,7 +78,7 @@ Welcome to your new catalog repo! The primary way to personalize this catalog is
   * `API_BASE_URL`: Hugging Face API base URL (default: `"https://huggingface.co/api/"`)
   * `REFRESH_INTERVAL_DAYS`: Number of days to consider an item "new" (default: `30`)
   * `MAX_ITEMS`: Maximum number of items to fetch per category (default: `100`)
-  * `FORKED_REPOS`: Array of forked repository names to include (non-forks are included by default). Use `[]` if there are none you wish to include
+  * `ADDITIONAL_REPOS`: Array of forked or non-org GitHub repositories to include, formatted `<owner>/<repo-name>` (non-forks are included by default). Use `[]` if there are none you wish to include
 
 * **Typography:**
   * `FONT_FAMILY`: Font family for the site (default: `"Inter"`)
@@ -123,4 +123,4 @@ It is important to provide the relevant code and preface with something along th
 
 > Based on this project, without changing the structure of existing code more than necessary for efficient design, can you identify...
 
-Then ask for a plan of how to reolve the issue. In my debugging experience, it did not demonstrate the ability to recognize or distinguish between a fix of "robustness" to handle outliers (which already existed at the precise location to which it pointed) and actually fixing the code to get the information that should have been fetched. Additionally, it has a tendency to rewrite an entire function and forget about tasks that are done in that function that are not *directly* related to the bug it is attempting to fix.
+Then ask for a plan of how to resolve the issue. In my debugging experience, it did not demonstrate the ability to recognize or distinguish between a fix of "robustness" to handle outliers (which already existed at the precise location to which it pointed) and actually fixing the code to get the information that should have been fetched. Additionally, it has a tendency to rewrite an entire function and forget about tasks that are done in that function that are not *directly* related to the bug it is attempting to fix.
