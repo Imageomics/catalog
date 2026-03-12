@@ -30,7 +30,7 @@ const CONFIG = {
         // Array of "owner/repo" strings to include in addition to non-forked org repos.
         // Use this for forked repos within the org and repos outside the org entirely.
         "Imageomics/Fish-Vista",
-        "Imageomics/PhyloNN",
+        "Imageomics/phylonn",
         "Imageomics/telemetry-dashboard",
         "Imageomics/docker-workshop",
         "jennamk14/autonomous_drone_simulator",
