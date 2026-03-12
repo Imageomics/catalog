@@ -34,7 +34,6 @@ const CONFIG = {
         "Imageomics/telemetry-dashboard",
         "Imageomics/docker-workshop",
         "jennamk14/autonomous_drone_simulator",
-        "OSU-NLP-Group/saev",
         "ixlab/vidformer"
     ],
 
