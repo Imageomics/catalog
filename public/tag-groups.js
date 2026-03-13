@@ -22,10 +22,6 @@ const TAG_GROUPS = {
         "animal", "animals",
         // birds
         "bird", "birds",
-        "bird acuity", "bird-acuity",
-        "bird habitat", "bird-habitat",
-        "bird view", "bird-view",
-        "birdnet",
         "endemic bird", "endemic birds", "endemic-birds",
         "hawaiian birds", "hawaiian-birds",
         "hawaiian honeycreeper", "hawaiian-honeycreeper",
