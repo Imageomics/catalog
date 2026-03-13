@@ -311,8 +311,7 @@ const TAG_GROUPS = {
         "tree seedling detection", "tree-seedling-detection",
         // foliage & fungi
         "leaf", "leaves",
-        "leaf damage", "leaf-damage",
-        "fungi", "fungus"
+        "leaf damage", "leaf-damage"
     ],
     "forest": [
         "cloud forest", "cloud-forest",
