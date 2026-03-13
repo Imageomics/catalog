@@ -155,6 +155,11 @@ const TAG_GROUPS = {
         "metadata standards", "metadata-standards",
         "standards", "metadata generation", "metadata-generation"
     ],
+    "data validation": [
+        "provenance", "checksums", "deduplication",
+        "file verification", "file-verification",
+        "data validation", "data-validation"
+    ],
     "exploratory data analysis": [
         "eda", "exploratory data analysis", "exploratory-data-analysis",
         "data exploration", "data-exploration", "data-explorer",
