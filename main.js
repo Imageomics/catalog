@@ -21,12 +21,18 @@ const REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
 const MAX_ITEMS = CONFIG.MAX_ITEMS;
 const ADDITIONAL_REPOS = CONFIG.ADDITIONAL_REPOS;
 
-// Build a reverse lookup from TAG_GROUPS (defined in tag-groups.js): raw tag → canonical tag
-const tagLookup = Object.create(null);;
+// Build a reverse lookup from TAG_GROUPS (defined in tag-groups.js): raw tag → [canonical tags]
+// A raw tag may appear in multiple groups, so the value is an array.
+const tagLookup = Object.create(null);
 if (typeof TAG_GROUPS !== 'undefined') {
     for (const [canonical, aliases] of Object.entries(TAG_GROUPS)) {
         for (const alias of aliases) {
-            tagLookup[alias.toLowerCase()] = canonical;
+            const key = alias.toLowerCase();
+            if (tagLookup[key]) {
+                tagLookup[key].push(canonical);
+            } else {
+                tagLookup[key] = [canonical];
+            }
         }
     }
 }
@@ -47,7 +53,7 @@ const normalizeTag = (tag) => {
     // These are identified by the presence of a colon. To include auto-generated tags in the
     // catalog, remove the following line.
     if (lower.includes(':')) return null;
-    return tagLookup[lower] ?? lower;
+    return tagLookup[lower] ?? [lower];
 };
 
 let allItems = {
@@ -241,7 +247,7 @@ const fetchHubItems = async (repoType) => {
                     const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
 
                     const rawTags = (repo.topics || []).map(t => t.toLowerCase());
-                    const tags = [...new Set(rawTags.map(normalizeTag).filter(Boolean))];
+                    const tags = [...new Set(rawTags.flatMap(normalizeTag).filter(Boolean))];
                     tags.forEach(tag => tagsMap.code.add(tag));
 
                     return {
@@ -304,7 +310,7 @@ const fetchHubItems = async (repoType) => {
 
             // Extract tags from the YAML metadata (handling different structures)
             const rawTags = (item.cardData?.tags || item.tags || []).map(t => String(t).toLowerCase());
-            const tags = [...new Set(rawTags.map(normalizeTag).filter(Boolean))];
+            const tags = [...new Set(rawTags.flatMap(normalizeTag).filter(Boolean))];
             tags.forEach(tag => tagsMap[repoType].add(tag));
 
             return {
