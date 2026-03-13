@@ -198,7 +198,6 @@ const TAG_GROUPS = {
         "museum images", "museum-images",
         "pinned specimen", "pinned specimens", "pinned-specimens",
         "specimen images", "specimen-images",
-        "scan samples", "scan-samples",
         "specimen", "specimen records", "specimen-records"
     ],
     "visualization": [
