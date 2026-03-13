@@ -71,7 +71,10 @@ const TAG_GROUPS = {
         // general
         "wildlife",
         "nocturnal",
-        "wild"
+        "wild",
+        "lab-bred",
+        "lab bred",
+        "cross types"
     ],
     "acuity": [
         "bird acuity", "bird-acuity", "bird view", "bird-view",
