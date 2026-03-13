@@ -33,8 +33,7 @@ if (typeof TAG_GROUPS !== 'undefined') {
 
 /**
  * Normalizes a raw tag string.
- * - Returns null for Hugging Face system metadata tags (any tag containing a colon,
- *   e.g. "format:parquet", "license:mit", "library:datasets").
+ * - Returns null for Hugging Face system metadata tags
  * - Maps known aliases to their canonical tag via TAG_GROUPS.
  * - Falls back to the lowercased original if no mapping exists.
  * @param {string} tag
@@ -42,7 +41,6 @@ if (typeof TAG_GROUPS !== 'undefined') {
  */
 const normalizeTag = (tag) => {
     const lower = String(tag).toLowerCase();
-    if (lower.includes(':')) return null;
     return tagLookup[lower] ?? lower;
 };
 
