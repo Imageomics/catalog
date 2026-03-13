@@ -20,7 +20,8 @@ const TAG_GROUPS = {
     // -------------------------------------------------------------------------
     "birds": [
         "bird", "birds", "hawaiian birds", "hawaiian-birds", "hawaiian-honeycreeper",
-        "endemic birds", "endemic-birds", "birdnet", "white-eye", "amakihi", "apapane", "omao", "kalij"
+        "endemic birds", "endemic-birds", "birdnet", "white-eye", "amakihi", "apapane", "omao", "kalij",
+        "akala", "haha"
     ],
     "butterflies": [
         "butterfly", "butterflies", "lepidoptera", "heliconius",
