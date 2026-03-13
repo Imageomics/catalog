@@ -19,8 +19,8 @@ const TAG_GROUPS = {
     // Animal Groups
     // -------------------------------------------------------------------------
     "birds": [
-        "bird", "birds", "hawaiian birds", "hawaiian-honeycreeper", "endemic-birds",
-        "birdnet", "white-eye", "amakihi", "apapane", "omao", "kalij"
+        "bird", "birds", "hawaiian birds", "hawaiian-birds", "hawaiian-honeycreeper",
+        "endemic birds", "endemic-birds", "birdnet", "white-eye", "amakihi", "apapane", "omao", "kalij"
     ],
     "butterflies": [
         "butterfly", "butterflies", "lepidoptera", "heliconius",
@@ -28,7 +28,7 @@ const TAG_GROUPS = {
         "forewings", "hindwings"
     ],
     "mimicry": [
-        "mimicry", "mullerian-mimicry", "mimic groups", "mimics"
+        "mimicry", "mullerian mimicry", "mullerian-mimicry", "mimic groups", "mimic-groups", "mimics"
     ],
     "fish": [
         "fish", "nj fish"
@@ -40,7 +40,7 @@ const TAG_GROUPS = {
         "ground beetles", "ground-beetles", "carabidae", "beetles"
     ],
     "insects": [
-        "insect", "insects", "moths", "wasps"
+        "insect", "insects", "moth", "moths", "wasp", "wasps"
     ],
     "zebras": [
         "zebra", "zebras", "grevy's zebra", "grevy's", "grevys", "plains zebra"
@@ -51,8 +51,10 @@ const TAG_GROUPS = {
     // -------------------------------------------------------------------------
     "animal behavior": [
         "animal behavior", "animal-behavior", "animal-behavior-recognition",
-        "behavior", "behavior recognition", "behavioural-ecology", "behavioral-ecology",
-        "behavioral ecology", "time-budget", "focal-observation"
+        "behavior", "behavior recognition", "behavior-recognition",
+        "behavioural ecology", "behavioural-ecology",
+        "behavioral ecology", "behavioral-ecology",
+        "time budget", "time-budget", "focal observation", "focal-observation"
     ],
     "evolution": [
         "evolution", "evolutionary biology", "evolutionary-biology"
@@ -64,10 +66,11 @@ const TAG_GROUPS = {
         "functional trait", "functional traits", "functional-trait", "functional-traits"
     ],
     "wildlife monitoring": [
-        "wildlife monitoring", "wildlife-monitoring", "camera traps", "camera-trap",
-        "camera-traps", "motion-activated", "motion-triggered",
+        "wildlife monitoring", "wildlife-monitoring",
+        "camera trap", "camera traps", "camera-trap", "camera-traps",
+        "motion activated", "motion-activated", "motion triggered", "motion-triggered",
         "passive acoustic monitoring", "bioacoustics", "soundscape",
-        "telemetry", "gps-tracker"
+        "telemetry", "gps tracker", "gps-tracker"
     ],
 
     // -------------------------------------------------------------------------
@@ -75,41 +78,61 @@ const TAG_GROUPS = {
     // -------------------------------------------------------------------------
     "computer vision": [
         "computer vision", "computer-vision", "cv", "vision",
-        "biological visual task"
+        "biological visual task", "biological visual tasks"
     ],
     "image classification": [
-        "image classification", "image-classification", "image-recognition",
-        "species classification", "species-classification", "species-identification"
+        "image classification", "image-classification",
+        "image recognition", "image-recognition",
+        "species classification", "species-classification",
+        "species identification", "species-identification"
     ],
     "fine-grained classification": [
         "fine-grained classification", "fine-grained-classification"
     ],
     "object detection": [
-        "object detection", "object-detection", "animal detection", "animal-detection",
-        "detection", "face-detection", "tree-seedling-detection", "hybrid-detection"
+        "object detection", "object-detection",
+        "animal detection", "animal-detection",
+        "detection",
+        "face detection", "face-detection",
+        "tree seedling detection", "tree-seedling-detection",
+        "hybrid detection", "hybrid-detection"
     ],
     "machine learning": [
-        "machine learning", "applied machine learning", "ml", "deep-learning",
-        "deep learning", "knowledge-guided", "knowledge-guided-machine-learning"
+        "machine learning", "applied machine learning", "ml",
+        "deep learning", "deep-learning",
+        "knowledge guided", "knowledge-guided",
+        "knowledge guided machine learning", "knowledge-guided-machine-learning"
     ],
     "transformers": [
-        "transformer", "transformers", "vision-transformer", "vision-transformers"
+        "transformer", "transformers",
+        "vision transformer", "vision-transformer",
+        "vision transformers", "vision-transformers"
     ],
     "embeddings": [
-        "embedding", "embeddings", "embedding-exploration", "feature-extraction",
-        "sentence-transformers", "sentence-similarity", "similarity-search", "faiss"
+        "embedding", "embeddings",
+        "embedding exploration", "embedding-exploration",
+        "feature extraction", "feature-extraction",
+        "sentence transformers", "sentence-transformers",
+        "sentence similarity", "sentence-similarity",
+        "similarity search", "similarity-search",
+        "faiss"
     ],
     "zero-shot": [
-        "zero-shot", "zero-shot-image-classification", "zero-shot-text-retrieval"
+        "zero shot", "zero-shot",
+        "zero shot image classification", "zero-shot-image-classification",
+        "zero shot text retrieval", "zero-shot-text-retrieval"
     ],
 
     // -------------------------------------------------------------------------
     // Explainability & Interpretability
     // -------------------------------------------------------------------------
     "explainable ai": [
-        "xai", "explainable-ai", "interpretable-ai", "interpretable-machine-learning",
+        "xai", "explainable ai", "explainable-ai",
+        "interpretable ai", "interpretable-ai",
+        "interpretable machine learning", "interpretable-machine-learning",
         "interpretable", "interpretability", "interpretation",
-        "counterfactual-explanations", "class-activation-maps",
+        "counterfactual explanations", "counterfactual-explanations",
+        "class activation maps", "class-activation-maps",
         "saliency map", "saliency-map", "saliency-maps"
     ],
 
@@ -117,44 +140,63 @@ const TAG_GROUPS = {
     // Data & Datasets
     // -------------------------------------------------------------------------
     "annotations": [
-        "annotation", "annotations", "label", "captions", "synthetic-captions"
+        "annotation", "annotations", "label", "captions",
+        "synthetic captions", "synthetic-captions"
     ],
     "benchmarks": [
-        "benchmarks", "benchmarking", "evaluation", "ml-challenge"
+        "benchmark", "benchmarks", "benchmarking", "evaluation",
+        "ml challenge", "ml-challenge"
     ],
     "data management": [
-        "data-management", "metadata", "provenance", "checksums", "deduplication",
-        "dataset-documentation", "file-verification", "data-validation",
-        "metadata-standards", "standards", "metadata generation"
+        "data management", "data-management", "metadata", "provenance", "checksums", "deduplication",
+        "dataset documentation", "dataset-documentation",
+        "file verification", "file-verification",
+        "data validation", "data-validation",
+        "metadata standards", "metadata-standards",
+        "standards", "metadata generation", "metadata-generation"
     ],
     "exploratory data analysis": [
-        "eda", "exploratory-data-analysis", "data-exploration", "data-explorer",
-        "exploratory-data-visualizations"
+        "eda", "exploratory data analysis", "exploratory-data-analysis",
+        "data exploration", "data-exploration", "data-explorer",
+        "exploratory data visualizations", "exploratory-data-visualizations"
     ],
     "museum specimens": [
-        "museum specimen", "museum specimens", "museum-images",
-        "pinned specimens", "pinned-specimens", "specimen-images",
-        "scan-samples", "specimen", "specimen-records"
+        "museum specimen", "museum specimens",
+        "museum images", "museum-images",
+        "pinned specimen", "pinned specimens", "pinned-specimens",
+        "specimen images", "specimen-images",
+        "scan samples", "scan-samples",
+        "specimen", "specimen records", "specimen-records"
     ],
     "visualization": [
-        "visualization", "visualizations", "data-visualization", "visual-analytics",
-        "interactive", "hdf5-visualization", "image-exploration", "image-preview"
+        "visualization", "visualizations",
+        "data visualization", "data-visualization",
+        "visual analytics", "visual-analytics",
+        "interactive",
+        "hdf5 visualization", "hdf5-visualization",
+        "image exploration", "image-exploration",
+        "image preview", "image-preview"
     ],
 
     // -------------------------------------------------------------------------
     // Taxonomy, Phylogenetics & Traits
     // -------------------------------------------------------------------------
     "phylogenetics": [
-        "phylogenetics", "phylogeny", "phylogenetic-trees"
+        "phylogenetics", "phylogeny", "phylogenetic trees", "phylogenetic-trees"
     ],
     "taxonomy": [
-        "taxonomy", "taxonomic-resolution", "ontology", "phenoscape", "hierarchy"
+        "taxonomy", "taxonomic resolution", "taxonomic-resolution", "ontology", "phenoscape", "hierarchy"
     ],
     "traits": [
-        "trait", "traits", "trait-detection", "trait-identification",
-        "trait identification", "trait-segmentation", "trait-masking",
-        "trait-swapping", "trait grounding", "trait counting", "trait referring",
-        "wing-segmentation", "morphometrics", "measurements"
+        "trait", "traits",
+        "trait detection", "trait-detection",
+        "trait identification", "trait-identification",
+        "trait segmentation", "trait-segmentation",
+        "trait masking", "trait-masking",
+        "trait swapping", "trait-swapping",
+        "trait grounding", "trait counting", "trait referring",
+        "wing segmentation", "wing-segmentation",
+        "morphometrics", "measurements"
     ],
 
     // -------------------------------------------------------------------------
@@ -163,32 +205,38 @@ const TAG_GROUPS = {
     "biodiversity": [
         "biodiversity", "conservation", "restoration",
         "endangered species", "rare species", "rare-species",
-        "invasive species", "invasive-species", "invasive-mammals",
-        "endemic-species"
+        "invasive species", "invasive-species",
+        "invasive mammals", "invasive-mammals",
+        "endemic species", "endemic-species"
     ],
 
     // -------------------------------------------------------------------------
     // Geospatial & Remote Sensing
     // -------------------------------------------------------------------------
     "drones": [
-        "drone", "drones", "drone-videos", "uav"
+        "drone", "drones", "drone videos", "drone-videos", "uav"
     ],
     "geospatial": [
-        "geospatial", "geodata", "gis", "satellite-imagery", "aerial",
-        "aerial-imagery", "mapping", "location", "map-view"
+        "geospatial", "geodata", "gis",
+        "satellite imagery", "satellite-imagery",
+        "aerial", "aerial imagery", "aerial-imagery",
+        "mapping", "location", "map view", "map-view"
     ],
 
     // -------------------------------------------------------------------------
     // Open Science & Tools
     // -------------------------------------------------------------------------
     "open science": [
-        "open-science", "open-source", "fair", "reproducibility",
-        "reproducible-research"
+        "open science", "open-science", "open source", "open-source",
+        "fair", "reproducibility",
+        "reproducible research", "reproducible-research"
     ],
     "tools": [
-        "api", "api-integration", "cli", "command-line-interface",
-        "pipelines", "workflow-automation", "snakemake",
-        "containerization", "containerization-with-docker", "version-control"
+        "api", "api integration", "api-integration",
+        "cli", "command line interface", "command-line-interface",
+        "pipelines", "workflow automation", "workflow-automation", "snakemake",
+        "containerization", "containerization with docker", "containerization-with-docker",
+        "version control", "version-control"
     ],
 
 };
