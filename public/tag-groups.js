@@ -297,7 +297,7 @@ const TAG_GROUPS = {
     // Events
     // -------------------------------------------------------------------------
     "love data week": [
-        "ldw24", "ldw25", "ldw26"
+        "ldw24", "ldw25", "ldw26", "lovedataweek"
     ]
 
 };
