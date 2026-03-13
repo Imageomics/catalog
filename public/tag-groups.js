@@ -250,7 +250,8 @@ const TAG_GROUPS = {
     ],
     "trees": [
         "tree", "trees", "tree planting", "tree-planting",
-        "tree seedling detection", "tree-seedling-detection"
+        "tree seedling detection", "tree-seedling-detection",
+        "acacia koa", "koa", "o'hia", "pilo"
     ],
 
     // -------------------------------------------------------------------------
