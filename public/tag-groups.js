@@ -241,7 +241,7 @@ const TAG_GROUPS = {
     // -------------------------------------------------------------------------
     "forest": [
         "cloud forest", "cloud-forest",
-        "understory"
+        "understory", "hawaiian forest", "hawaiian-forest"
     ],
     "hawaiian plants": [
         "acacia koa", "koa", "o'hia", "ohelo", "pilo", "pukiawe",
