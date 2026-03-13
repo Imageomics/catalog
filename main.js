@@ -248,6 +248,7 @@ const fetchHubItems = async (repoType) => {
 
                     const rawTags = (repo.topics || []).map(t => t.toLowerCase());
                     const tags = [...new Set(rawTags.flatMap(normalizeTag).filter(Boolean))];
+                    const displayTags = rawTags.filter(t => !t.includes(':'));
                     tags.forEach(tag => tagsMap.code.add(tag));
 
                     return {
@@ -258,6 +259,7 @@ const fetchHubItems = async (repoType) => {
                         isNew,
                         tags,
                         rawTags,
+                        displayTags,
                         description: repo.description || "No description provided.",
                         html_url: repo.html_url,
                         cardData: {
@@ -311,6 +313,7 @@ const fetchHubItems = async (repoType) => {
             // Extract tags from the YAML metadata (handling different structures)
             const rawTags = (item.cardData?.tags || item.tags || []).map(t => String(t).toLowerCase());
             const tags = [...new Set(rawTags.flatMap(normalizeTag).filter(Boolean))];
+            const displayTags = rawTags.filter(t => !t.includes(':'));
             tags.forEach(tag => tagsMap[repoType].add(tag));
 
             return {
@@ -321,7 +324,8 @@ const fetchHubItems = async (repoType) => {
                 isNew,
                 likes: item.likes || 0,
                 tags,
-                rawTags
+                rawTags,
+                displayTags
             };
         });
 
@@ -409,7 +413,7 @@ const addWordBreakOpportunities = (str) => {
  */
 const renderHubItemCard = (item, repoType) => {
     const lastUpdatedDate = new Date(item.lastModified).toLocaleDateString();
-    const tagsHtml = item.tags.map(tag =>
+    const tagsHtml = (item.displayTags || item.rawTags || []).map(tag =>
         `<span class="tag text-xs font-semibold px-2 py-1 rounded-full">${tag}</span>`
     ).join('');
 
