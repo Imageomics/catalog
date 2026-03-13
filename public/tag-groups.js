@@ -18,6 +18,9 @@ const TAG_GROUPS = {
     // -------------------------------------------------------------------------
     // Animal Groups
     // -------------------------------------------------------------------------
+    "animal": [
+        "animal", "animals"
+    ],
     "acuity": [
         "bird acuity", "bird-acuity", "bird view", "bird-view",
         "butterfly acuity", "butterfly-acuity", "butterfly view", "butterfly-view"
@@ -233,14 +236,17 @@ const TAG_GROUPS = {
     // -------------------------------------------------------------------------
     // Plants & Habitat
     // -------------------------------------------------------------------------
+    "forest": [
+        "cloud forest", "cloud-forest",
+        "understory"
+    ],
     "hawaiian plants": [
         "acacia koa", "koa", "o'hia", "ohelo", "pilo", "pukiawe",
         "clidemia hirta", "small leaf kolea", "small-leaf-kolea",
-        "hawaiian forest", "hawaiian-forest", "cloud forest", "cloud-forest",
-        "understory", "kipuka"
+        "hawaiian forest", "hawaiian-forest", "kipuka"
     ],
     "trees": [
-        "tree", "trees", "tree planting", "tree-planting",,
+        "tree", "trees", "tree planting", "tree-planting",
         "tree seedling detection", "tree-seedling-detection"
     ],
 
