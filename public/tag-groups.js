@@ -201,6 +201,9 @@ const TAG_GROUPS = {
         "trait swapping", "trait-swapping",
         "trait grounding", "trait counting", "trait referring",
         "wing segmentation", "wing-segmentation",
+        "forewings", "hindwings",
+        "elytra", "elytra length", "elytra width",
+        "basal pronotum", "greenness",
         "morphometrics", "measurements"
     ],
 
