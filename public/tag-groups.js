@@ -144,6 +144,9 @@ const TAG_GROUPS = {
         "zero shot image classification", "zero-shot-image-classification",
         "zero shot text retrieval", "zero-shot-text-retrieval"
     ],
+    "image": [
+        "image", "images"
+    ],
 
     // -------------------------------------------------------------------------
     // Explainability & Interpretability
@@ -289,5 +292,11 @@ const TAG_GROUPS = {
         "containerization", "containerization with docker", "containerization-with-docker",
         "version control", "version-control"
     ],
+    // -------------------------------------------------------------------------
+    // Events
+    // -------------------------------------------------------------------------
+    "love data week": [
+        "ldw24", "ldw25", "ldw26"
+    ]
 
 };
