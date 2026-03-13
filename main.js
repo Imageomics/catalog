@@ -21,6 +21,31 @@ const REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
 const MAX_ITEMS = CONFIG.MAX_ITEMS;
 const ADDITIONAL_REPOS = CONFIG.ADDITIONAL_REPOS;
 
+// Build a reverse lookup from TAG_GROUPS (defined in tag-groups.js): raw tag → canonical tag
+const tagLookup = {};
+if (typeof TAG_GROUPS !== 'undefined') {
+    for (const [canonical, aliases] of Object.entries(TAG_GROUPS)) {
+        for (const alias of aliases) {
+            tagLookup[alias.toLowerCase()] = canonical;
+        }
+    }
+}
+
+/**
+ * Normalizes a raw tag string.
+ * - Returns null for Hugging Face system metadata tags (any tag containing a colon,
+ *   e.g. "format:parquet", "license:mit", "library:datasets").
+ * - Maps known aliases to their canonical tag via TAG_GROUPS.
+ * - Falls back to the lowercased original if no mapping exists.
+ * @param {string} tag
+ * @returns {string|null}
+ */
+const normalizeTag = (tag) => {
+    const lower = String(tag).toLowerCase();
+    if (lower.includes(':')) return null;
+    return tagLookup[lower] ?? lower;
+};
+
 let allItems = {
     code: [],
     datasets: [],
@@ -211,8 +236,8 @@ const fetchHubItems = async (repoType) => {
                     const lastModified = new Date(repo.updated_at);
                     const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
 
-                    const tags = repo.topics || [];
-                    tags.forEach(tag => tagsMap.code.add(tag.toLowerCase())); // stores globally for use in tags filter
+                    const tags = [...new Set((repo.topics || []).map(normalizeTag).filter(Boolean))];
+                    tags.forEach(tag => tagsMap.code.add(tag));
 
                     return {
                         id: repo.full_name, // "Imageomics/<repo-name>", used as backup if can't get repo.name
@@ -272,8 +297,8 @@ const fetchHubItems = async (repoType) => {
             const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
 
             // Extract tags from the YAML metadata (handling different structures)
-            const tags = item.cardData?.tags || item.tags || [];
-            tags.forEach(tag => tagsMap[repoType].add(tag.toLowerCase()));
+            const tags = [...new Set((item.cardData?.tags || item.tags || []).map(normalizeTag).filter(Boolean))];
+            tags.forEach(tag => tagsMap[repoType].add(tag));
 
             return {
                 ...item,
