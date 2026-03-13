@@ -22,7 +22,7 @@ const MAX_ITEMS = CONFIG.MAX_ITEMS;
 const ADDITIONAL_REPOS = CONFIG.ADDITIONAL_REPOS;
 
 // Build a reverse lookup from TAG_GROUPS (defined in tag-groups.js): raw tag → canonical tag
-const tagLookup = {};
+const tagLookup = Object.create(null);;
 if (typeof TAG_GROUPS !== 'undefined') {
     for (const [canonical, aliases] of Object.entries(TAG_GROUPS)) {
         for (const alias of aliases) {
