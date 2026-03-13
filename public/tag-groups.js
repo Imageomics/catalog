@@ -246,7 +246,7 @@ const TAG_GROUPS = {
     "hawaiian plants": [
         "acacia koa", "koa", "o'hia", "ohelo", "pilo", "pukiawe",
         "clidemia hirta", "small leaf kolea", "small-leaf-kolea",
-        "hawaiian forest", "hawaiian-forest", "kipuka"
+        "hawaiian forest", "hawaiian-forest"
     ],
     "trees": [
         "tree", "trees", "tree planting", "tree-planting",
