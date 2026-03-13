@@ -18,6 +18,13 @@ const TAG_GROUPS = {
     // -------------------------------------------------------------------------
     // Animal Groups
     // -------------------------------------------------------------------------
+    "acuity": [
+        "bird acuity", "bird-acuity", "bird view", "bird-view",
+        "butterfly acuity", "butterfly-acuity", "butterfly view", "butterfly-view"
+    ],
+    "amphibians": [
+        "amphibian", "amphibians", "frog", "frogs", "toad", "toads"
+    ],
     "birds": [
         "bird", "birds", "hawaiian birds", "hawaiian-birds", "hawaiian-honeycreeper",
         "endemic birds", "endemic-birds", "birdnet", "white-eye", "amakihi", "apapane", "omao", "kalij",
@@ -42,6 +49,17 @@ const TAG_GROUPS = {
     ],
     "insects": [
         "insect", "insects", "moth", "moths", "wasp", "wasps"
+    ],
+    "mammals": [
+        "mammal", "mammals",
+        "african painted dog", "african-painted-dog", "dog",
+        "baboon", "baboons",
+        "giraffe", "giraffes",
+        "lion", "lions",
+        "onager", "persian onanger", "przewalski",
+        "rodent", "rodents",
+        "ungulate", "ungulates",
+        "zebra", "zebras", "grevy's zebra", "grevy's", "grevys", "plains zebra"
     ],
     "zebras": [
         "zebra", "zebras", "grevy's zebra", "grevy's", "grevys", "plains zebra"
@@ -206,6 +224,21 @@ const TAG_GROUPS = {
         "elytra", "elytra length", "elytra width",
         "basal pronotum", "greenness",
         "morphometrics", "measurements"
+    ],
+
+    // -------------------------------------------------------------------------
+    // Plants & Habitat
+    // -------------------------------------------------------------------------
+    "hawaiian plants": [
+        "acacia koa", "koa", "o'hia", "ohelo", "pilo", "pukiawe",
+        "clidemia hirta", "small leaf kolea", "small-leaf-kolea",
+        "hawaiian forest", "hawaiian-forest", "cloud forest", "cloud-forest",
+        "understory", "kipuka"
+    ],
+    "trees": [
+        "tree", "trees", "tree planting", "tree-planting",
+        "tree of life", "tree-of-life",
+        "tree seedling detection", "tree-seedling-detection"
     ],
 
     // -------------------------------------------------------------------------
