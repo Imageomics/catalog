@@ -54,9 +54,14 @@ const TAG_GROUPS = {
         "behavior", "behavior recognition", "behavioural-ecology", "behavioral-ecology",
         "behavioral ecology", "time-budget", "focal-observation"
     ],
-    "ecology": [
-        "ecology", "evolutionary biology", "evolutionary-biology", "evolution",
-        "phenology", "plant-phenology", "functional-traits"
+    "evolution": [
+        "evolution", "evolutionary biology", "evolutionary-biology"
+    ],
+    "phenology": [
+        "phenology", "phenologies", "plant phenology", "plant-phenology"
+    ],
+    "functional traits": [
+        "functional trait", "functional traits", "functional-trait", "functional-traits"
     ],
     "wildlife monitoring": [
         "wildlife monitoring", "wildlife-monitoring", "camera traps", "camera-trap",
