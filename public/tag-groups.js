@@ -309,7 +309,7 @@ const TAG_GROUPS = {
         "tree", "trees",
         "tree planting", "tree-planting",
         "tree seedling detection", "tree-seedling-detection",
-        // foliage & fungi
+        // foliage
         "leaf", "leaves",
         "leaf damage", "leaf-damage"
     ],
