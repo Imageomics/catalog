@@ -41,6 +41,10 @@ if (typeof TAG_GROUPS !== 'undefined') {
  */
 const normalizeTag = (tag) => {
     const lower = String(tag).toLowerCase();
+    // Remove Hugging Face auto-generated system tags (e.g. "license:mit", "format:parquet").
+    // These are identified by the presence of a colon. To include auto-generated tags in the
+    // catalog, remove the following line.
+    if (lower.includes(':')) return null;
     return tagLookup[lower] ?? lower;
 };
 
