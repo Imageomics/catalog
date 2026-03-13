@@ -209,7 +209,11 @@ const TAG_GROUPS = {
         "phylogenetics", "phylogeny", "phylogenetic trees", "phylogenetic-trees"
     ],
     "taxonomy": [
-        "taxonomy", "taxonomic resolution", "taxonomic-resolution", "ontology", "phenoscape", "hierarchy"
+        "taxonomy", "taxonomic resolution", "taxonomic-resolution", "ontology", "phenoscape", "hierarchy",
+        "tree-of-life", "tree of life", "treeoflife"
+    ],
+    "tree of life": [
+        "tree-of-life", "tree of life", "treeoflife"
     ],
     "traits": [
         "trait", "traits",
@@ -236,8 +240,7 @@ const TAG_GROUPS = {
         "understory", "kipuka"
     ],
     "trees": [
-        "tree", "trees", "tree planting", "tree-planting",
-        "tree of life", "tree-of-life",
+        "tree", "trees", "tree planting", "tree-planting",,
         "tree seedling detection", "tree-seedling-detection"
     ],
 
