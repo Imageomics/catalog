@@ -234,7 +234,8 @@ const fetchHubItems = async (repoType) => {
                     const lastModified = new Date(repo.updated_at);
                     const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
 
-                    const tags = [...new Set((repo.topics || []).map(normalizeTag).filter(Boolean))];
+                    const rawTags = (repo.topics || []).map(t => t.toLowerCase());
+                    const tags = [...new Set(rawTags.map(normalizeTag).filter(Boolean))];
                     tags.forEach(tag => tagsMap.code.add(tag));
 
                     return {
@@ -244,6 +245,7 @@ const fetchHubItems = async (repoType) => {
                         lastModified,
                         isNew,
                         tags,
+                        rawTags,
                         description: repo.description || "No description provided.",
                         html_url: repo.html_url,
                         cardData: {
@@ -295,7 +297,8 @@ const fetchHubItems = async (repoType) => {
             const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
 
             // Extract tags from the YAML metadata (handling different structures)
-            const tags = [...new Set((item.cardData?.tags || item.tags || []).map(normalizeTag).filter(Boolean))];
+            const rawTags = (item.cardData?.tags || item.tags || []).map(t => String(t).toLowerCase());
+            const tags = [...new Set(rawTags.map(normalizeTag).filter(Boolean))];
             tags.forEach(tag => tagsMap[repoType].add(tag));
 
             return {
@@ -305,7 +308,8 @@ const fetchHubItems = async (repoType) => {
                 lastModified,
                 isNew,
                 likes: item.likes || 0,
-                tags: tags
+                tags,
+                rawTags
             };
         });
 
@@ -537,7 +541,8 @@ const applyFiltersAndSort = async (updateUrl = true) => {
     const filtered = currentItems.filter(item => {
         const matchesSearch = item.id.toLowerCase().includes(searchTerm) ||
             item.description?.toLowerCase().includes(searchTerm) ||
-            item.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+            item.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
+            item.rawTags?.some(tag => tag.includes(searchTerm));
 
         const matchesTag = tagFilter === "" || item.tags.some(tag => tag.toLowerCase() === tagFilter.toLowerCase());
 
