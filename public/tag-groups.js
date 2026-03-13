@@ -19,7 +19,59 @@ const TAG_GROUPS = {
     // Animal Groups
     // -------------------------------------------------------------------------
     "animal": [
-        "animal", "animals"
+        "animal", "animals",
+        // birds
+        "bird", "birds",
+        "bird acuity", "bird-acuity",
+        "bird habitat", "bird-habitat",
+        "bird view", "bird-view",
+        "birdnet",
+        "endemic bird", "endemic birds", "endemic-birds",
+        "hawaiian birds", "hawaiian-birds",
+        "hawaiian honeycreeper", "hawaiian-honeycreeper",
+        "amakihi", "apapane", "omao", "kalij", "white-eye",
+        // butterflies & moths
+        "butterfly", "butterflies",
+        "lepidoptera",
+        "heliconius",
+        "heliconius erato", "heliconius-erato",
+        "heliconius melpomene", "heliconius-melpomene",
+        "erato", "melpomene",
+        "moth", "moths",
+        // beetles & other insects
+        "beetle", "beetles",
+        "carabidae",
+        "ground beetle", "ground beetles", "ground-beetle", "ground-beetles",
+        "insect", "insects",
+        "wasp", "wasps",
+        // amphibians
+        "amphibian", "amphibians",
+        "frog", "frogs",
+        "toad", "toads",
+        // reptiles
+        "reptile", "reptiles",
+        "snake", "snakes",
+        // fish
+        "fish",
+        // mammals
+        "mammal", "mammals",
+        "african painted dog", "african-painted-dog", "dog",
+        "baboon", "baboons",
+        "giraffe", "giraffes",
+        "lion", "lions",
+        "onager",
+        "persian onager", "persian-onager",
+        "persian onanger", "persian-onanger",
+        "przewalski",
+        "rodent", "rodents",
+        "ungulate", "ungulates",
+        "zebra", "zebras",
+        "grevy's zebra", "grevy's", "grevys",
+        "plains zebra", "plains-zebra",
+        // general
+        "wildlife",
+        "nocturnal",
+        "wild"
     ],
     "acuity": [
         "bird acuity", "bird-acuity", "bird view", "bird-view",
@@ -241,6 +293,28 @@ const TAG_GROUPS = {
     // -------------------------------------------------------------------------
     // Plants & Habitat
     // -------------------------------------------------------------------------
+    "plants": [
+        "plant", "plants",
+        "plant identification", "plant-identification",
+        "plant phenology", "plant-phenology",
+        // hawaiian plants
+        "acacia koa", "acacia-koa", "koa",
+        "akala",
+        "clidemia hirta", "clidemia-hirta",
+        "o'hia",
+        "ohelo",
+        "pilo",
+        "pukiawe",
+        "small leaf kolea", "small-leaf-kolea",
+        // trees
+        "tree", "trees",
+        "tree planting", "tree-planting",
+        "tree seedling detection", "tree-seedling-detection",
+        // foliage & fungi
+        "leaf", "leaves",
+        "leaf damage", "leaf-damage",
+        "fungi", "fungus"
+    ],
     "forest": [
         "cloud forest", "cloud-forest",
         "understory", "hawaiian forest", "hawaiian-forest"
