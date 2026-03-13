@@ -38,6 +38,9 @@ const TAG_GROUPS = {
         "heliconius erato", "heliconius melpomene", "erato", "melpomene",
         "forewings", "hindwings"
     ],
+    "lab-bred": [
+          "lab-bred", "lab bred", "cross types"
+    ],      
     "mimicry": [
         "mimicry", "mullerian mimicry", "mullerian-mimicry", "mimic groups", "mimic-groups", "mimics"
     ],
