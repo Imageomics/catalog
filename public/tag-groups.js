@@ -25,7 +25,10 @@ const TAG_GROUPS = {
     "butterflies": [
         "butterfly", "butterflies", "lepidoptera", "heliconius",
         "heliconius erato", "heliconius melpomene", "erato", "melpomene",
-        "forewings", "hindwings", "mimicry", "mullerian-mimicry", "mimic groups", "mimics"
+        "forewings", "hindwings"
+    ],
+    "mimicry": [
+        "mimicry", "mullerian-mimicry", "mimic groups", "mimics"
     ],
     "fish": [
         "fish", "nj fish"
