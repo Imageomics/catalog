@@ -21,6 +21,41 @@ const REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
 const MAX_ITEMS = CONFIG.MAX_ITEMS;
 const ADDITIONAL_REPOS = CONFIG.ADDITIONAL_REPOS;
 
+// Build a reverse lookup from TAG_GROUPS (defined in tag-groups.js): raw tag → [canonical tags]
+// A raw tag may appear in multiple groups, so the value is an array.
+const tagLookup = Object.create(null);
+if (typeof TAG_GROUPS !== 'undefined') {
+    for (const [canonical, aliases] of Object.entries(TAG_GROUPS)) {
+        for (const alias of aliases) {
+            const key = alias.toLowerCase();
+            if (tagLookup[key]) {
+                tagLookup[key].push(canonical);
+            } else {
+                tagLookup[key] = [canonical];
+            }
+        }
+    }
+}
+
+/**
+ * Normalizes a raw tag string.
+ * - Returns null for Hugging Face system metadata tags
+ * - Maps known aliases to their canonical tag via TAG_GROUPS.
+ * - Falls back to the lowercased original if no mapping exists.
+ * @param {string} tag
+ * @returns {string|null}
+ */
+const normalizeTag = (tag) => {
+    const lower = String(tag).toLowerCase();
+
+    // OPTION LINE -- REMOVE IF UNWANTED
+    // Removes Hugging Face auto-generated system tags (e.g. "license:mit", "format:parquet").
+    // These are identified by the presence of a colon. To include auto-generated tags in the
+    // catalog, remove the following line.
+    if (lower.includes(':')) return null;
+    return tagLookup[lower] ?? [lower];
+};
+
 let allItems = {
     code: [],
     datasets: [],
@@ -211,8 +246,10 @@ const fetchHubItems = async (repoType) => {
                     const lastModified = new Date(repo.updated_at);
                     const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
 
-                    const tags = repo.topics || [];
-                    tags.forEach(tag => tagsMap.code.add(tag.toLowerCase())); // stores globally for use in tags filter
+                    const rawTags = (repo.topics || []).map(t => t.toLowerCase());
+                    const tags = [...new Set(rawTags.flatMap(normalizeTag).filter(Boolean))];
+                    const displayTags = rawTags.filter(t => !t.includes(':'));
+                    tags.forEach(tag => tagsMap.code.add(tag));
 
                     return {
                         id: repo.full_name, // "Imageomics/<repo-name>", used as backup if can't get repo.name
@@ -221,6 +258,8 @@ const fetchHubItems = async (repoType) => {
                         lastModified,
                         isNew,
                         tags,
+                        rawTags,
+                        displayTags,
                         description: repo.description || "No description provided.",
                         html_url: repo.html_url,
                         cardData: {
@@ -272,8 +311,10 @@ const fetchHubItems = async (repoType) => {
             const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
 
             // Extract tags from the YAML metadata (handling different structures)
-            const tags = item.cardData?.tags || item.tags || [];
-            tags.forEach(tag => tagsMap[repoType].add(tag.toLowerCase()));
+            const rawTags = (item.cardData?.tags || item.tags || []).map(t => String(t).toLowerCase());
+            const tags = [...new Set(rawTags.flatMap(normalizeTag).filter(Boolean))];
+            const displayTags = rawTags.filter(t => !t.includes(':'));
+            tags.forEach(tag => tagsMap[repoType].add(tag));
 
             return {
                 ...item,
@@ -282,7 +323,9 @@ const fetchHubItems = async (repoType) => {
                 lastModified,
                 isNew,
                 likes: item.likes || 0,
-                tags: tags
+                tags,
+                rawTags,
+                displayTags
             };
         });
 
@@ -370,7 +413,7 @@ const addWordBreakOpportunities = (str) => {
  */
 const renderHubItemCard = (item, repoType) => {
     const lastUpdatedDate = new Date(item.lastModified).toLocaleDateString();
-    const tagsHtml = item.tags.map(tag =>
+    const tagsHtml = (item.displayTags || item.rawTags || []).map(tag =>
         `<span class="tag text-xs font-semibold px-2 py-1 rounded-full">${tag}</span>`
     ).join('');
 
@@ -514,7 +557,8 @@ const applyFiltersAndSort = async (updateUrl = true) => {
     const filtered = currentItems.filter(item => {
         const matchesSearch = item.id.toLowerCase().includes(searchTerm) ||
             item.description?.toLowerCase().includes(searchTerm) ||
-            item.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+            item.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
+            item.rawTags?.some(tag => tag.includes(searchTerm));
 
         const matchesTag = tagFilter === "" || item.tags.some(tag => tag.toLowerCase() === tagFilter.toLowerCase());
 
