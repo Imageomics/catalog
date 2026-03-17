@@ -21,6 +21,7 @@ const TAG_GROUPS = {
 - Raw tags not present in any array pass through unchanged and appear as-is in the UI.
 - Raw tags that contain a colon (e.g. `license:mit`, `format:parquet`) are automatically
   filtered out as Hugging Face system metadata so they never reach the UI. This can be changed in [main.js](../main.js), in the `normalizeTag` function.
+- Raw tags are maintained and matched-against for keyword searching and do appear in repo cards.
 
 ---
 
