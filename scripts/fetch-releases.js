@@ -21,7 +21,7 @@ const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
 
 // Step 1: Fetch all public org repos (paginated, same logic as main.js)
 let allOrgRepos = [];
-let nextUrl = `https://api.github.com/orgs/${CONFIG.GITHUB_ORG_NAME}/repos?type=public&per_page=100`;
+let nextUrl = `https://api.github.com/orgs/${CONFIG.ORGANIZATION_NAME}/repos?type=public&per_page=100`;
 while (nextUrl) {
     const res = await fetch(nextUrl, { headers });
     if (!res.ok) {
