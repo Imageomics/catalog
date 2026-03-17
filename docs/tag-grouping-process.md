@@ -87,8 +87,9 @@ You should update `public/tag-groups.js` when that PR is opened or updated.
    | Situation | Action |
    |-----------|--------|
    | It's a variant of an existing concept (e.g. `bird-detection` when `object detection` exists) | Add the raw tag to the existing group's array |
-   | It represents a genuinely new concept with no matching group | Add a new key + array, under the appropriate section comment |
-   | It's noise (a Hugging Face system tag that slipped through, a typo, a one-off) | Ignore it — no change needed |
+   | It represents a new concept that groups with other existing or new tags | Add a new key + array, under the appropriate section comment |
+   | It's a Hugging Face system tag (contains a colon, e.g. `license:mit`) | Ignore it - it is already filtered out by the app and will not reach the UI (see [above](#what-are-tag-groups) to see how not filter to these out) |
+   | It's a one-off with no grouping candidates | Leave it - it passes through unchanged and appears as-is in the UI |
 
 4. **Commit the updated `tag-groups.js` to the PR branch** (`tag-scan/auto`).
 
