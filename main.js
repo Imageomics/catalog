@@ -616,10 +616,15 @@ const applyFiltersAndSort = async (updateUrl = true) => {
 
         case 'newRelease':
             sorted.sort((a, b) => {
-                if (a.hasNewRelease === b.hasNewRelease) {
+                const aNew = Boolean(a.hasNewRelease);
+                const bNew = Boolean(b.hasNewRelease);
+
+                if (aNew === bNew) {
                     return b.lastModified.getTime() - a.lastModified.getTime();
                 }
-                return a.hasNewRelease ? -1 : 1;
+
+                // Items with a new release come first
+                return aNew ? -1 : 1;
             });
             break;
 
