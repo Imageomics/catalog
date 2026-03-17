@@ -56,6 +56,8 @@ const normalizeTag = (tag) => {
     return tagLookup[lower] ?? [lower];
 };
 
+let releasesMap = {};
+
 let allItems = {
     code: [],
     datasets: [],
@@ -251,6 +253,8 @@ const fetchHubItems = async (repoType) => {
                     const displayTags = rawTags.filter(t => !t.includes(':'));
                     tags.forEach(tag => tagsMap.code.add(tag));
 
+                    const release = releasesMap[repo.full_name] ?? null;
+
                     return {
                         id: repo.full_name, // "Imageomics/<repo-name>", used as backup if can't get repo.name
                         repoType: "code",
@@ -262,6 +266,9 @@ const fetchHubItems = async (repoType) => {
                         displayTags,
                         description: repo.description || "No description provided.",
                         html_url: repo.html_url,
+                        hasNewRelease: release?.isNew ?? false,
+                        latestReleaseUrl: release?.url ?? null,
+                        latestReleaseTag: release?.tag ?? null,
                         cardData: {
                             pretty_name: repo.name, // <repo-name>, the one used for card title display
                             description: repo.description,
@@ -498,6 +505,13 @@ const renderHubItemCard = (item, repoType) => {
                 </div>
                 <div class="flex justify-between items-center mt-4 text-xs text-gray-400 dark:text-gray-500">
                     <span>Updated: ${lastUpdatedDate}</span>
+                    ${(item.repoType === 'code' && item.hasNewRelease)
+                        ? `<a href="${item.latestReleaseUrl}" target="_blank" rel="noopener noreferrer"
+                              class="release-badge inline-block text-xs font-bold text-white rounded-full px-2 py-1 hover:opacity-80 transition-opacity"
+                              title="New release: ${escapeHTML(item.latestReleaseTag)}">
+                              🚀 ${escapeHTML(item.latestReleaseTag)}
+                           </a>`
+                        : ''}
                 </div>
             </div>
         </div>
@@ -598,6 +612,15 @@ const applyFiltersAndSort = async (updateUrl = true) => {
 
         case 'lastModified':
             sorted.sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
+            break;
+
+        case 'newRelease':
+            sorted.sort((a, b) => {
+                if (a.hasNewRelease === b.hasNewRelease) {
+                    return b.lastModified.getTime() - a.lastModified.getTime();
+                }
+                return a.hasNewRelease ? -1 : 1;
+            });
             break;
 
         default: // default to lastModified logic
@@ -720,7 +743,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         searchInput.value = urlParams.q;
     }
 
-    const validSortValues = ['lastModified', 'createdAt', 'stars_desc', 'stars_asc', 'alphabetical_asc', 'alphabetical_desc'];
+    const validSortValues = ['lastModified', 'createdAt', 'stars_desc', 'stars_asc', 'alphabetical_asc', 'alphabetical_desc', 'newRelease'];
     if (urlParams.sort && validSortValues.includes(urlParams.sort)) {
         sortBySelect.value = urlParams.sort;
     }
@@ -755,6 +778,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initialize the Catalog Badge (Stars/Forks/Version)
     fetchCatalogStats();
+
+    // Load pre-built release data (written by scripts/fetch-releases.js at build time)
+    releasesMap = await fetch('./releases.json')
+        .then(res => res.ok ? res.json() : {})
+        .catch(() => ({}));
 
     //
     // >>> INITIAL PAGE LOAD HANDLING <<<
