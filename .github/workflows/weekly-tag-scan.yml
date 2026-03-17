@@ -33,6 +33,8 @@ jobs:
                   node-version: '24'
 
             - name: Run tag export
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: node scripts/export-tags.js
 
             - name: Compute new tags and manage PR

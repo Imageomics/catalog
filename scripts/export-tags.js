@@ -38,8 +38,15 @@ const { ORGANIZATION_NAME, API_BASE_URL, MAX_ITEMS, ADDITIONAL_REPOS } = CONFIG;
 // ---------------------------------------------------------------------------
 // Fetch helpers
 // ---------------------------------------------------------------------------
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+
 const get = async (url) => {
-    const res = await fetch(url);
+    const headers = {};
+    if (GITHUB_TOKEN && url.includes('api.github.com')) {
+        headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`;
+        headers['Accept'] = 'application/vnd.github+json';
+    }
+    const res = await fetch(url, { headers });
     if (!res.ok) throw new Error(`HTTP ${res.status} — ${url}`);
     return { json: await res.json(), headers: res.headers };
 };
@@ -65,8 +72,8 @@ const collectGitHubTags = async () => {
     // Additional repos
     const additionalData = await Promise.all(
         ADDITIONAL_REPOS.map(ownerRepo =>
-            fetch(`https://api.github.com/repos/${ownerRepo}`)
-                .then(r => r.ok ? r.json() : null)
+            get(`https://api.github.com/repos/${ownerRepo}`)
+                .then(({ json }) => json)
                 .catch(() => null)
         )
     );
