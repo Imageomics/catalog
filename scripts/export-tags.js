@@ -24,13 +24,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const configPath = path.resolve(__dirname, '../public/config.js');
 const configText = fs.readFileSync(configPath, 'utf8');
 
-// Wrap in a function that returns CONFIG so we can eval it safely
 const CONFIG = (() => {
-    let result;
-    const script = configText.replace('const CONFIG =', 'result =') + '; result;';
-    // Use Function constructor to avoid direct eval in module scope
-    result = new Function('return ' + configText.match(/const CONFIG\s*=\s*(\{[\s\S]*?\});/)[1])();
-    return result;
+    const match = configText.match(/const CONFIG\s*=\s*(\{[\s\S]*?\});/);
+    if (!match) {
+        throw new Error(`Could not extract CONFIG object from ${configPath}. Check that public/config.js defines 'const CONFIG = { ... };'.`);
+    }
+    return new Function('return ' + match[1])();
 })();
 
 const { ORGANIZATION_NAME, API_BASE_URL, MAX_ITEMS, ADDITIONAL_REPOS } = CONFIG;
