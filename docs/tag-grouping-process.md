@@ -60,7 +60,7 @@ side-by-side. Pay particular attention to:
 - Closely related concepts that warrant separate canonical tags vs. one broader group
 - Any domain-specific or specialized terms. In our case, this was the Hawaiian birds and plants that Claude did not recognize.
 
-The manual pass is where the most value comes from.
+The manual pass by those familiar with the terms provides the most value, but is facilitated by the initial grouping.
 
 ---
 
