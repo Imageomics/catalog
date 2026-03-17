@@ -58,6 +58,7 @@ side-by-side. Pay particular attention to:
 - Hyphenated vs. space-separated forms (`animal-behavior` / `animal behavior`)
 - Acronyms and their expansions (`cv` / `computer vision`, `xai` / `explainable ai`)
 - Closely related concepts that warrant separate canonical tags vs. one broader group
+- Any domain-specific or specialized terms. In our case, this was the Hawaiian birds and plants that Claude did not recognize.
 
 The manual pass is where the most value comes from.
 
