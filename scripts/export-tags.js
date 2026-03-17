@@ -94,7 +94,7 @@ const collectHFTags = async (repoType) => {
 
     if (repoType === 'models') {
         const details = await Promise.all(
-            items.map(item =>
+            items.slice(0, MAX_ITEMS).map(item =>
                 fetch(`${API_BASE_URL}models/${item.id}`)
                     .then(r => r.ok ? r.json() : null)
                     .catch(() => null)
