@@ -82,7 +82,7 @@ const collectGitHubTags = async () => {
     const additionalNames = new Set(additionalRepos.map(r => r.full_name));
     const orgNonForks = allRepos.filter(r => r.name !== '.github' && !r.fork && !additionalNames.has(r.full_name));
 
-    [...orgNonForks, ...additionalRepos].slice(0, MAX_ITEMS).forEach(repo => {
+    [...additionalRepos, ...orgNonForks].slice(0, MAX_ITEMS).forEach(repo => {
         (repo.topics || []).forEach(t => allTags.add(t.toLowerCase()));
     });
 
