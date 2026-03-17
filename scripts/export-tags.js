@@ -8,7 +8,7 @@
 //
 // Output: scripts/tag-export.txt (one tag per line, sorted, deduplicated)
 //
-// Reads ORGANIZATION_NAME, API_BASE_URL, MAX_ITEMS, and ADDITIONAL_REPOS from
+// Reads ORGANIZATION_NAME, API_BASE_URL, and ADDITIONAL_REPOS from
 // public/config.js by parsing the file as text — no build step needed.
 //
 
@@ -32,7 +32,7 @@ const CONFIG = (() => {
     return new Function('return ' + match[1])();
 })();
 
-const { ORGANIZATION_NAME, API_BASE_URL, MAX_ITEMS, ADDITIONAL_REPOS } = CONFIG;
+const { ORGANIZATION_NAME, API_BASE_URL, ADDITIONAL_REPOS } = CONFIG;
 
 // ---------------------------------------------------------------------------
 // Fetch helpers
@@ -81,7 +81,7 @@ const collectGitHubTags = async () => {
     const additionalNames = new Set(additionalRepos.map(r => r.full_name));
     const orgNonForks = allRepos.filter(r => r.name !== '.github' && !r.fork && !additionalNames.has(r.full_name));
 
-    [...additionalRepos, ...orgNonForks].slice(0, MAX_ITEMS).forEach(repo => {
+    [...additionalRepos, ...orgNonForks].forEach(repo => {
         (repo.topics || []).forEach(t => allTags.add(t.toLowerCase()));
     });
 
@@ -94,7 +94,7 @@ const collectHFTags = async (repoType) => {
 
     if (repoType === 'models') {
         const details = await Promise.all(
-            items.slice(0, MAX_ITEMS).map(item =>
+            items.map(item =>
                 fetch(`${API_BASE_URL}models/${item.id}`)
                     .then(r => r.ok ? r.json() : null)
                     .catch(() => null)
@@ -103,7 +103,7 @@ const collectHFTags = async (repoType) => {
         items = details.filter(Boolean);
     }
 
-    items.slice(0, MAX_ITEMS).forEach(item => {
+    items.forEach(item => {
         const tags = item.cardData?.tags || item.tags || [];
         tags.forEach(t => allTags.add(String(t).toLowerCase()));
     });
