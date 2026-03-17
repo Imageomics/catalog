@@ -614,20 +614,6 @@ const applyFiltersAndSort = async (updateUrl = true) => {
             sorted.sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
             break;
 
-        case 'newRelease':
-            sorted.sort((a, b) => {
-                const aNew = Boolean(a.hasNewRelease);
-                const bNew = Boolean(b.hasNewRelease);
-
-                if (aNew === bNew) {
-                    return b.lastModified.getTime() - a.lastModified.getTime();
-                }
-
-                // Items with a new release come first
-                return aNew ? -1 : 1;
-            });
-            break;
-
         default: // default to lastModified logic
             sorted.sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
             break;
@@ -748,7 +734,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         searchInput.value = urlParams.q;
     }
 
-    const validSortValues = ['lastModified', 'createdAt', 'stars_desc', 'stars_asc', 'alphabetical_asc', 'alphabetical_desc', 'newRelease'];
+    const validSortValues = ['lastModified', 'createdAt', 'stars_desc', 'stars_asc', 'alphabetical_asc', 'alphabetical_desc'];
     if (urlParams.sort && validSortValues.includes(urlParams.sort)) {
         sortBySelect.value = urlParams.sort;
     }
