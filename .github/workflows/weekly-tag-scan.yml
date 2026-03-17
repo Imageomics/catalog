@@ -23,7 +23,7 @@ jobs:
             pull-requests: write
         steps:
             - name: Checkout
-              uses: actions/checkout@v6
+              uses: actions/checkout@v5
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -63,7 +63,7 @@ jobs:
                   {
                       echo "## New Tags Detected"
                       echo ""
-                      echo "The weekly tag scan found ${NEW_COUNT} new tags not yet mapped in \`public/tag-groups.js\`."
+                      echo "The weekly tag scan found ${NEW_COUNT} new tags since the last baseline in \`scripts/tag-export.txt\`."
                       echo ""
                       echo "<!-- TAG_LIST_START -->"
                       echo "$TAG_LIST"

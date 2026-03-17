@@ -76,7 +76,7 @@ You should update `public/tag-groups.js` when that PR is opened or updated.
 ## Step-by-Step Instructions
 
 1. **Open the Tag Scan PR** — find it in the repo's Pull Requests tab (title starts with
-   `[Tag Scan]`). The PR body lists every new tag that is not yet mapped.
+   `[Tag Scan]`). The PR body lists every raw tag that is new relative to `scripts/tag-export.txt`.
 
 2. **Open `public/tag-groups.js`** in an editor.
 
@@ -86,7 +86,7 @@ You should update `public/tag-groups.js` when that PR is opened or updated.
    |-----------|--------|
    | It's a variant of an existing concept (e.g. `bird-detection` when `object detection` exists) | Add the raw tag to the existing group's array |
    | It represents a genuinely new concept with no matching group | Add a new key + array, under the appropriate section comment |
-   | It's noise (a HuggingFace system tag that slipped through, a typo, a one-off) | Ignore it — no change needed |
+   | It's noise (a Hugging Face system tag that slipped through, a typo, a one-off) | Ignore it — no change needed |
 
 4. **Commit the updated `tag-groups.js` to the PR branch** (`tag-scan/auto`).
 
