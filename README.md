@@ -89,7 +89,7 @@ After modifying `config.js`, refresh your browser to see changes. The color sche
 
 Tags from GitHub topics and Hugging Face card metadata are free-form text, so the same concept often appears under multiple spellings (`computer-vision`, `computer vision`, `cv`). Tag groups normalize these into a single canonical tag shown in the filter dropdown, and are configured in `public/tag-groups.js`.
 
-When first setting up your catalog, run the export script to generate a full list of your organization's current raw tags, then use that list to build your initial `tag-groups.js`. A weekly GitHub Actions workflow will automatically open a pull request whenever 5 or more new unmapped tags are detected, keeping your tag groups up to date over time.
+When first setting up your catalog, run the export script to generate a full list of your organization's current raw tags (saved to `scripts/tag-export.txt`), then use that list to build your initial `tag-groups.js`. A weekly GitHub Actions workflow will automatically open a pull request whenever 5 or more new tags (relative to the last committed baseline in `scripts/tag-export.txt`) are detected, keeping your tag groups up to date over time.
 
 See **[docs/tag-grouping-process.md](docs/tag-grouping-process.md)** for full setup instructions, conventions, and guidance on using AI assistance for the initial grouping pass.
 
