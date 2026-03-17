@@ -85,6 +85,14 @@ Welcome to your new catalog repo! The primary way to personalize this catalog is
 
 After modifying `config.js`, refresh your browser to see changes. The color scheme will automatically apply to all UI elements throughout the site.
 
+### Setting Up Tag Groups
+
+Tags from GitHub topics and Hugging Face card metadata are free-form text, so the same concept often appears under multiple spellings (`computer-vision`, `computer vision`, `cv`). Tag groups normalize these into a single canonical tag shown in the filter dropdown, and are configured in `public/tag-groups.js`.
+
+When first setting up your catalog, run the export script to generate a full list of your organization's current raw tags, then use that list to build your initial `tag-groups.js`. A weekly GitHub Actions workflow will automatically open a pull request whenever 5 or more new unmapped tags are detected, keeping your tag groups up to date over time.
+
+See **[docs/tag-grouping-process.md](docs/tag-grouping-process.md)** for full setup instructions, conventions, and guidance on using AI assistance for the initial grouping pass.
+
 ## Local Testing
 
 This project uses [Vite](https://vite.dev/) as a build tool and requires **Node.js 24** (Active LTS). You can check your current version with `node --version`. To install or update Node, visit [nodejs.org](https://nodejs.org/en/download) or use a version manager like [nvm](https://github.com/nvm-sh/nvm):
