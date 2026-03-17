@@ -85,14 +85,18 @@ jobs:
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
 
-                  # Create/reset tag-scan/auto from current HEAD (main) and push the
-                  # updated tag-export.txt. Force-push is safe: this branch is owned
-                  # entirely by this workflow.
-                  git checkout -B tag-scan/auto
+                  # If the branch already exists on remote, check it out to preserve
+                  # any contributor commits. Otherwise create it fresh from main.
+                  if git ls-remote --exit-code origin tag-scan/auto > /dev/null 2>&1; then
+                      git fetch origin tag-scan/auto
+                      git checkout tag-scan/auto
+                  else
+                      git checkout -b tag-scan/auto
+                  fi
                   git add scripts/tag-export.txt
                   git diff --staged --quiet || \
                       git commit -m "chore: update tag-export.txt baseline [tag scan]"
-                  git push --force origin tag-scan/auto
+                  git push origin tag-scan/auto
 
                   # Check for an existing open [Tag Scan] PR using a client-side filter
                   # so the '[' and ']' characters in the title don't trip up GitHub search.
