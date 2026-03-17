@@ -76,7 +76,7 @@ You should update `public/tag-groups.js` when that PR is opened or updated.
 ## Step-by-Step Instructions
 
 1. **Open the Tag Scan PR** — find it in the repo's Pull Requests tab (title starts with
-   `[Tag Scan]`). The PR body lists every new tag that is not yet mapped.
+   `[Tag Scan]`). The PR body lists every raw tag that is new relative to `scripts/tag-export.txt`.
 
 2. **Open `public/tag-groups.js`** in an editor.
 
