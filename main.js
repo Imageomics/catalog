@@ -489,8 +489,15 @@ const renderHubItemCard = (item, repoType) => {
                             ${displayTitle}
                         </a>
                     </h2>
-                    <div class="flex-shrink-0 ml-2">
+                    <div class="flex-shrink-0 ml-2 flex flex-row items-center gap-2">
                         ${badgeHtml}
+                        ${(item.repoType === 'code' && item.hasNewRelease)
+                            ? `<a href="${item.latestReleaseUrl}" target="_blank" rel="noopener noreferrer"
+                                  class="release-badge inline-block text-xs font-bold text-white rounded-full px-2 py-1 hover:opacity-80 transition-opacity"
+                                  title="New release: ${escapeHTML(item.latestReleaseTag)}">
+                                  🚀 ${escapeHTML(item.latestReleaseTag)}
+                               </a>`
+                            : ''}
                     </div>
                 </div>
             </div>
@@ -505,13 +512,6 @@ const renderHubItemCard = (item, repoType) => {
                 </div>
                 <div class="flex justify-between items-center mt-4 text-xs text-gray-400 dark:text-gray-500">
                     <span>Updated: ${lastUpdatedDate}</span>
-                    ${(item.repoType === 'code' && item.hasNewRelease)
-                        ? `<a href="${item.latestReleaseUrl}" target="_blank" rel="noopener noreferrer"
-                              class="release-badge inline-block text-xs font-bold text-white rounded-full px-2 py-1 hover:opacity-80 transition-opacity"
-                              title="New release: ${escapeHTML(item.latestReleaseTag)}">
-                              🚀 ${escapeHTML(item.latestReleaseTag)}
-                           </a>`
-                        : ''}
                 </div>
             </div>
         </div>
