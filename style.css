@@ -2,7 +2,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
- * These variables are set from config.js and can be customized there.
+ * These variables are set from config.yaml and can be customized there.
  * Default values (Imageomics colors) are provided as fallbacks.
  */
 :root {
@@ -12,8 +12,12 @@
     /* Secondary brand color */
     --color-accent: #0097b2;
     /* Accent color */
+    --color-accent-dark: #4fd1eb;
+    /* Dark mode accent color */
     --color-tag: #9bcb5e;
     /* Tag background color */
+    --font-family: 'Inter';
+    /* Font family */
 }
 
 /* Overall body and typography styles, controlling the font, background color, and text color of the entire page. */
