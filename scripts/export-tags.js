@@ -23,8 +23,27 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Parse config.yaml to extract the CONFIG object values we need
 // ---------------------------------------------------------------------------
 const configPath = path.resolve(__dirname, '../public/config.yaml');
-const CONFIG = jsYaml.load(fs.readFileSync(configPath, 'utf8'));
+const rawConfig = jsYaml.load(fs.readFileSync(configPath, 'utf8'));
 
+if (!rawConfig || typeof rawConfig !== 'object' || Array.isArray(rawConfig)) {
+    throw new Error(`Invalid config at ${configPath}: expected a YAML mapping/object.`);
+}
+
+const requiredKeys = ['ORGANIZATION_NAME', 'API_BASE_URL', 'ADDITIONAL_REPOS'];
+const missingKeys = requiredKeys.filter((key) => !(key in rawConfig));
+if (missingKeys.length > 0) {
+    throw new Error(
+        `Invalid config at ${configPath}: missing required key(s): ${missingKeys.join(', ')}`
+    );
+}
+
+if (!Array.isArray(rawConfig.ADDITIONAL_REPOS)) {
+    throw new Error(
+        `Invalid config at ${configPath}: ADDITIONAL_REPOS must be an array.`
+    );
+}
+
+const CONFIG = rawConfig;
 const { ORGANIZATION_NAME, API_BASE_URL, ADDITIONAL_REPOS } = CONFIG;
 
 // ---------------------------------------------------------------------------
