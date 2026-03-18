@@ -77,7 +77,6 @@ Welcome to your new catalog repo! The primary way to personalize this catalog is
 * **API & Behavior Settings:**
   * `API_BASE_URL`: Hugging Face API base URL (default: `"https://huggingface.co/api/"`)
   * `REFRESH_INTERVAL_DAYS`: Number of days to consider an item "new" (default: `30`)
-  * `MAX_ITEMS`: Maximum number of items to fetch per category (default: `100`)
   * `ADDITIONAL_REPOS`: Array of forked or non-org GitHub repositories to include, formatted `<owner>/<repo-name>` (non-forks are included by default). Use `[]` if there are none you wish to include
 
 * **Typography:**
