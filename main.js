@@ -18,7 +18,6 @@ const ORGANIZATION_NAME = CONFIG.ORGANIZATION_NAME;
 const CATALOG_REPO_NAME = CONFIG.CATALOG_REPO_NAME;
 const API_BASE_URL = CONFIG.API_BASE_URL;
 const REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
-const MAX_ITEMS = CONFIG.MAX_ITEMS;
 const ADDITIONAL_REPOS = CONFIG.ADDITIONAL_REPOS;
 
 // Build a reverse lookup from TAG_GROUPS (defined in tag-groups.js): raw tag → [canonical tags]
@@ -238,9 +237,8 @@ const fetchHubItems = async (repoType) => {
             const orgRepoNames = new Set(additionalRepos.map(r => r.full_name));
             const orgNonForks = allRepos.filter(repo => repo.name !== ".github" && !repo.fork && !orgRepoNames.has(repo.full_name));
 
-            // Prioritize additional repos, then fill remaining slots from org non-forks
-            const remainingSlots = Math.max(0, MAX_ITEMS - additionalRepos.length);
-            items = [...additionalRepos, ...orgNonForks.slice(0, remainingSlots)]
+            // Prioritize additional repos, then include all remaining org non-forks
+            items = [...additionalRepos, ...orgNonForks]
                 .map(repo => {
                     const createdAt = new Date(repo.created_at);
                     const lastModified = new Date(repo.updated_at);
@@ -305,7 +303,7 @@ const fetchHubItems = async (repoType) => {
         }
 
         // Process the data to include metadata and a 'new' flag
-        const processedItems = hfItems.slice(0, MAX_ITEMS).map(item => {
+        const processedItems = hfItems.map(item => {
             const createdAt = new Date(item.createdAt);
             const lastModified = new Date(item.lastModified);
             const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
