@@ -237,7 +237,7 @@ const fetchHubItems = async (repoType) => {
             const orgRepoNames = new Set(additionalRepos.map(r => r.full_name));
             const orgNonForks = allRepos.filter(repo => repo.name !== ".github" && !repo.fork && !orgRepoNames.has(repo.full_name));
 
-            // Prioritize additional repos, then include all remaining org non-forks
+            // Process additional repos and all remaining org non-forks to include metadata and 'new' flag as appropriate
             items = [...additionalRepos, ...orgNonForks]
                 .map(repo => {
                     const createdAt = new Date(repo.created_at);
