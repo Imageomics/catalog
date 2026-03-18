@@ -802,6 +802,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Initialize the Catalog Badge (Stars/Forks/Version)
+    // Guard: if ORGANIZATION_NAME is missing (e.g. config.yaml failed to load),
+    // stop here — proceeding would fire requests like ?author=&full=true which
+    // could return unbounded results from the Hugging Face API.
+    if (!ORGANIZATION_NAME) return;
+
     fetchCatalogStats();
 
     //
