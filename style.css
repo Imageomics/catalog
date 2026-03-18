@@ -49,6 +49,22 @@ body {
     color: #222222;
 }
 
+/* Archived badge — matches GitHub's archived repo label style. */
+.archived-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff8c5;
+    border: 1px solid #d4a72c;
+    color: #633c01;
+}
+
+.dark .archived-badge {
+    background-color: #2d2000;
+    border-color: #9a6700;
+    color: #e3b341;
+}
+
 /* Animation for the "New!" badge. */
 .new-badge {
     /* Accent color  */
