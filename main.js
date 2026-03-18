@@ -701,12 +701,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load config before anything else
     try {
         CONFIG = await configPromise;
+
+        // Validate required fields so devs get a clear error instead of a cryptic crash
+        const missing = [];
+        if (!CONFIG.ORGANIZATION_NAME)                 missing.push('ORGANIZATION_NAME');
+        if (!CONFIG.API_BASE_URL)                      missing.push('API_BASE_URL');
+        if (CONFIG.REFRESH_INTERVAL_DAYS == null)      missing.push('REFRESH_INTERVAL_DAYS');
+        if (!Array.isArray(CONFIG.ADDITIONAL_REPOS))   missing.push('ADDITIONAL_REPOS (must be a list)');
+        if (!CONFIG.COLORS || typeof CONFIG.COLORS !== 'object') {
+            missing.push('COLORS (must be an object with primary, secondary, accent, accentDark, tag)');
+        } else {
+            const missingColors = ['primary', 'secondary', 'accent', 'accentDark', 'tag'].filter(k => !CONFIG.COLORS[k]);
+            if (missingColors.length) missing.push(`COLORS keys: ${missingColors.join(', ')}`);
+        }
+        if (missing.length) throw new Error(`config.yaml is missing required fields: ${missing.join('; ')}`);
     } catch (error) {
         console.error('Error loading config.yaml:', error);
         // Render visible error banner
         const errorDiv = document.createElement('div');
         errorDiv.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #fee; color: #c33; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 10000; max-width: 90%; text-align: center;';
-        errorDiv.innerHTML = '<strong>Configuration Error:</strong> Failed to load config.yaml. Using default settings.';
+        errorDiv.innerHTML = `<strong>Configuration Error:</strong> ${error.message}. Using default settings.`;
         document.body.prepend(errorDiv);
         setTimeout(() => errorDiv.remove(), 10000);
         // Fall back to defaults so the page isn't completely broken
