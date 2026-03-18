@@ -748,7 +748,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.documentElement.style.setProperty('--color-accent',      CONFIG.COLORS?.accent      || '#0097b2');
     document.documentElement.style.setProperty('--color-accent-dark', CONFIG.COLORS?.accentDark  || '#4fd1eb');
     document.documentElement.style.setProperty('--color-tag',         CONFIG.COLORS?.tag         || '#9bcb5e');
-    document.documentElement.style.setProperty('--font-family',       CONFIG.FONT_FAMILY         || 'Inter');
+    const fontFamily = CONFIG.FONT_FAMILY || 'Inter';
+    document.documentElement.style.setProperty('--font-family', fontFamily.includes(' ') ? `"${fontFamily}"` : fontFamily);
 
     // Update Google Fonts link
     if (CONFIG.FONT_FAMILY) {
