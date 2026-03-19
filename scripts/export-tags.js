@@ -9,29 +9,41 @@
 // Output: scripts/tag-export.txt (one tag per line, sorted, deduplicated)
 //
 // Reads ORGANIZATION_NAME, API_BASE_URL, and ADDITIONAL_REPOS from
-// public/config.js by parsing the file as text — no build step needed.
+// public/config.yaml
 //
 
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import jsYaml from 'js-yaml';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ---------------------------------------------------------------------------
-// Parse config.js to extract the CONFIG object values we need
+// Parse config.yaml to extract the CONFIG object values we need
 // ---------------------------------------------------------------------------
-const configPath = path.resolve(__dirname, '../public/config.js');
-const configText = fs.readFileSync(configPath, 'utf8');
+const configPath = path.resolve(__dirname, '../public/config.yaml');
+const rawConfig = jsYaml.load(fs.readFileSync(configPath, 'utf8'));
 
-const CONFIG = (() => {
-    const match = configText.match(/const CONFIG\s*=\s*(\{[\s\S]*?\});/);
-    if (!match) {
-        throw new Error(`Could not extract CONFIG object from ${configPath}. Check that public/config.js defines 'const CONFIG = { ... };'.`);
-    }
-    return new Function('return ' + match[1])();
-})();
+if (!rawConfig || typeof rawConfig !== 'object' || Array.isArray(rawConfig)) {
+    throw new Error(`Invalid config at ${configPath}: expected a YAML mapping/object.`);
+}
 
+const requiredKeys = ['ORGANIZATION_NAME', 'API_BASE_URL', 'ADDITIONAL_REPOS'];
+const missingKeys = requiredKeys.filter((key) => !(key in rawConfig));
+if (missingKeys.length > 0) {
+    throw new Error(
+        `Invalid config at ${configPath}: missing required key(s): ${missingKeys.join(', ')}`
+    );
+}
+
+if (!Array.isArray(rawConfig.ADDITIONAL_REPOS)) {
+    throw new Error(
+        `Invalid config at ${configPath}: ADDITIONAL_REPOS must be an array.`
+    );
+}
+
+const CONFIG = rawConfig;
 const { ORGANIZATION_NAME, API_BASE_URL, ADDITIONAL_REPOS } = CONFIG;
 
 // ---------------------------------------------------------------------------

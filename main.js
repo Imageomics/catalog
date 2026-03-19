@@ -1,24 +1,25 @@
 //
 // Catalog - Frontend Logic
 // This script handles data fetching, searching, filtering, and rendering for code, datasets, models, and spaces.
-// Configuration is loaded from config.js
+// Configuration is loaded from config.yaml
 //
 // SECTION 1: CONFIGURATION AND STATE MANAGEMENT
 //
-// Note: CONFIG is defined in config.js and must be loaded before this script
 
-if (typeof CONFIG === 'undefined') {
-    throw new Error(
-        'CONFIG object is not defined. Please ensure config.js is loaded before main.js. ' +
-        'Check that config.js exists and contains a valid CONFIG object.'
-    );
-}
+import jsYaml from 'js-yaml';
 
-const ORGANIZATION_NAME = CONFIG.ORGANIZATION_NAME;
-const CATALOG_REPO_NAME = CONFIG.CATALOG_REPO_NAME;
-const API_BASE_URL = CONFIG.API_BASE_URL;
-const REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
-const ADDITIONAL_REPOS = CONFIG.ADDITIONAL_REPOS;
+// Start fetching config immediately when the module loads (before DOMContentLoaded)
+// so the fetch is in-flight while the DOM is being parsed.
+const configPromise = fetch('config.yaml')
+    .then(r => {
+        if (!r.ok) throw new Error(`Failed to load config.yaml: HTTP ${r.status}`);
+        return r.text();
+    })
+    .then(text => jsYaml.load(text));
+
+// Module-scope lets — assigned after config loads, used by all functions below
+let CONFIG;
+let ORGANIZATION_NAME, CATALOG_REPO_NAME, API_BASE_URL, REFRESH_INTERVAL_DAYS, ADDITIONAL_REPOS;
 
 // Build a reverse lookup from TAG_GROUPS (defined in tag-groups.js): raw tag → [canonical tags]
 // A raw tag may appear in multiple groups, so the value is an array.
@@ -707,7 +708,71 @@ const initializeUIFromConfig = () => {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Initialize UI from config first
+    // Load config before anything else
+    try {
+        CONFIG = await configPromise;
+
+        // Validate required fields so devs get a clear error instead of a cryptic crash
+        const missing = [];
+        if (!CONFIG.ORGANIZATION_NAME)                 missing.push('ORGANIZATION_NAME');
+        if (!CONFIG.API_BASE_URL)                      missing.push('API_BASE_URL');
+        if (CONFIG.REFRESH_INTERVAL_DAYS == null)      missing.push('REFRESH_INTERVAL_DAYS');
+        if (!Array.isArray(CONFIG.ADDITIONAL_REPOS))   missing.push('ADDITIONAL_REPOS (must be a list)');
+        if (!CONFIG.COLORS || typeof CONFIG.COLORS !== 'object') {
+            missing.push('COLORS (must be an object with primary, secondary, accent, accentDark, tag)');
+        } else {
+            const missingColors = ['primary', 'secondary', 'accent', 'accentDark', 'tag'].filter(k => !CONFIG.COLORS[k]);
+            if (missingColors.length) missing.push(`COLORS keys: ${missingColors.join(', ')}`);
+        }
+        if (missing.length) throw new Error(`config.yaml is missing required fields: ${missing.join('; ')}`);
+    } catch (error) {
+        console.error('Error loading config.yaml:', error);
+        // Render visible error banner
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #fee; color: #c33; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 10000; max-width: 90%; text-align: center;';
+        errorDiv.innerHTML = `<strong>Configuration Error:</strong> ${error.message}. Using default settings.`;
+        document.body.prepend(errorDiv);
+        setTimeout(() => errorDiv.remove(), 10000);
+        // Fall back to defaults so the page isn't completely broken
+        CONFIG = {
+            ORGANIZATION_NAME: '', CATALOG_REPO_NAME: '', GITHUB_ORG_NAME: '',
+            CATALOG_TITLE: 'Catalog', CATALOG_DESCRIPTION: '',
+            LOGO_URL: '', FAVICON_URL: '',
+            COLORS: { primary: '#92991c', secondary: '#5d8095', accent: '#0097b2', accentDark: '#4fd1eb', tag: '#9bcb5e' },
+            API_BASE_URL: 'https://huggingface.co/api/', REFRESH_INTERVAL_DAYS: 30,
+            ADDITIONAL_REPOS: [], FONT_FAMILY: 'Inter'
+        };
+    }
+
+    // Assign module-scope variables used by all functions
+    ORGANIZATION_NAME     = CONFIG.ORGANIZATION_NAME;
+    CATALOG_REPO_NAME     = CONFIG.CATALOG_REPO_NAME;
+    API_BASE_URL          = CONFIG.API_BASE_URL;
+    REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
+    ADDITIONAL_REPOS      = CONFIG.ADDITIONAL_REPOS;
+
+    // Apply CSS custom properties and document metadata
+    document.title = CONFIG.CATALOG_TITLE || 'Catalog';
+    document.documentElement.style.setProperty('--color-primary',     CONFIG.COLORS?.primary     || '#92991c');
+    document.documentElement.style.setProperty('--color-secondary',   CONFIG.COLORS?.secondary   || '#5d8095');
+    document.documentElement.style.setProperty('--color-accent',      CONFIG.COLORS?.accent      || '#0097b2');
+    document.documentElement.style.setProperty('--color-accent-dark', CONFIG.COLORS?.accentDark  || '#4fd1eb');
+    document.documentElement.style.setProperty('--color-tag',         CONFIG.COLORS?.tag         || '#9bcb5e');
+    const fontFamily = CONFIG.FONT_FAMILY || 'Inter';
+    document.documentElement.style.setProperty('--font-family', fontFamily.includes(' ') ? `"${fontFamily}"` : fontFamily);
+
+    // Update Google Fonts link
+    if (CONFIG.FONT_FAMILY) {
+        const fontFamily = CONFIG.FONT_FAMILY.replace(/\s+/g, '+');
+        const fontLink = document.getElementById('font-link');
+        if (fontLink) fontLink.href = `https://fonts.googleapis.com/css2?family=${fontFamily}:wght@400;500;600;700&display=swap`;
+    }
+
+    // Set favicon
+    const faviconLink = document.getElementById('favicon-link');
+    if (faviconLink && CONFIG.FAVICON_URL) faviconLink.href = CONFIG.FAVICON_URL;
+
+    // Initialize UI from config
     initializeUIFromConfig();
 
     const searchInput = document.getElementById('searchInput');
@@ -770,6 +835,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Initialize the Catalog Badge (Stars/Forks/Version)
+    // Guard: if ORGANIZATION_NAME is missing (e.g. config.yaml failed to load),
+    // stop here — proceeding would fire requests like ?author=&full=true which
+    // could return unbounded results from the Hugging Face API.
+    if (!ORGANIZATION_NAME) return;
+
     fetchCatalogStats();
 
     //
