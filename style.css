@@ -2,7 +2,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
- * These variables are set from config.yaml and can be customized there.
+ * These variables are set from config.yaml and can be customized there to override these default backups.
  * Default values (Imageomics colors) are provided as fallbacks.
  */
 :root {
