@@ -137,6 +137,9 @@ const updateUrlParams = (state) => {
     if (state.tag && state.tag !== '') {
         params.set('tag', state.tag);
     }
+    if (state.archived && state.archived !== 'active') {
+        params.set('archived', state.archived);
+    }
 
     const paramString = params.toString();
     const newHash = paramString ? `#${paramString}` : '';
@@ -161,7 +164,8 @@ const getCurrentState = () => {
         type: document.getElementById('repoType')?.value || 'all',
         q: document.getElementById('searchInput')?.value || '',
         sort: document.getElementById('sortBy')?.value || 'lastModified',
-        tag: document.getElementById('tagFilter')?.value || ''
+        tag: document.getElementById('tagFilter')?.value || '',
+        archived: document.getElementById('archiveFilter')?.value || 'active'
     };
 };
 
@@ -255,6 +259,7 @@ const fetchHubItems = async (repoType) => {
                         createdAt,
                         lastModified,
                         isNew,
+                        archived: repo.archived || false,
                         tags,
                         rawTags,
                         displayTags,
@@ -320,6 +325,7 @@ const fetchHubItems = async (repoType) => {
                 createdAt,
                 lastModified,
                 isNew,
+                archived: false,
                 likes: item.likes || 0,
                 tags,
                 rawTags,
@@ -496,6 +502,7 @@ const renderHubItemCard = (item, repoType) => {
                 </div>
                 <div class="flex justify-between items-center mt-4 text-xs text-gray-400 dark:text-gray-500">
                     <span>Updated: ${lastUpdatedDate}</span>
+                    ${item.archived ? `<span class="archived-badge text-xs font-medium px-2.5 py-1 rounded-full">Archived</span>` : ''}
                 </div>
             </div>
         </div>
@@ -533,6 +540,7 @@ const applyFiltersAndSort = async (updateUrl = true) => {
     const sortBy = document.getElementById('sortBy').value;
     const tagFilter = document.getElementById('tagFilter').value;
     const repoType = document.getElementById('repoType').value;
+    const archiveFilter = document.getElementById('archiveFilter').value;
     let currentItems;
 
     // Update URL with current state if requested
@@ -551,7 +559,7 @@ const applyFiltersAndSort = async (updateUrl = true) => {
         currentItems = allItems[repoType];
     }
 
-    // Step 1: Filter the items based on the search and tag filters
+    // Step 1: Filter the items based on the search, tag, and archive filters
     const filtered = currentItems.filter(item => {
         const matchesSearch = item.id.toLowerCase().includes(searchTerm) ||
             item.description?.toLowerCase().includes(searchTerm) ||
@@ -560,7 +568,9 @@ const applyFiltersAndSort = async (updateUrl = true) => {
 
         const matchesTag = tagFilter === "" || item.tags.some(tag => tag.toLowerCase() === tagFilter.toLowerCase());
 
-        return matchesSearch && matchesTag;
+        const matchesArchive = archiveFilter === "all" || !item.archived;
+
+        return matchesSearch && matchesTag && matchesArchive;
     });
 
     // Step 2: Sort the filtered items
@@ -704,6 +714,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sortBySelect = document.getElementById('sortBy');
     const tagFilterSelect = document.getElementById('tagFilter');
     const repoTypeSelect = document.getElementById('repoType');
+    const archiveFilterSelect = document.getElementById('archiveFilter');
 
     // Parse URL parameters to restore state
     const urlParams = parseUrlParams();
@@ -725,10 +736,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const initialType = repoTypeSelect.value;
 
+    // Restore archive filter from URL
+    const validArchiveValues = ['active', 'all'];
+    if (urlParams.archived && validArchiveValues.includes(urlParams.archived)) {
+        archiveFilterSelect.value = urlParams.archived;
+    }
+
     // Add input and change event listeners
     searchInput.addEventListener('input', applyFiltersAndSort);
     sortBySelect.addEventListener('change', applyFiltersAndSort);
     tagFilterSelect.addEventListener('change', applyFiltersAndSort);
+    archiveFilterSelect.addEventListener('change', applyFiltersAndSort);
 
     repoTypeSelect.addEventListener('change', async (event) => {
         const newRepoType = event.target.value;
