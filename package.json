@@ -1,6 +1,6 @@
 {
   "name": "catalog",
-  "version": "1.0.0",
+  "version": "4.0.0",
   "description": "Repository for web-based Imageomics code, data, model, and spaces catalog. This catalog is designed to use the GitHub API for searching all code repositories created under the [Imageomics GitHub Organization](https://github.com/Imageomics) and the Hugging Face API for searching all dataset, model, and spaces repositories created under the [Imageomics Hugging Face Organization](https://huggingface.co/imageomics).",
   "main": "main.js",
   "scripts": {
