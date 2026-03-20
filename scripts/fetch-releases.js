@@ -4,13 +4,25 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import jsYaml from 'js-yaml';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Load CONFIG from public/config.js (defined as a global, not an ES module export)
-const configCode = readFileSync(join(__dirname, '../public/config.js'), 'utf8');
-const CONFIG = new Function(configCode + '; return CONFIG;')();
+// Load CONFIG from public/config.yaml
+const configPath = join(__dirname, '../public/config.yaml');
+const CONFIG = jsYaml.load(readFileSync(configPath, 'utf8'));
+
+if (!CONFIG || typeof CONFIG !== 'object' || Array.isArray(CONFIG)) {
+    throw new Error(`Invalid config at ${configPath}: expected a YAML mapping/object.`);
+}
+const missingKeys = ['ORGANIZATION_NAME', 'ADDITIONAL_REPOS'].filter(k => !(k in CONFIG));
+if (missingKeys.length > 0) {
+    throw new Error(`Invalid config at ${configPath}: missing required key(s): ${missingKeys.join(', ')}`);
+}
+if (!Array.isArray(CONFIG.ADDITIONAL_REPOS)) {
+    throw new Error(`Invalid config at ${configPath}: ADDITIONAL_REPOS must be an array.`);
+}
 
 const TOKEN = process.env.GITHUB_TOKEN;
 const headers = TOKEN
