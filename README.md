@@ -88,6 +88,8 @@ Welcome to your new catalog repo! The primary way to personalize this catalog is
 
 After modifying `config.yaml`, refresh your browser to see changes. The color scheme will automatically apply to all UI elements throughout the site.
 
+**`package.json`**: Update this file with your information and that of your catalog repository (version and URL). This file will auto-update the `package-lock.json` through `npm install`, and should have the version updated for new releases.
+
 #### Setting Up Tag Groups
 
 Tags from GitHub topics and Hugging Face card metadata are free-form text, so the same concept often appears under multiple spellings (`computer-vision`, `computer vision`, `cv`). Tag groups normalize these into a single canonical tag shown in the filter dropdown, and are configured in `public/tag-groups.js`.
