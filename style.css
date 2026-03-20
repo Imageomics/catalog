@@ -76,6 +76,11 @@ body {
     animation: badge-pulse 1.5s infinite;
 }
 
+/* Style for the "New Release" badge shown on code repo cards. */
+.release-badge {
+    background-color: var(--color-accent);
+}
+
 /* Defines the pulsating animation for the new badge. */
 @keyframes badge-pulse {
 
