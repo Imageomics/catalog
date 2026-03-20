@@ -1,0 +1,436 @@
+3d-models
+acacia koa
+aerial
+aerial-imagery
+african painted dog
+ai-ready
+ai-ready-infrastructure
+akala
+alignment
+amakihi
+amphibians
+animal
+animal behavior
+animal detection
+animal-behavior
+animal-behavior-recognition
+animal-detection
+animals
+annotated video
+annotation
+annotations
+anomaly-detection
+apapane
+api
+api-integration
+applied machine learning
+audio
+autonomy
+baboons
+balanced
+basal pronotum
+beetles
+behavior
+behavior recognition
+behavioral-ecology
+behavioural-ecology
+benchmarking
+benchmarks
+best-practices
+bioacoustics
+bioclip
+biocontrol agents
+biodiversity
+bioinformatics
+biological visual task
+biology
+bird
+bird acuity
+bird habitat
+bird view
+birdnet
+birds
+blender-addon
+butterflies
+butterfly
+butterfly acuity
+butterfly view
+camera traps
+camera-trap
+camera-traps
+captions
+carabidae
+carpentry-workshop
+catalog
+checksums
+citizen-science
+class-activation-maps
+classification
+claude
+cli
+cli-cheatsheet
+clidemia hirta
+climate
+clip
+cloud-forest
+clustering
+code
+collaboration
+collaborative-workflows
+colorchecker
+command-line-interface
+computer vision
+computer-vision
+conservation
+containerization
+containerization-with-docker
+contrast enhancement
+counterfactual-explanations
+cross types
+cross-attention
+csv
+csv-to-json
+cv
+cvat
+damage
+dashboard
+data
+data-analysis
+data-exploration
+data-explorer
+data-management
+data-validation
+data-visualization
+dataset-documentation
+dataset-generation
+dataset-processing
+datasets
+deduplication
+desert
+detection
+detectron2
+diffusion-models
+dimensionality-reduction
+discoverability
+discrete wavelet transform
+disease
+documentation
+dog
+dorsal
+download
+downloader
+downsized
+drone
+drone-videos
+drones
+drought
+duckdb
+ecology
+eda
+editing
+eggs
+elytra
+elytra length
+elytra width
+embedding
+embedding-exploration
+embeddings
+endangered species
+endemic-birds
+endemic-species
+erato
+evaluation
+evolution
+evolutionary biology
+evolutionary-biology
+explainable-ai
+exploration
+exploratory-data-analysis
+exploratory-data-visualizations
+face-detection
+fair
+faiss
+feature-extraction
+fiftyone
+file-verification
+fine-grained classification
+fine-grained-classification
+fine-tuned
+fish
+focal-observation
+forewings
+format:parquet
+fragmented habitat
+frogs
+full body
+functional-traits
+fungi
+geodata
+geospatial
+giraffe
+giraffes
+gis
+git
+github
+google-sheets
+gps-tracker
+greenness
+grevy's
+grevy's zebra
+grevys
+ground beetles
+ground-beetles
+guide
+haha
+hawaii
+hawaiian birds
+hawaiian-forest
+hawaiian-honeycreeper
+hdf5
+hdf5-visualization
+heliconius
+heliconius erato
+heliconius melpomene
+hierarchical-conditioning
+hierarchy
+hindwings
+huggingface
+human-in-the-loop
+hybrid-detection
+hybrids
+image
+image analysis
+image classification
+image-based-search
+image-classification
+image-exploration
+image-filtering
+image-preview
+image-recognition
+image-search
+imageomics
+images
+imbalanced
+insect
+interactive
+interactive-evaluation
+interdisciplinary
+interpretability
+interpretable
+interpretable-ai
+interpretable-machine-learning
+interpretation
+invasive
+invasive species
+invasive-mammals
+invasive-species
+inventory
+island
+kabr
+kalij
+kenya
+keyword-search
+kipuka
+knowledge-guided
+knowledge-guided-machine-learning
+koa
+lab-bred
+label
+ldw24
+ldw25
+ldw26
+leaf damage
+leaves
+lepidoptera
+library:dask
+library:datasets
+library:mlcroissant
+library:polars
+license:cc0-1.0
+license:mit
+lions
+location
+loss:cosentloss
+lovedataweek
+mammals
+map-view
+mapping
+mcp
+mds
+measurements
+megadetector
+melpomene
+metadata
+metadata generation
+metadata-standards
+mimic groups
+mimicry
+mimics
+mini-scenes
+ml-challenge
+modality:text
+model
+models
+morphometrics
+moths
+motion-activated
+motion-triggered
+mpala
+mpala research centre
+mpi-applications
+mullerian-mimicry
+multi-modal
+multimodal
+museum specimen
+museum specimens
+museum-images
+neon
+neon-data
+nj fish
+nlp
+nocturnal
+o'hia
+object detection
+object-detection
+ohelo
+ohio
+omao
+onager
+ontology
+open-science
+open-source
+organism
+organization-based-tools
+out-of-distribution
+palooza
+parallel
+passive acoustic monitoring
+persian onanger
+phenology
+phenoscape
+phylogenetic-trees
+phylogenetics
+phylogeny
+pilo
+pinned specimens
+pinned-specimens
+pipelines
+plains
+plains zebra
+plant-identification
+plant-phenology
+plants
+processed
+project-website
+projects
+provenance
+przewalski
+pukiawe
+r
+rare species
+rare-species
+raw-data
+reference
+region:us
+repo-records
+reproducibility
+reproducible-research
+reptiles
+restoration
+rgb
+robotics
+rodents
+ruler
+saliency-map
+saliency-maps
+sample-code
+samples
+satellite-imagery
+savanna
+scan-samples
+searchability
+segmentation
+sentence-similarity
+sentence-transformers
+separated wings
+similarity-search
+simulations
+size
+size_categories:100m<n<1b
+slicer
+slicermorph
+small leaf kolea
+snakemake
+snakes
+soundscape
+spaces
+species
+species classification
+species-classification
+species-identification
+specimen
+specimen-images
+specimen-records
+spei
+standards
+synthetic-captions
+taxonomic-resolution
+taxonomy
+telemetry
+time series
+time-budget
+toads
+tools
+trait
+trait counting
+trait grounding
+trait identification
+trait referring
+trait-detection
+trait-identification
+trait-masking
+trait-segmentation
+trait-swapping
+traits
+transformer
+transformers
+tree
+tree planting
+tree-of-life
+tree-seedling-detection
+uav
+understory
+ungulates
+unlabeled
+url
+ventral
+verifier
+version-control
+video
+vision
+vision-transformer
+vision-transformers
+visual-analytics
+visualization
+visualizations
+vlms
+wasps
+weighted-multi-dimensional-scaling
+white-eye
+whitebalance
+wild
+wildlife
+wildlife monitoring
+wildlife-monitoring
+wing-segmentation
+workflow-automation
+workshop-website
+xai
+xml
+yolo
+yolo-object-detection
+zebra
+zebras
+zero-shot
+zero-shot-image-classification
+zero-shot-text-retrieval

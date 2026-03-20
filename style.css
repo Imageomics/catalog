@@ -2,7 +2,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
- * These variables are set from config.js and can be customized there.
+ * These variables are set from config.yaml and can be customized there to override these default backups.
  * Default values (Imageomics colors) are provided as fallbacks.
  */
 :root {
@@ -12,8 +12,12 @@
     /* Secondary brand color */
     --color-accent: #0097b2;
     /* Accent color */
+    --color-accent-dark: #4fd1eb;
+    /* Dark mode accent color */
     --color-tag: #9bcb5e;
     /* Tag background color */
+    --font-family: 'Inter';
+    /* Font family */
 }
 
 /* Overall body and typography styles, controlling the font, background color, and text color of the entire page. */
@@ -47,6 +51,22 @@ body {
     background-color: var(--color-tag);
     /* Dark text for contrast */
     color: #222222;
+}
+
+/* Archived badge — matches GitHub's archived repo label style. */
+.archived-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff8c5;
+    border: 1px solid #d4a72c;
+    color: #633c01;
+}
+
+.dark .archived-badge {
+    background-color: #2d2000;
+    border-color: #9a6700;
+    color: #e3b341;
 }
 
 /* Animation for the "New!" badge. */

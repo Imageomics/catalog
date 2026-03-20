@@ -1,0 +1,38 @@
+# Configuration file for Catalog Template
+# Customize these values to personalize the catalog for your organization
+
+# Organization & Repository Settings
+ORGANIZATION_NAME: imageomics       # GitHub/Hugging Face organization name (lowercase for API calls)
+GITHUB_ORG_NAME: Imageomics         # Display name for GitHub organization (can differ from API name)
+CATALOG_REPO_NAME: catalog          # Repository name for the catalog itself (used for stats badge)
+
+# Branding
+CATALOG_TITLE: Imageomics Catalog
+CATALOG_DESCRIPTION: "Explore and discover public code, datasets, models, and spaces."
+LOGO_URL: "https://github.com/Imageomics/Imageomics-guide/raw/3478acc0068a87a5604069d04a29bdb0795c2045/docs/logos/Imageomics_logo_butterfly.png"
+FAVICON_URL: "https://github.com/Imageomics/Imageomics-guide/raw/3478acc0068a87a5604069d04a29bdb0795c2045/docs/logos/Imageomics_logo_butterfly.png"
+
+# Colors (CSS custom properties)
+COLORS:
+  primary: "#92991c"      # Primary brand color (Imageomics Green)
+  secondary: "#5d8095"    # Secondary brand color (Imageomics Blue)
+  accent: "#0097b2"       # Accent color (Dark Teal)
+  accentDark: "#4fd1eb"   # Dark mode accent color (Light Cyan)
+  tag: "#9bcb5e"          # Tag background color (Light Green)
+
+# API & Behavior Settings
+API_BASE_URL: "https://huggingface.co/api/"
+REFRESH_INTERVAL_DAYS: 30
+
+# Array of "owner/repo" strings to include in addition to non-forked org repos.
+# Use this for forked repos within the org and repos outside the org entirely.
+ADDITIONAL_REPOS:
+  - "Imageomics/Fish-Vista"
+  - "Imageomics/phylonn"
+  - "Imageomics/telemetry-dashboard"
+  - "Imageomics/docker-workshop"
+  - "jennamk14/autonomous_drone_simulator"
+  - "ixlab/vidformer"
+
+# Typography
+FONT_FAMILY: Inter    # Font family for the site
