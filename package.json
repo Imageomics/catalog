@@ -12,9 +12,23 @@
     "type": "git",
     "url": "git+https://github.com/Imageomics/catalog.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+      "imageomics",
+      "code",
+      "data",
+      "models",
+      "spaces",
+      "GitHub",
+      "Hugging Face",
+      "APIs",
+      "inventory",
+      "catalog",
+      "keyword search",
+      "discoverability",
+      "searchability"
+    ],
+  "author": "Elizabeth Campolongo",
+  "license": "MIT",
   "engines": {
     "node": ">=24"
   },
