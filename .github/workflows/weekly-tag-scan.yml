@@ -32,6 +32,9 @@ jobs:
               with:
                   node-version: '24'
 
+            - name: Install dependencies
+              run: npm install
+
             - name: Run tag export
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
