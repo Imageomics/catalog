@@ -43,7 +43,7 @@ jobs:
 
             - name: Compute new tags and manage PR
               env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GH_TOKEN: ${{ secrets.PR_TOKEN }}
               run: |
                   # Collect lines added vs main (new tags).
                   # grep '^+[^+]' captures added lines but not the '+++' diff header.
@@ -93,7 +93,9 @@ jobs:
                   # any contributor commits. Otherwise create it fresh from main.
                   if git ls-remote --exit-code origin tag-scan/auto > /dev/null 2>&1; then
                       git fetch origin tag-scan/auto
+                      git stash
                       git checkout tag-scan/auto
+                      git stash pop
                   else
                       git checkout -b tag-scan/auto
                   fi

@@ -96,6 +96,8 @@ Tags from GitHub topics and Hugging Face card metadata are free-form text, so th
 
 When first setting up your catalog, run the export script to generate a full list of your organization's current raw tags (saved to `scripts/tag-export.txt`), then use that list to build your initial `tag-groups.js`. A weekly GitHub Actions workflow will automatically open a pull request whenever 5 or more new tags (relative to the last committed baseline in `scripts/tag-export.txt`) are detected, keeping your tag groups up to date over time.
 
+> **Required secret:** The weekly tag scan workflow requires a fine-grained PAT stored as a repository secret named `PR_TOKEN` (Settings → Secrets and variables → Actions). The PAT must have **Pull requests: Read and write** permission on the catalog repo. 
+
 See **[docs/tag-grouping-process.md](docs/tag-grouping-process.md)** for full setup instructions, conventions, and guidance on using AI assistance for the initial grouping pass.
 
 ## Local Testing
