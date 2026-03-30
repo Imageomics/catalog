@@ -72,8 +72,8 @@ the GitHub and Hugging Face APIs, diffs them against the committed baseline in
 **`[Tag Scan] New tags detected — review tag-groups.js`** whenever 5 or more new tags appear.
 
 > **Prerequisite:** The workflow requires a fine-grained PAT stored as a repository secret named
-> `PR_TOKEN` with **Contents: Read and write** and **Pull requests: Read and write** permissions.
-> Without it, the workflow will find new tags but fail when attempting to open the PR.
+> `PR_TOKEN` with **Pull requests: Read and write** permission. Without it, the workflow will find
+> new tags and push the branch successfully, but fail when attempting to open the PR.
 
 You should update `public/tag-groups.js` when that PR is opened or updated.
 
