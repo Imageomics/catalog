@@ -74,6 +74,7 @@ climate
 clip
 cloud-forest
 clustering
+codabench
 code
 collaboration
 collaborative-workflows
@@ -95,6 +96,7 @@ cvat
 damage
 dashboard
 data
+data-access
 data-analysis
 data-exploration
 data-explorer
@@ -105,6 +107,7 @@ dataset-documentation
 dataset-generation
 dataset-processing
 datasets
+declarative-video-editing
 deduplication
 desert
 detection
@@ -262,6 +265,7 @@ megadetector
 melpomene
 metadata
 metadata generation
+metadata-generation
 metadata-standards
 mimic groups
 mimicry
@@ -407,6 +411,7 @@ ventral
 verifier
 version-control
 video
+video-query
 vision
 vision-transformer
 vision-transformers
