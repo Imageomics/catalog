@@ -201,6 +201,9 @@ const TAG_GROUPS = {
     "image": [
         "image", "images"
     ],
+    "video": [
+        "video", "videos", "video-query", "declarative-video-editing", "annotated video"
+    ],
 
     // -------------------------------------------------------------------------
     // Explainability & Interpretability
@@ -220,7 +223,8 @@ const TAG_GROUPS = {
     // -------------------------------------------------------------------------
     "annotations": [
         "annotation", "annotations", "label", "captions",
-        "synthetic captions", "synthetic-captions"
+        "synthetic captions", "synthetic-captions",
+        "annotated video"
     ],
     "benchmarks": [
         "benchmark", "benchmarks", "benchmarking", "evaluation",
@@ -228,7 +232,7 @@ const TAG_GROUPS = {
     ],
     "data management": [
         "data management", "data-management", "metadata", "provenance", "checksums", "deduplication",
-        "dataset documentation", "dataset-documentation",
+        "dataset documentation", "dataset-documentation", "data-access", "data access",
         "file verification", "file-verification",
         "data validation", "data-validation",
         "metadata standards", "metadata-standards",
