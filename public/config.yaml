@@ -31,6 +31,7 @@ ADDITIONAL_REPOS:
   - "Imageomics/phylonn"
   - "Imageomics/telemetry-dashboard"
   - "Imageomics/docker-workshop"
+  - "Imageomics/saev-fish-dev"
   - "jennamk14/autonomous_drone_simulator"
   - "ixlab/vidformer"
 
