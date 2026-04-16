@@ -19,7 +19,7 @@ const configPromise = fetch('config.yaml')
 
 // Module-scope lets — assigned after config loads, used by all functions below
 let CONFIG;
-let ORGANIZATION_NAME, CATALOG_REPO_NAME, API_BASE_URL, REFRESH_INTERVAL_DAYS, ADDITIONAL_REPOS;
+let ORGANIZATION_NAME, CATALOG_REPO_NAME, API_BASE_URL, REFRESH_INTERVAL_DAYS, ADDITIONAL_REPOS, ADDITIONAL_HF_REPOS;
 
 // Build a reverse lookup from TAG_GROUPS (defined in tag-groups.js): raw tag → [canonical tags]
 // A raw tag may appear in multiple groups, so the value is an array.
@@ -295,6 +295,31 @@ const fetchHubItems = async (repoType) => {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         let hfItems = await response.json();
+
+        // Fetch additional HF repos of this type from outside the org
+        const additionalForType = ADDITIONAL_HF_REPOS.filter(entry => entry.type === repoType);
+        if (additionalForType.length) {
+            const orgIds = new Set(hfItems.map(item => item.id));
+            const toFetch = additionalForType.filter(entry => !orgIds.has(entry.repo));
+
+            const fetched = await Promise.all(
+                toFetch.map(entry =>
+                    fetch(`${API_BASE_URL}${repoType}/${entry.repo}`)
+                        .then(r => {
+                            if (!r.ok) {
+                                console.warn(`Failed to fetch additional HF repo "${entry.repo}": HTTP ${r.status}`);
+                                return null;
+                            }
+                            return r.json();
+                        })
+                        .catch(err => {
+                            console.warn(`Network error fetching additional HF repo "${entry.repo}":`, err);
+                            return null;
+                        })
+                )
+            );
+            hfItems = [...hfItems, ...fetched.filter(Boolean)];
+        }
 
         // Step 2: If we are fetching models, get the full details for each one.
         if (repoType === 'models') {
@@ -732,6 +757,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!CONFIG.API_BASE_URL)                      missing.push('API_BASE_URL');
         if (CONFIG.REFRESH_INTERVAL_DAYS == null)      missing.push('REFRESH_INTERVAL_DAYS');
         if (!Array.isArray(CONFIG.ADDITIONAL_REPOS))   missing.push('ADDITIONAL_REPOS (must be a list)');
+        // ADDITIONAL_HF_REPOS is optional; default to empty array if absent
+        if (CONFIG.ADDITIONAL_HF_REPOS == null) {
+            CONFIG.ADDITIONAL_HF_REPOS = [];
+        } else if (!Array.isArray(CONFIG.ADDITIONAL_HF_REPOS)) {
+            missing.push('ADDITIONAL_HF_REPOS (must be a list of {repo, type} objects)');
+        }
         if (!CONFIG.COLORS || typeof CONFIG.COLORS !== 'object') {
             missing.push('COLORS (must be an object with primary, secondary, accent, accentDark, tag)');
         } else {
@@ -754,7 +785,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             LOGO_URL: '', FAVICON_URL: '',
             COLORS: { primary: '#92991c', secondary: '#5d8095', accent: '#0097b2', accentDark: '#4fd1eb', tag: '#9bcb5e' },
             API_BASE_URL: 'https://huggingface.co/api/', REFRESH_INTERVAL_DAYS: 30,
-            ADDITIONAL_REPOS: [], FONT_FAMILY: 'Inter'
+            ADDITIONAL_REPOS: [], ADDITIONAL_HF_REPOS: [], FONT_FAMILY: 'Inter'
         };
     }
 
@@ -764,6 +795,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     API_BASE_URL          = CONFIG.API_BASE_URL;
     REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
     ADDITIONAL_REPOS      = CONFIG.ADDITIONAL_REPOS;
+    ADDITIONAL_HF_REPOS   = CONFIG.ADDITIONAL_HF_REPOS;
 
     // Apply CSS custom properties and document metadata
     document.title = CONFIG.CATALOG_TITLE || 'Catalog';

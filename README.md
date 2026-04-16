@@ -82,6 +82,7 @@ Welcome to your new catalog repo! The primary way to personalize this catalog is
   * `API_BASE_URL`: Hugging Face API base URL (default: `"https://huggingface.co/api/"`)
   * `REFRESH_INTERVAL_DAYS`: Number of days to consider an item "new" (default: `30`)
   * `ADDITIONAL_REPOS`: Array of forked or non-org GitHub repositories to include, formatted `<owner>/<repo-name>` (non-forks are included by default). Use `[]` if there are none you wish to include
+  * `ADDITIONAL_HF_REPOS`: Array of Hugging Face repos from outside the org to include. Each entry specifies `repo` (`<owner>/<repo-name>`) and `type` (`datasets`, `models`, or `spaces`). Optional; defaults to `[]`
 
 * **Typography:**
   * `FONT_FAMILY`: Font family for the site (default: `"Inter"`)

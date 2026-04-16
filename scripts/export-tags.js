@@ -45,6 +45,7 @@ if (!Array.isArray(rawConfig.ADDITIONAL_REPOS)) {
 
 const CONFIG = rawConfig;
 const { ORGANIZATION_NAME, API_BASE_URL, ADDITIONAL_REPOS } = CONFIG;
+const ADDITIONAL_HF_REPOS = Array.isArray(CONFIG.ADDITIONAL_HF_REPOS) ? CONFIG.ADDITIONAL_HF_REPOS : [];
 
 // ---------------------------------------------------------------------------
 // Fetch helpers
@@ -103,6 +104,21 @@ const collectGitHubTags = async () => {
 const collectHFTags = async (repoType) => {
     console.log(`Fetching HF ${repoType}...`);
     let items = (await get(`${API_BASE_URL}${repoType}?author=${ORGANIZATION_NAME}&full=true`)).json;
+
+    // Fetch additional HF repos of this type
+    const additionalForType = ADDITIONAL_HF_REPOS.filter(entry => entry.type === repoType);
+    if (additionalForType.length) {
+        const orgIds = new Set(items.map(item => item.id));
+        const toFetch = additionalForType.filter(entry => !orgIds.has(entry.repo));
+        const fetched = await Promise.all(
+            toFetch.map(entry =>
+                get(`${API_BASE_URL}${repoType}/${entry.repo}`)
+                    .then(({ json }) => json)
+                    .catch(() => null)
+            )
+        );
+        items = [...items, ...fetched.filter(Boolean)];
+    }
 
     if (repoType === 'models') {
         const details = await Promise.all(

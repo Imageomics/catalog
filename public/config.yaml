@@ -34,5 +34,16 @@ ADDITIONAL_REPOS:
   - "jennamk14/autonomous_drone_simulator"
   - "ixlab/vidformer"
 
+# Array of Hugging Face repos from outside the org to include.
+# Each entry must specify "repo" (owner/name) and "type" (datasets, models, or spaces).
+# ADDITIONAL_HF_REPOS:
+#   - repo: "user/dataset-name"
+#     type: "datasets"
+#   - repo: "user/model-name"
+#     type: "models"
+#   - repo: "user/space-name"
+#     type: "spaces"
+ADDITIONAL_HF_REPOS: []
+
 # Typography
 FONT_FAMILY: Inter    # Font family for the site
