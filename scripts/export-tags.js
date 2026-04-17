@@ -45,7 +45,21 @@ if (!Array.isArray(rawConfig.ADDITIONAL_REPOS)) {
 
 const CONFIG = rawConfig;
 const { ORGANIZATION_NAME, API_BASE_URL, ADDITIONAL_REPOS } = CONFIG;
-const ADDITIONAL_HF_REPOS = Array.isArray(CONFIG.ADDITIONAL_HF_REPOS) ? CONFIG.ADDITIONAL_HF_REPOS : [];
+if (!Array.isArray(CONFIG.ADDITIONAL_HF_REPOS)) {
+    throw new Error(
+        `Invalid config at ${configPath}: ADDITIONAL_HF_REPOS must be an array.`
+    );
+}
+const validHFTypes = new Set(['datasets', 'models', 'spaces']);
+const badHFEntries = CONFIG.ADDITIONAL_HF_REPOS.filter(
+    e => !e || typeof e.repo !== 'string' || !e.repo.trim() || !validHFTypes.has(e.type)
+);
+if (badHFEntries.length) {
+    throw new Error(
+        `Invalid config at ${configPath}: ADDITIONAL_HF_REPOS entries must each have a non-empty "repo" string and "type" in {datasets, models, spaces}; bad entries: ${badHFEntries.map(e => JSON.stringify(e)).join(', ')}`
+    );
+}
+const ADDITIONAL_HF_REPOS = CONFIG.ADDITIONAL_HF_REPOS;
 
 // ---------------------------------------------------------------------------
 // Fetch helpers
