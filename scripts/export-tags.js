@@ -122,8 +122,13 @@ const collectHFTags = async (repoType) => {
     // Fetch additional HF repos of this type
     const additionalForType = ADDITIONAL_HF_REPOS.filter(entry => entry.type === repoType);
     if (additionalForType.length) {
-        const orgIds = new Set(items.map(item => item.id));
-        const toFetch = additionalForType.filter(entry => !orgIds.has(entry.repo));
+        const existingIds = new Set(items.map(item => item.id));
+        const seenRepos = new Set();
+        const toFetch = additionalForType.filter(entry => {
+            if (existingIds.has(entry.repo) || seenRepos.has(entry.repo)) return false;
+            seenRepos.add(entry.repo);
+            return true;
+        });
         const fetched = await Promise.all(
             toFetch.map(entry =>
                 get(`${API_BASE_URL}${repoType}/${entry.repo}`)
@@ -131,7 +136,7 @@ const collectHFTags = async (repoType) => {
                     .catch(() => null)
             )
         );
-        items = [...items, ...fetched.filter(Boolean)];
+        items = [...items, ...fetched.filter(item => item && !existingIds.has(item.id))];
     }
 
     if (repoType === 'models') {
