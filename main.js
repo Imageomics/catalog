@@ -756,13 +756,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!CONFIG.ORGANIZATION_NAME)                 missing.push('ORGANIZATION_NAME');
         if (!CONFIG.API_BASE_URL)                      missing.push('API_BASE_URL');
         if (CONFIG.REFRESH_INTERVAL_DAYS == null)      missing.push('REFRESH_INTERVAL_DAYS');
-        if (!Array.isArray(CONFIG.ADDITIONAL_REPOS))   missing.push('ADDITIONAL_REPOS (must be a list)');
-        // ADDITIONAL_HF_REPOS is optional; default to empty array if absent
-        if (CONFIG.ADDITIONAL_HF_REPOS == null) {
-            CONFIG.ADDITIONAL_HF_REPOS = [];
-        } else if (!Array.isArray(CONFIG.ADDITIONAL_HF_REPOS)) {
-            missing.push('ADDITIONAL_HF_REPOS (must be a list of {repo, type} objects)');
-        }
+        if (!Array.isArray(CONFIG.ADDITIONAL_REPOS))    missing.push('ADDITIONAL_REPOS (must be a list)');
+        if (!Array.isArray(CONFIG.ADDITIONAL_HF_REPOS)) missing.push('ADDITIONAL_HF_REPOS (must be a list)');
         if (!CONFIG.COLORS || typeof CONFIG.COLORS !== 'object') {
             missing.push('COLORS (must be an object with primary, secondary, accent, accentDark, tag)');
         } else {
