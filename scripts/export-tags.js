@@ -45,6 +45,21 @@ if (!Array.isArray(rawConfig.ADDITIONAL_REPOS)) {
 
 const CONFIG = rawConfig;
 const { ORGANIZATION_NAME, API_BASE_URL, ADDITIONAL_REPOS } = CONFIG;
+if (!Array.isArray(CONFIG.ADDITIONAL_HF_REPOS)) {
+    throw new Error(
+        `Invalid config at ${configPath}: ADDITIONAL_HF_REPOS must be an array.`
+    );
+}
+const validHFTypes = new Set(['datasets', 'models', 'spaces']);
+const badHFEntries = CONFIG.ADDITIONAL_HF_REPOS.filter(
+    e => !e || typeof e.repo !== 'string' || !e.repo.trim() || !validHFTypes.has(e.type)
+);
+if (badHFEntries.length) {
+    throw new Error(
+        `Invalid config at ${configPath}: ADDITIONAL_HF_REPOS entries must each have a non-empty "repo" string and "type" in {datasets, models, spaces}; bad entries: ${badHFEntries.map(e => JSON.stringify(e)).join(', ')}`
+    );
+}
+const ADDITIONAL_HF_REPOS = CONFIG.ADDITIONAL_HF_REPOS;
 
 // ---------------------------------------------------------------------------
 // Fetch helpers
@@ -103,6 +118,26 @@ const collectGitHubTags = async () => {
 const collectHFTags = async (repoType) => {
     console.log(`Fetching HF ${repoType}...`);
     let items = (await get(`${API_BASE_URL}${repoType}?author=${ORGANIZATION_NAME}&full=true`)).json;
+
+    // Fetch additional HF repos of this type
+    const additionalForType = ADDITIONAL_HF_REPOS.filter(entry => entry.type === repoType);
+    if (additionalForType.length) {
+        const existingIds = new Set(items.map(item => item.id));
+        const seenRepos = new Set();
+        const toFetch = additionalForType.filter(entry => {
+            if (existingIds.has(entry.repo) || seenRepos.has(entry.repo)) return false;
+            seenRepos.add(entry.repo);
+            return true;
+        });
+        const fetched = await Promise.all(
+            toFetch.map(entry =>
+                get(`${API_BASE_URL}${repoType}/${entry.repo}`)
+                    .then(({ json }) => json)
+                    .catch(() => null)
+            )
+        );
+        items = [...items, ...fetched.filter(item => item && !existingIds.has(item.id))];
+    }
 
     if (repoType === 'models') {
         const details = await Promise.all(
