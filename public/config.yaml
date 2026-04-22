@@ -34,6 +34,7 @@ ADDITIONAL_REPOS:
   - "Imageomics/saev-fish-dev"
   - "jennamk14/autonomous_drone_simulator"
   - "ixlab/vidformer"
+  - "ixlab/vega-video"
 
 # Array of Hugging Face repos from outside the org to include.
 # Each entry must specify "repo" (owner/name) and "type" (datasets, models, or spaces).
