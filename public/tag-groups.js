@@ -371,6 +371,9 @@ const TAG_GROUPS = {
         "containerization", "containerization with docker", "containerization-with-docker",
         "version control", "version-control"
     ],
+    "vega": [
+        "vega", "vega-lite"
+    ],
     // -------------------------------------------------------------------------
     // Events
     // -------------------------------------------------------------------------
