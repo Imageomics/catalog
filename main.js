@@ -622,11 +622,11 @@ const applyFiltersAndSort = async (updateUrl = true) => {
     let sorted = [...filtered];
     switch (sortBy) {
         case 'alphabetical_asc':
-            sorted.sort((a, b) => a.id.localeCompare(b.id));
+            sorted.sort((a, b) => a.id.split('/').pop().localeCompare(b.id.split('/').pop()));
             break;
 
         case 'alphabetical_desc':
-            sorted.sort((a, b) => b.id.localeCompare(a.id));
+            sorted.sort((a, b) => b.id.split('/').pop().localeCompare(a.id.split('/').pop()));
             break;
 
         case 'stars_desc':
