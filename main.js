@@ -7,6 +7,7 @@
 //
 
 import jsYaml from 'js-yaml';
+import { validateConfig } from './src/validateConfig.js';
 
 // Start fetching config immediately when the module loads (before DOMContentLoaded)
 // so the fetch is in-flight while the DOM is being parsed.
@@ -757,28 +758,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         CONFIG = await configPromise;
 
         // Validate required fields so devs get a clear error instead of a cryptic crash
-        const missing = [];
-        if (!CONFIG.ORGANIZATION_NAME)                 missing.push('ORGANIZATION_NAME');
-        if (!CONFIG.API_BASE_URL)                      missing.push('API_BASE_URL');
-        if (CONFIG.REFRESH_INTERVAL_DAYS == null)      missing.push('REFRESH_INTERVAL_DAYS');
-        if (!Array.isArray(CONFIG.ADDITIONAL_REPOS))    missing.push('ADDITIONAL_REPOS (must be a list)');
-        if (!Array.isArray(CONFIG.ADDITIONAL_HF_REPOS)) {
-            missing.push('ADDITIONAL_HF_REPOS (must be a list)');
-        } else {
-            const validTypes = new Set(['datasets', 'models', 'spaces']);
-            const badEntries = CONFIG.ADDITIONAL_HF_REPOS.filter(
-                e => !e || typeof e.repo !== 'string' || !e.repo.trim() || !validTypes.has(e.type)
-            );
-            if (badEntries.length) missing.push(
-                `ADDITIONAL_HF_REPOS entries must each have a non-empty "repo" string and "type" in {datasets, models, spaces}; bad entries: ${badEntries.map(e => JSON.stringify(e)).join(', ')}`
-            );
-        }
-        if (!CONFIG.COLORS || typeof CONFIG.COLORS !== 'object') {
-            missing.push('COLORS (must be an object with primary, secondary, accent, accentDark, tag)');
-        } else {
-            const missingColors = ['primary', 'secondary', 'accent', 'accentDark', 'tag'].filter(k => !CONFIG.COLORS[k]);
-            if (missingColors.length) missing.push(`COLORS keys: ${missingColors.join(', ')}`);
-        }
+        const missing = validateConfig(CONFIG);
         if (missing.length) throw new Error(`config.yaml is missing required fields: ${missing.join('; ')}`);
     } catch (error) {
         console.error('Error loading config.yaml:', error);

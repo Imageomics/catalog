@@ -16,6 +16,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import jsYaml from 'js-yaml';
+import { validateConfig } from '../src/validateConfig.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -25,40 +26,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const configPath = path.resolve(__dirname, '../public/config.yaml');
 const rawConfig = jsYaml.load(fs.readFileSync(configPath, 'utf8'));
 
-if (!rawConfig || typeof rawConfig !== 'object' || Array.isArray(rawConfig)) {
-    throw new Error(`Invalid config at ${configPath}: expected a YAML mapping/object.`);
-}
-
-const requiredKeys = ['ORGANIZATION_NAME', 'API_BASE_URL', 'ADDITIONAL_REPOS'];
-const missingKeys = requiredKeys.filter((key) => !(key in rawConfig));
-if (missingKeys.length > 0) {
-    throw new Error(
-        `Invalid config at ${configPath}: missing required key(s): ${missingKeys.join(', ')}`
-    );
-}
-
-if (!Array.isArray(rawConfig.ADDITIONAL_REPOS)) {
-    throw new Error(
-        `Invalid config at ${configPath}: ADDITIONAL_REPOS must be an array.`
-    );
+const errors = validateConfig(rawConfig);
+if (errors.length) {
+    throw new Error(`Invalid config at ${configPath}: ${errors.join('; ')}`);
 }
 
 const CONFIG = rawConfig;
 const { ORGANIZATION_NAME, API_BASE_URL, ADDITIONAL_REPOS } = CONFIG;
-if (!Array.isArray(CONFIG.ADDITIONAL_HF_REPOS)) {
-    throw new Error(
-        `Invalid config at ${configPath}: ADDITIONAL_HF_REPOS must be an array.`
-    );
-}
-const validHFTypes = new Set(['datasets', 'models', 'spaces']);
-const badHFEntries = CONFIG.ADDITIONAL_HF_REPOS.filter(
-    e => !e || typeof e.repo !== 'string' || !e.repo.trim() || !validHFTypes.has(e.type)
-);
-if (badHFEntries.length) {
-    throw new Error(
-        `Invalid config at ${configPath}: ADDITIONAL_HF_REPOS entries must each have a non-empty "repo" string and "type" in {datasets, models, spaces}; bad entries: ${badHFEntries.map(e => JSON.stringify(e)).join(', ')}`
-    );
-}
 const ADDITIONAL_HF_REPOS = CONFIG.ADDITIONAL_HF_REPOS;
 
 // ---------------------------------------------------------------------------
