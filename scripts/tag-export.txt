@@ -162,7 +162,7 @@ fine-tuned
 fish
 focal-observation
 forewings
-format:parquet
+format:imagefolder
 fragmented habitat
 frogs
 full body
@@ -245,10 +245,8 @@ ldw26
 leaf damage
 leaves
 lepidoptera
-library:dask
 library:datasets
 library:mlcroissant
-library:polars
 license:cc0-1.0
 license:mit
 lions
@@ -272,7 +270,7 @@ mimicry
 mimics
 mini-scenes
 ml-challenge
-modality:text
+modality:image
 model
 models
 morphometrics
@@ -308,6 +306,7 @@ organization-based-tools
 out-of-distribution
 palooza
 parallel
+parquet
 passive acoustic monitoring
 persian onanger
 phenology
@@ -360,7 +359,7 @@ separated wings
 similarity-search
 simulations
 size
-size_categories:100m<n<1b
+size_categories:n<1k
 slicer
 slicermorph
 small leaf kolea
@@ -402,11 +401,14 @@ tree
 tree planting
 tree-of-life
 tree-seedling-detection
+tutorials
 uav
 understory
 ungulates
 unlabeled
 url
+vega
+vega-lite
 ventral
 verifier
 version-control

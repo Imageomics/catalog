@@ -148,6 +148,12 @@ const TAG_GROUPS = {
         "passive acoustic monitoring", "bioacoustics", "soundscape",
         "telemetry", "gps tracker", "gps-tracker"
     ],
+    "mpala research centre": [
+        "mpala research centre", "mpala"
+    ],
+    "neon": [
+        "neon", "neon-data"
+    ],
 
     // -------------------------------------------------------------------------
     // Computer Vision & Machine Learning
@@ -178,6 +184,12 @@ const TAG_GROUPS = {
         "deep learning", "deep-learning",
         "knowledge guided", "knowledge-guided",
         "knowledge guided machine learning", "knowledge-guided-machine-learning"
+    ],
+    "model": [
+        "model", "models"
+    ],
+    "multimodal": [
+        "multimodal", "multi-modal"
     ],
     "transformers": [
         "transformer", "transformers",
@@ -264,6 +276,9 @@ const TAG_GROUPS = {
         "image exploration", "image-exploration",
         "image preview", "image-preview"
     ],
+    "multi-dimensional-scaling": [
+        "weighted-multi-dimensional-scaling", "mds", "multi-dimensional-scaling"
+    ],
 
     // -------------------------------------------------------------------------
     // Taxonomy, Phylogenetics & Traits
@@ -342,6 +357,9 @@ const TAG_GROUPS = {
         "invasive mammals", "invasive-mammals",
         "endemic species", "endemic-species"
     ],
+    "drought": [
+        "drought", "spei"
+    ],
 
     // -------------------------------------------------------------------------
     // Geospatial & Remote Sensing
@@ -370,6 +388,9 @@ const TAG_GROUPS = {
         "pipelines", "workflow automation", "workflow-automation", "snakemake",
         "containerization", "containerization with docker", "containerization-with-docker",
         "version control", "version-control"
+    ],
+    "vega": [
+        "vega", "vega-lite"
     ],
     // -------------------------------------------------------------------------
     // Events
