@@ -44,6 +44,7 @@ jobs:
             - name: Compute new tags and manage PR
               env:
                   GH_TOKEN: ${{ secrets.PR_TOKEN }}
+                  REPO_URL: ${{ github.server_url }}/${{ github.repository }}
               run: |
                   # Collect lines added vs main (new tags).
                   # grep '^+[^+]' captures added lines but not the '+++' diff header.
@@ -75,7 +76,7 @@ jobs:
                       echo ""
                       echo "## How to Resolve"
                       echo ""
-                      echo "See [docs/tag-grouping-process.md](docs/tag-grouping-process.md) for full instructions."
+                      echo "See [docs/tag-grouping-process.md](${REPO_URL}/blob/main/docs/tag-grouping-process.md) for full instructions."
                       echo ""
                       echo "In short:"
                       echo "1. For each tag above, open \`public/tag-groups.js\`."
