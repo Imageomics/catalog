@@ -622,11 +622,19 @@ const applyFiltersAndSort = async (updateUrl = true) => {
     let sorted = [...filtered];
     switch (sortBy) {
         case 'alphabetical_asc':
-            sorted.sort((a, b) => a.id.localeCompare(b.id));
+            sorted.sort((a, b) => {
+                const aName = a.cardData?.pretty_name || a.cardData?.model_name || a.cardData?.title || a.id.split('/').pop();
+                const bName = b.cardData?.pretty_name || b.cardData?.model_name || b.cardData?.title || b.id.split('/').pop();
+                return aName.localeCompare(bName) || a.id.localeCompare(b.id);
+            });
             break;
 
         case 'alphabetical_desc':
-            sorted.sort((a, b) => b.id.localeCompare(a.id));
+            sorted.sort((a, b) => {
+                const aName = a.cardData?.pretty_name || a.cardData?.model_name || a.cardData?.title || a.id.split('/').pop();
+                const bName = b.cardData?.pretty_name || b.cardData?.model_name || b.cardData?.title || b.id.split('/').pop();
+                return bName.localeCompare(aName) || b.id.localeCompare(a.id);
+            });
             break;
 
         case 'stars_desc':
