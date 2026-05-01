@@ -759,7 +759,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Validate required fields so devs get a clear error instead of a cryptic crash
         const missing = validateConfig(CONFIG);
-        if (missing.length) throw new Error(`config.yaml is missing required fields: ${missing.join('; ')}`);
+        if (missing.length) throw new Error(`Invalid config.yaml: ${missing.join('; ')}`);
     } catch (error) {
         console.error('Error loading config.yaml:', error);
         // Render visible error banner
