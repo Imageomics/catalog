@@ -6,27 +6,29 @@
   "scripts": {
     "dev": "vite",
     "build": "node scripts/fetch-releases.js && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Imageomics/catalog.git"
   },
   "keywords": [
-      "imageomics",
-      "code",
-      "data",
-      "models",
-      "spaces",
-      "GitHub",
-      "Hugging Face",
-      "APIs",
-      "inventory",
-      "catalog",
-      "keyword search",
-      "discoverability",
-      "searchability"
-    ],
+    "imageomics",
+    "code",
+    "data",
+    "models",
+    "spaces",
+    "GitHub",
+    "Hugging Face",
+    "APIs",
+    "inventory",
+    "catalog",
+    "keyword search",
+    "discoverability",
+    "searchability"
+  ],
   "author": "Elizabeth Campolongo",
   "license": "MIT",
   "engines": {
@@ -43,6 +45,7 @@
   "devDependencies": {
     "@tailwindcss/vite": "^4.2.1",
     "tailwindcss": "^4.2.1",
-    "vite": "^7.3.2"
+    "vite": "^7.3.2",
+    "vitest": "^4.1.5"
   }
 }

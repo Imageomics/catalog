@@ -716,7 +716,7 @@ const initializeUIFromConfig = () => {
     const logoImg = document.getElementById('logo-img');
     if (logoImg) {
         logoImg.src = CONFIG.LOGO_URL;
-        logoImg.alt = CONFIG.GITHUB_ORG_NAME + ' Logo';
+        logoImg.alt = CONFIG.ORG_NAME + ' Logo';
 
         logoImg.onload = () => {
             logoImg.classList.remove('opacity-0');
@@ -763,31 +763,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load config before anything else
     try {
         CONFIG = await configPromise;
-
-        // Validate required fields so devs get a clear error instead of a cryptic crash
-        const missing = [];
-        if (!CONFIG.ORGANIZATION_NAME)                 missing.push('ORGANIZATION_NAME');
-        if (!CONFIG.API_BASE_URL)                      missing.push('API_BASE_URL');
-        if (CONFIG.REFRESH_INTERVAL_DAYS == null)      missing.push('REFRESH_INTERVAL_DAYS');
-        if (!Array.isArray(CONFIG.ADDITIONAL_REPOS))    missing.push('ADDITIONAL_REPOS (must be a list)');
-        if (!Array.isArray(CONFIG.ADDITIONAL_HF_REPOS)) {
-            missing.push('ADDITIONAL_HF_REPOS (must be a list)');
-        } else {
-            const validTypes = new Set(['datasets', 'models', 'spaces']);
-            const badEntries = CONFIG.ADDITIONAL_HF_REPOS.filter(
-                e => !e || typeof e.repo !== 'string' || !e.repo.trim() || !validTypes.has(e.type)
-            );
-            if (badEntries.length) missing.push(
-                `ADDITIONAL_HF_REPOS entries must each have a non-empty "repo" string and "type" in {datasets, models, spaces}; bad entries: ${badEntries.map(e => JSON.stringify(e)).join(', ')}`
-            );
-        }
-        if (!CONFIG.COLORS || typeof CONFIG.COLORS !== 'object') {
-            missing.push('COLORS (must be an object with primary, secondary, accent, accentDark, tag)');
-        } else {
-            const missingColors = ['primary', 'secondary', 'accent', 'accentDark', 'tag'].filter(k => !CONFIG.COLORS[k]);
-            if (missingColors.length) missing.push(`COLORS keys: ${missingColors.join(', ')}`);
-        }
-        if (missing.length) throw new Error(`config.yaml is missing required fields: ${missing.join('; ')}`);
     } catch (error) {
         console.error('Error loading config.yaml:', error);
         // Render visible error banner
@@ -798,7 +773,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => errorDiv.remove(), 10000);
         // Fall back to defaults so the page isn't completely broken
         CONFIG = {
-            ORGANIZATION_NAME: '', CATALOG_REPO_NAME: '', GITHUB_ORG_NAME: '',
+            ORGANIZATION_NAME: '', CATALOG_REPO_NAME: '', ORG_NAME: '',
             CATALOG_TITLE: 'Catalog', CATALOG_DESCRIPTION: '',
             LOGO_URL: '', FAVICON_URL: '',
             COLORS: { primary: '#92991c', secondary: '#5d8095', accent: '#0097b2', accentDark: '#4fd1eb', tag: '#9bcb5e' },
@@ -816,7 +791,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     ADDITIONAL_HF_REPOS   = CONFIG.ADDITIONAL_HF_REPOS;
 
     // Apply CSS custom properties and document metadata
-    document.title = CONFIG.CATALOG_TITLE || 'Catalog';
+    document.title = CONFIG.CATALOG_TITLE || `${CONFIG.ORG_NAME} Catalog`;
     document.documentElement.style.setProperty('--color-primary',     CONFIG.COLORS?.primary     || '#92991c');
     document.documentElement.style.setProperty('--color-secondary',   CONFIG.COLORS?.secondary   || '#5d8095');
     document.documentElement.style.setProperty('--color-accent',      CONFIG.COLORS?.accent      || '#0097b2');
