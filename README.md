@@ -101,13 +101,7 @@ When first setting up your catalog, run the export script to generate a full lis
 
 See **[docs/tag-grouping-process.md](docs/tag-grouping-process.md)** for full setup instructions, conventions, and guidance on using AI assistance for the initial grouping pass.
 
-## Tests
-
-Tests are written with [Vitest](https://vitest.dev/) and run automatically in CI on every pull request to `main`. To run them locally: `npm test` (single run) or `npm run test:watch` (watch mode).
-
-`tests/validateConfig.test.js` tests the validator logic in `src/validateConfig.js`, which is also used by the `fetch-releases` and `export-tags` scripts. `tests/config.integration.test.js` confirms that the real `public/config.yaml` passes that same validation.
-
-### Local Testing
+## Prerequisites
 
 This project uses [Vite](https://vite.dev/) as a build tool and requires **Node.js 24** (Active LTS). You can check your current version with `node --version`. To install or update Node, visit [nodejs.org](https://nodejs.org/en/download) or use a version manager like [nvm](https://github.com/nvm-sh/nvm):
 
@@ -117,6 +111,14 @@ nvm use
 ```
 
 A `.nvmrc` file is included, so `nvm use` will automatically select the correct version in the project directory.
+
+## Testing
+
+Tests are written with [Vitest](https://vitest.dev/) and run automatically in CI on every pull request to `main`. To run them locally: `npm test` (single run) or `npm run test:watch` (watch mode).
+
+`tests/validateConfig.test.js` tests the validator logic in `src/validateConfig.js`, which is also used by the `fetch-releases` and `export-tags` scripts. `tests/config.integration.test.js` confirms that the real `public/config.yaml` passes that same validation.
+
+### Running Locally
 
 Install dependencies and start the dev server from the repo root:
 
