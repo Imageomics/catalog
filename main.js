@@ -7,7 +7,6 @@
 //
 
 import jsYaml from 'js-yaml';
-import { validateConfig } from './src/validateConfig.js';
 
 // Start fetching config immediately when the module loads (before DOMContentLoaded)
 // so the fetch is in-flight while the DOM is being parsed.
@@ -756,10 +755,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load config before anything else
     try {
         CONFIG = await configPromise;
-
-        // Validate required fields so devs get a clear error instead of a cryptic crash
-        const missing = validateConfig(CONFIG);
-        if (missing.length) throw new Error(`Invalid config.yaml: ${missing.join('; ')}`);
     } catch (error) {
         console.error('Error loading config.yaml:', error);
         // Render visible error banner
