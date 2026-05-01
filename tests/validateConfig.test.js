@@ -27,9 +27,9 @@ describe('validateConfig', () => {
         const config = {
             ...VALID_CONFIG,
             ADDITIONAL_HF_REPOS: [
-                { repo: 'imageomics/demo', type: 'datasets' },
+                { repo: 'imageomics/data', type: 'datasets' },
                 { repo: 'imageomics/model', type: 'models' },
-                { repo: 'imageomics/space', type: 'spaces' },
+                { repo: 'imageomics/demo', type: 'spaces' },
             ],
         };
         expect(validateConfig(config)).toEqual([]);
