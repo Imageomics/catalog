@@ -3,7 +3,7 @@ import { validateConfig } from '../src/validateConfig.js';
 
 const VALID_CONFIG = {
     ORGANIZATION_NAME: 'imageomics',
-    GITHUB_ORG_NAME: 'Imageomics',
+    ORG_NAME: 'Imageomics',
     CATALOG_REPO_NAME: 'catalog',
     API_BASE_URL: 'https://huggingface.co/api/',
     REFRESH_INTERVAL_DAYS: 30,
@@ -50,6 +50,24 @@ describe('validateConfig', () => {
 
     it('errors when ORGANIZATION_NAME is empty string', () => {
         expect(validateConfig({ ...VALID_CONFIG, ORGANIZATION_NAME: '' })).toContain('ORGANIZATION_NAME');
+    });
+
+    it('errors when ORG_NAME is missing', () => {
+        const { ORG_NAME: _, ...config } = VALID_CONFIG;
+        expect(validateConfig(config)).toContain('ORG_NAME');
+    });
+
+    it('errors when ORG_NAME is empty string', () => {
+        expect(validateConfig({ ...VALID_CONFIG, ORG_NAME: '' })).toContain('ORG_NAME');
+    });
+
+    it('errors when CATALOG_REPO_NAME is missing', () => {
+        const { CATALOG_REPO_NAME: _, ...config } = VALID_CONFIG;
+        expect(validateConfig(config)).toContain('CATALOG_REPO_NAME');
+    });
+
+    it('errors when CATALOG_REPO_NAME is empty string', () => {
+        expect(validateConfig({ ...VALID_CONFIG, CATALOG_REPO_NAME: '' })).toContain('CATALOG_REPO_NAME');
     });
 
     it('errors when API_BASE_URL is missing', () => {
@@ -112,6 +130,8 @@ describe('validateConfig', () => {
         };
         const errors = validateConfig(config);
         expect(errors).toContain('ORGANIZATION_NAME');
+        expect(errors).toContain('ORG_NAME');
+        expect(errors).toContain('CATALOG_REPO_NAME');
         expect(errors).toContain('API_BASE_URL');
         expect(errors).toContain('REFRESH_INTERVAL_DAYS');
     });

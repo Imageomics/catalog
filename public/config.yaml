@@ -3,7 +3,7 @@
 
 # Organization & Repository Settings
 ORGANIZATION_NAME: imageomics       # GitHub/Hugging Face organization name (lowercase for API calls)
-GITHUB_ORG_NAME: Imageomics         # Display name for GitHub organization (can differ from API name)
+ORG_NAME: Imageomics                 # Display name for GitHub organization (can differ from API name)
 CATALOG_REPO_NAME: catalog          # Repository name for the catalog itself (used for stats badge)
 
 # Branding
