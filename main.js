@@ -783,7 +783,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     ADDITIONAL_HF_REPOS   = CONFIG.ADDITIONAL_HF_REPOS;
 
     // Apply CSS custom properties and document metadata
-    document.title = CONFIG.CATALOG_TITLE || CONFIG.ORG_NAME || 'Catalog';
+    document.title = CONFIG.CATALOG_TITLE || `${CONFIG.ORG_NAME} Catalog`;
     document.documentElement.style.setProperty('--color-primary',     CONFIG.COLORS?.primary     || '#92991c');
     document.documentElement.style.setProperty('--color-secondary',   CONFIG.COLORS?.secondary   || '#5d8095');
     document.documentElement.style.setProperty('--color-accent',      CONFIG.COLORS?.accent      || '#0097b2');
