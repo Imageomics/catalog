@@ -23,6 +23,7 @@ anomaly-detection
 apapane
 api
 api-integration
+app
 applied machine learning
 audio
 autonomy
@@ -78,6 +79,7 @@ codabench
 code
 collaboration
 collaborative-workflows
+color-calibration
 colorchecker
 command-line-interface
 computer vision
@@ -87,6 +89,8 @@ containerization
 containerization-with-docker
 contrast enhancement
 counterfactual-explanations
+cropland-data-layer
+cropscape
 cross types
 cross-attention
 csv
@@ -239,6 +243,9 @@ knowledge-guided-machine-learning
 koa
 lab-bred
 label
+land-cover
+land-cover-categorization
+land-cover-classification
 ldw24
 ldw25
 ldw26
@@ -256,6 +263,7 @@ lovedataweek
 mammals
 map-view
 mapping
+marmoset
 mcp
 mds
 measurements
