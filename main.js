@@ -8,6 +8,7 @@
 
 import jsYaml from 'js-yaml';
 import { normalizeTag } from './src/normalizeTag.js';
+import { filterItems, sortItems } from './src/filterAndSort.js';
 
 // Start fetching config immediately when the module loads (before DOMContentLoaded)
 // so the fetch is in-flight while the DOM is being parsed.
@@ -587,69 +588,8 @@ const applyFiltersAndSort = async (updateUrl = true) => {
         currentItems = allItems[repoType];
     }
 
-    // Step 1: Filter the items based on the search, tag, and archive filters
-    const filtered = currentItems.filter(item => {
-        const matchesSearch = item.id.toLowerCase().includes(searchTerm) ||
-            item.description?.toLowerCase().includes(searchTerm) ||
-            item.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
-            item.rawTags?.some(tag => tag.includes(searchTerm));
-
-        const matchesTag = tagFilter === "" || item.tags.some(tag => tag.toLowerCase() === tagFilter.toLowerCase());
-
-        const matchesArchive = archiveFilter === "all" || !item.archived;
-
-        return matchesSearch && matchesTag && matchesArchive;
-    });
-
-    // Step 2: Sort the filtered items
-    let sorted = [...filtered];
-    switch (sortBy) {
-        case 'alphabetical_asc':
-            sorted.sort((a, b) => {
-                const aName = a.cardData?.pretty_name || a.cardData?.model_name || a.cardData?.title || a.id.split('/').pop();
-                const bName = b.cardData?.pretty_name || b.cardData?.model_name || b.cardData?.title || b.id.split('/').pop();
-                return aName.localeCompare(bName) || a.id.localeCompare(b.id);
-            });
-            break;
-
-        case 'alphabetical_desc':
-            sorted.sort((a, b) => {
-                const aName = a.cardData?.pretty_name || a.cardData?.model_name || a.cardData?.title || a.id.split('/').pop();
-                const bName = b.cardData?.pretty_name || b.cardData?.model_name || b.cardData?.title || b.id.split('/').pop();
-                return bName.localeCompare(aName) || b.id.localeCompare(a.id);
-            });
-            break;
-
-        case 'stars_desc':
-            sorted.sort((a, b) => {
-                const aVal = a.cardData.stars ?? a.likes ?? 0;
-                const bVal = b.cardData.stars ?? b.likes ?? 0;
-                return bVal - aVal; // highest to lowest
-            });
-            break;
-
-        case 'stars_asc':
-            sorted.sort((a, b) => {
-                const aVal = a.cardData.stars ?? a.likes ?? 0;
-                const bVal = b.cardData.stars ?? b.likes ?? 0;
-                return aVal - bVal; // lowest to highest
-            });
-            break;
-
-        case 'createdAt':
-            sorted.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-            break;
-
-        case 'lastModified':
-            sorted.sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
-            break;
-
-        default: // default to lastModified logic
-            sorted.sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
-            break;
-    }
-
-    // Step 3: Render the sorted and filtered list
+    const filtered = filterItems(currentItems, { searchTerm, tagFilter, archiveFilter });
+    const sorted = sortItems(filtered, sortBy);
     renderItemList(sorted, repoType);
 };
 
