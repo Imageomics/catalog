@@ -46,11 +46,11 @@ export function sortItems(items, sortBy) {
             break;
 
         case 'stars_desc':
-            sorted.sort((a, b) => (b.cardData.stars ?? b.likes ?? 0) - (a.cardData.stars ?? a.likes ?? 0));
+            sorted.sort((a, b) => (b.cardData?.stars ?? b.likes ?? 0) - (a.cardData?.stars ?? a.likes ?? 0));
             break;
 
         case 'stars_asc':
-            sorted.sort((a, b) => (a.cardData.stars ?? a.likes ?? 0) - (b.cardData.stars ?? b.likes ?? 0));
+            sorted.sort((a, b) => (a.cardData?.stars ?? a.likes ?? 0) - (b.cardData?.stars ?? b.likes ?? 0));
             break;
 
         case 'createdAt':
