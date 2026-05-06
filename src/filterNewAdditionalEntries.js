@@ -3,8 +3,8 @@
  * - Excludes entries whose repo is already in existingIds.
  * - Excludes duplicate repo values within additionalEntries (first occurrence wins).
  * @param {Set<string>} existingIds - IDs already present in the fetched item list.
- * @param {{ repo: string }[]} additionalEntries - Candidate additional entries.
- * @returns {{ repo: string }[]}
+ * @param {{ repo: string, type: string }[]} additionalEntries - Candidate additional entries.
+ * @returns {{ repo: string, type: string }[]}
  */
 export function filterNewAdditionalEntries(existingIds, additionalEntries) {
     const seen = new Set();
