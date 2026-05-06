@@ -346,6 +346,10 @@ const TAG_GROUPS = {
         "tree seedling detection", "tree-seedling-detection",
         "acacia koa", "koa", "o'hia", "pilo"
     ],
+    "land cover": [
+        "land cover", "land-cover", "land-cover-categorization",
+        "land-cover-classification", "cropland-data-layer", "cropscape"
+    ],
 
     // -------------------------------------------------------------------------
     // Conservation & Biodiversity
