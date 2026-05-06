@@ -7,6 +7,7 @@
 //
 
 import jsYaml from 'js-yaml';
+import { normalizeTag } from './src/normalizeTag.js';
 
 // Start fetching config immediately when the module loads (before DOMContentLoaded)
 // so the fetch is in-flight while the DOM is being parsed.
@@ -37,24 +38,6 @@ if (typeof TAG_GROUPS !== 'undefined') {
     }
 }
 
-/**
- * Normalizes a raw tag string.
- * - Returns null for Hugging Face system metadata tags
- * - Maps known aliases to their canonical tag via TAG_GROUPS.
- * - Falls back to the lowercased original if no mapping exists.
- * @param {string} tag
- * @returns {string|null}
- */
-const normalizeTag = (tag) => {
-    const lower = String(tag).toLowerCase();
-
-    // OPTION LINE -- REMOVE IF UNWANTED
-    // Removes Hugging Face auto-generated system tags (e.g. "license:mit", "format:parquet").
-    // These are identified by the presence of a colon. To include auto-generated tags in the
-    // catalog, remove the following line.
-    if (lower.includes(':')) return null;
-    return tagLookup[lower] ?? [lower];
-};
 
 let releasesMap = {};
 
@@ -252,7 +235,7 @@ const fetchHubItems = async (repoType) => {
                     const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
 
                     const rawTags = (repo.topics || []).map(t => t.toLowerCase());
-                    const tags = [...new Set(rawTags.flatMap(normalizeTag).filter(Boolean))];
+                    const tags = [...new Set(rawTags.flatMap(t => normalizeTag(t, tagLookup)).filter(Boolean))];
                     const displayTags = rawTags.filter(t => !t.includes(':'));
                     tags.forEach(tag => tagsMap.code.add(tag));
 
@@ -353,7 +336,7 @@ const fetchHubItems = async (repoType) => {
 
             // Extract tags from the YAML metadata (handling different structures)
             const rawTags = (item.cardData?.tags || item.tags || []).map(t => String(t).toLowerCase());
-            const tags = [...new Set(rawTags.flatMap(normalizeTag).filter(Boolean))];
+            const tags = [...new Set(rawTags.flatMap(t => normalizeTag(t, tagLookup)).filter(Boolean))];
             const displayTags = rawTags.filter(t => !t.includes(':'));
             tags.forEach(tag => tagsMap[repoType].add(tag));
 
