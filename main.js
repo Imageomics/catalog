@@ -9,6 +9,7 @@
 import jsYaml from 'js-yaml';
 import { normalizeTag } from './src/normalizeTag.js';
 import { filterItems, sortItems } from './src/filterAndSort.js';
+import { filterNewAdditionalEntries } from './src/filterNewAdditionalEntries.js';
 
 // Start fetching config immediately when the module loads (before DOMContentLoaded)
 // so the fetch is in-flight while the DOM is being parsed.
@@ -284,12 +285,7 @@ const fetchHubItems = async (repoType) => {
         const additionalForType = ADDITIONAL_HF_REPOS.filter(entry => entry.type === repoType);
         if (additionalForType.length) {
             const existingIds = new Set(hfItems.map(item => item.id));
-            const seenRepos = new Set();
-            const toFetch = additionalForType.filter(entry => {
-                if (existingIds.has(entry.repo) || seenRepos.has(entry.repo)) return false;
-                seenRepos.add(entry.repo);
-                return true;
-            });
+            const toFetch = filterNewAdditionalEntries(existingIds, additionalForType);
 
             const fetched = await Promise.all(
                 toFetch.map(entry =>
