@@ -139,6 +139,15 @@ describe('sortItems', () => {
         expect(result).toEqual(['org/alpha', 'org/zebra']);
     });
 
+    it('alphabetical_desc falls back to id when pretty_name is absent', () => {
+        const items = [
+            makeItem({ id: 'org/alpha', cardData: {} }),
+            makeItem({ id: 'org/zebra', cardData: {} }),
+        ];
+        const result = sortItems(items, 'alphabetical_desc').map(i => i.id);
+        expect(result).toEqual(['org/zebra', 'org/alpha']);
+    });
+
     it('stars_desc sorts highest stars first', () => {
         const items = [
             makeItem({ id: 'org/low', cardData: { stars: 2 } }),
@@ -158,12 +167,21 @@ describe('sortItems', () => {
         expect(result).toEqual([2, 100]);
     });
 
-    it('stars sort falls back to likes when stars is null', () => {
+    it('stars_desc falls back to likes when stars is null', () => {
         const items = [
             makeItem({ id: 'org/no-stars', cardData: { stars: null }, likes: 10 }),
             makeItem({ id: 'org/has-stars', cardData: { stars: 5 }, likes: 0 }),
         ];
         const result = sortItems(items, 'stars_desc').map(i => i.id);
+        expect(result).toEqual(['org/no-stars', 'org/has-stars']);
+    });
+
+    it('stars_asc falls back to likes when stars is null', () => {
+        const items = [
+            makeItem({ id: 'org/no-stars', cardData: { stars: null }, likes: 1 }),
+            makeItem({ id: 'org/has-stars', cardData: { stars: 5 }, likes: 0 }),
+        ];
+        const result = sortItems(items, 'stars_asc').map(i => i.id);
         expect(result).toEqual(['org/no-stars', 'org/has-stars']);
     });
 
@@ -179,18 +197,20 @@ describe('sortItems', () => {
     it('lastModified sorts most recently modified first', () => {
         const items = [
             makeItem({ id: 'org/stale', lastModified: new Date('2021-01-01') }),
+            makeItem({ id: 'org/mid', lastModified: new Date('2022-06-01') }),
             makeItem({ id: 'org/fresh', lastModified: new Date('2024-06-01') }),
         ];
         const result = sortItems(items, 'lastModified').map(i => i.id);
-        expect(result).toEqual(['org/fresh', 'org/stale']);
+        expect(result).toEqual(['org/fresh', 'org/mid', 'org/stale']);
     });
 
     it('unknown sort key defaults to lastModified order', () => {
         const items = [
             makeItem({ id: 'org/stale', lastModified: new Date('2021-01-01') }),
+            makeItem({ id: 'org/mid', lastModified: new Date('2022-06-01') }),
             makeItem({ id: 'org/fresh', lastModified: new Date('2024-06-01') }),
         ];
         const result = sortItems(items, 'not-a-real-sort').map(i => i.id);
-        expect(result).toEqual(['org/fresh', 'org/stale']);
+        expect(result).toEqual(['org/fresh', 'org/mid', 'org/stale']);
     });
 });
