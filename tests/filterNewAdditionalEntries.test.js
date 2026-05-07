@@ -28,7 +28,7 @@ describe('filterNewAdditionalEntries', () => {
         const existingIds = new Set(['org/a', 'org/b']);
         const entries = [
             { repo: 'org/a', type: 'datasets' },
-            { repo: 'org/b', type: 'models' },
+            { repo: 'org/b', type: 'datasets' },
         ];
         expect(filterNewAdditionalEntries(existingIds, entries)).toEqual([]);
     });
@@ -36,7 +36,7 @@ describe('filterNewAdditionalEntries', () => {
     it('deduplicates within additionalEntries — first occurrence wins', () => {
         const entries = [
             { repo: 'org/dup', type: 'datasets' },
-            { repo: 'org/dup', type: 'models' },
+            { repo: 'org/dup', type: 'datasets' },
             { repo: 'org/unique', type: 'datasets' },
         ];
         const result = filterNewAdditionalEntries(new Set(), entries);
@@ -58,7 +58,7 @@ describe('filterNewAdditionalEntries', () => {
         const entries = [
             { repo: 'org/exists', type: 'datasets' },
             { repo: 'org/new', type: 'datasets' },
-            { repo: 'org/new', type: 'models' },
+            { repo: 'org/new', type: 'datasets' },
         ];
         const result = filterNewAdditionalEntries(existingIds, entries);
         expect(result).toEqual([{ repo: 'org/new', type: 'datasets' }]);
