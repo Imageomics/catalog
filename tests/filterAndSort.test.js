@@ -112,9 +112,9 @@ describe('sortItems', () => {
 
     it('alphabetical_asc sorts by display name A→Z', () => {
         const items = [
-            makeItem({ id: 'org/c', cardData: { pretty_name: 'Zebra', stars: null } }),
+            makeItem({ id: 'org/b', cardData: { pretty_name: 'Zebra', stars: null } }),
             makeItem({ id: 'org/a', cardData: { pretty_name: 'Alpha', stars: null } }),
-            makeItem({ id: 'org/b', cardData: { pretty_name: 'Mango', stars: null } }),
+            makeItem({ id: 'org/c', cardData: { pretty_name: 'Mango', stars: null } }),
         ];
         const result = sortItems(items, 'alphabetical_asc').map(i => i.cardData.pretty_name);
         expect(result).toEqual(['Alpha', 'Mango', 'Zebra']);
