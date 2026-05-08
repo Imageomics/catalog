@@ -195,22 +195,24 @@ describe('sortItems', () => {
     });
 
     it('lastModified sorts most recently modified first', () => {
+        // IDs are intentionally non-alphabetical relative to date order
+        // (alphabetical_asc: fresh, oldest, stale — lastModified: fresh, stale, oldest)
         const items = [
-            makeItem({ id: 'org/stale', lastModified: new Date('2021-01-01') }),
-            makeItem({ id: 'org/mid', lastModified: new Date('2022-06-01') }),
+            makeItem({ id: 'org/oldest', lastModified: new Date('2021-01-01') }),
+            makeItem({ id: 'org/stale', lastModified: new Date('2022-06-01') }),
             makeItem({ id: 'org/fresh', lastModified: new Date('2024-06-01') }),
         ];
         const result = sortItems(items, 'lastModified').map(i => i.id);
-        expect(result).toEqual(['org/fresh', 'org/mid', 'org/stale']);
+        expect(result).toEqual(['org/fresh', 'org/stale', 'org/oldest']);
     });
 
     it('unknown sort key defaults to lastModified order', () => {
         const items = [
-            makeItem({ id: 'org/stale', lastModified: new Date('2021-01-01') }),
-            makeItem({ id: 'org/mid', lastModified: new Date('2022-06-01') }),
+            makeItem({ id: 'org/oldest', lastModified: new Date('2021-01-01') }),
+            makeItem({ id: 'org/stale', lastModified: new Date('2022-06-01') }),
             makeItem({ id: 'org/fresh', lastModified: new Date('2024-06-01') }),
         ];
         const result = sortItems(items, 'not-a-real-sort').map(i => i.id);
-        expect(result).toEqual(['org/fresh', 'org/mid', 'org/stale']);
+        expect(result).toEqual(['org/fresh', 'org/stale', 'org/oldest']);
     });
 });
