@@ -7,6 +7,9 @@
 //
 
 import jsYaml from 'js-yaml';
+import { normalizeTag } from './src/normalizeTag.js';
+import { filterItems, sortItems } from './src/filterAndSort.js';
+import { filterNewAdditionalEntries } from './src/filterNewAdditionalEntries.js';
 
 // Start fetching config immediately when the module loads (before DOMContentLoaded)
 // so the fetch is in-flight while the DOM is being parsed.
@@ -37,24 +40,6 @@ if (typeof TAG_GROUPS !== 'undefined') {
     }
 }
 
-/**
- * Normalizes a raw tag string.
- * - Returns null for Hugging Face system metadata tags
- * - Maps known aliases to their canonical tag via TAG_GROUPS.
- * - Falls back to the lowercased original if no mapping exists.
- * @param {string} tag
- * @returns {string|null}
- */
-const normalizeTag = (tag) => {
-    const lower = String(tag).toLowerCase();
-
-    // OPTION LINE -- REMOVE IF UNWANTED
-    // Removes Hugging Face auto-generated system tags (e.g. "license:mit", "format:parquet").
-    // These are identified by the presence of a colon. To include auto-generated tags in the
-    // catalog, remove the following line.
-    if (lower.includes(':')) return null;
-    return tagLookup[lower] ?? [lower];
-};
 
 let releasesMap = {};
 
@@ -252,7 +237,7 @@ const fetchHubItems = async (repoType) => {
                     const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
 
                     const rawTags = (repo.topics || []).map(t => t.toLowerCase());
-                    const tags = [...new Set(rawTags.flatMap(normalizeTag).filter(Boolean))];
+                    const tags = [...new Set(rawTags.flatMap(t => normalizeTag(t, tagLookup)).filter(Boolean))];
                     const displayTags = rawTags.filter(t => !t.includes(':'));
                     tags.forEach(tag => tagsMap.code.add(tag));
 
@@ -300,12 +285,7 @@ const fetchHubItems = async (repoType) => {
         const additionalForType = ADDITIONAL_HF_REPOS.filter(entry => entry.type === repoType);
         if (additionalForType.length) {
             const existingIds = new Set(hfItems.map(item => item.id));
-            const seenRepos = new Set();
-            const toFetch = additionalForType.filter(entry => {
-                if (existingIds.has(entry.repo) || seenRepos.has(entry.repo)) return false;
-                seenRepos.add(entry.repo);
-                return true;
-            });
+            const toFetch = filterNewAdditionalEntries(existingIds, additionalForType);
 
             const fetched = await Promise.all(
                 toFetch.map(entry =>
@@ -353,7 +333,7 @@ const fetchHubItems = async (repoType) => {
 
             // Extract tags from the YAML metadata (handling different structures)
             const rawTags = (item.cardData?.tags || item.tags || []).map(t => String(t).toLowerCase());
-            const tags = [...new Set(rawTags.flatMap(normalizeTag).filter(Boolean))];
+            const tags = [...new Set(rawTags.flatMap(t => normalizeTag(t, tagLookup)).filter(Boolean))];
             const displayTags = rawTags.filter(t => !t.includes(':'));
             tags.forEach(tag => tagsMap[repoType].add(tag));
 
@@ -604,69 +584,8 @@ const applyFiltersAndSort = async (updateUrl = true) => {
         currentItems = allItems[repoType];
     }
 
-    // Step 1: Filter the items based on the search, tag, and archive filters
-    const filtered = currentItems.filter(item => {
-        const matchesSearch = item.id.toLowerCase().includes(searchTerm) ||
-            item.description?.toLowerCase().includes(searchTerm) ||
-            item.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
-            item.rawTags?.some(tag => tag.includes(searchTerm));
-
-        const matchesTag = tagFilter === "" || item.tags.some(tag => tag.toLowerCase() === tagFilter.toLowerCase());
-
-        const matchesArchive = archiveFilter === "all" || !item.archived;
-
-        return matchesSearch && matchesTag && matchesArchive;
-    });
-
-    // Step 2: Sort the filtered items
-    let sorted = [...filtered];
-    switch (sortBy) {
-        case 'alphabetical_asc':
-            sorted.sort((a, b) => {
-                const aName = a.cardData?.pretty_name || a.cardData?.model_name || a.cardData?.title || a.id.split('/').pop();
-                const bName = b.cardData?.pretty_name || b.cardData?.model_name || b.cardData?.title || b.id.split('/').pop();
-                return aName.localeCompare(bName) || a.id.localeCompare(b.id);
-            });
-            break;
-
-        case 'alphabetical_desc':
-            sorted.sort((a, b) => {
-                const aName = a.cardData?.pretty_name || a.cardData?.model_name || a.cardData?.title || a.id.split('/').pop();
-                const bName = b.cardData?.pretty_name || b.cardData?.model_name || b.cardData?.title || b.id.split('/').pop();
-                return bName.localeCompare(aName) || b.id.localeCompare(a.id);
-            });
-            break;
-
-        case 'stars_desc':
-            sorted.sort((a, b) => {
-                const aVal = a.cardData.stars ?? a.likes ?? 0;
-                const bVal = b.cardData.stars ?? b.likes ?? 0;
-                return bVal - aVal; // highest to lowest
-            });
-            break;
-
-        case 'stars_asc':
-            sorted.sort((a, b) => {
-                const aVal = a.cardData.stars ?? a.likes ?? 0;
-                const bVal = b.cardData.stars ?? b.likes ?? 0;
-                return aVal - bVal; // lowest to highest
-            });
-            break;
-
-        case 'createdAt':
-            sorted.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-            break;
-
-        case 'lastModified':
-            sorted.sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
-            break;
-
-        default: // default to lastModified logic
-            sorted.sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
-            break;
-    }
-
-    // Step 3: Render the sorted and filtered list
+    const filtered = filterItems(currentItems, { searchTerm, tagFilter, archiveFilter });
+    const sorted = sortItems(filtered, sortBy);
     renderItemList(sorted, repoType);
 };
 

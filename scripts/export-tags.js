@@ -17,6 +17,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import jsYaml from 'js-yaml';
 import { validateConfig } from '../src/validateConfig.js';
+import { filterNewAdditionalEntries } from '../src/filterNewAdditionalEntries.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -97,12 +98,7 @@ const collectHFTags = async (repoType) => {
     const additionalForType = ADDITIONAL_HF_REPOS.filter(entry => entry.type === repoType);
     if (additionalForType.length) {
         const existingIds = new Set(items.map(item => item.id));
-        const seenRepos = new Set();
-        const toFetch = additionalForType.filter(entry => {
-            if (existingIds.has(entry.repo) || seenRepos.has(entry.repo)) return false;
-            seenRepos.add(entry.repo);
-            return true;
-        });
+        const toFetch = filterNewAdditionalEntries(existingIds, additionalForType);
         const fetched = await Promise.all(
             toFetch.map(entry =>
                 get(`${API_BASE_URL}${repoType}/${entry.repo}`)
