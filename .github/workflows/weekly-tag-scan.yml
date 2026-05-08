@@ -41,9 +41,16 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: node scripts/export-tags.js
 
+            - name: Create App Token
+              id: app-token
+              uses: actions/create-github-app-token@v3
+              with:
+                  client-id: ${{ vars.APP_CLIENT_ID }}
+                  private-key: ${{ secrets.APP_PRIVATE_KEY }}
+            
             - name: Compute new tags and manage PR
               env:
-                  GH_TOKEN: ${{ secrets.PR_TOKEN }}
+                  GH_TOKEN: ${{ steps.app-token.outputs.token }}
                   REPO_URL: ${{ github.server_url }}/${{ github.repository }}
               run: |
                   # Collect lines added vs main (new tags).
