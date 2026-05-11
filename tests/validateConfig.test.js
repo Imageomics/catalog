@@ -86,7 +86,8 @@ describe('validateConfig', () => {
     });
 
     it('accepts GIT_API_BASE_URL with trailing slash', () => {
-        expect(validateConfig({ ...VALID_CONFIG, GIT_API_BASE_URL: 'https://api.github.com/' })).not.toContain('GIT_API_BASE_URL');
+        const errors = validateConfig({ ...VALID_CONFIG, GIT_API_BASE_URL: 'https://api.github.com/' });
+        expect(errors.some(e => e.includes('GIT_API_BASE_URL'))).toBe(false);
     });
 
     it('errors when API_BASE_URL is missing', () => {
