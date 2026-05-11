@@ -21,6 +21,7 @@ const configPromise = fetch('config.yaml')
     .then(text => jsYaml.load(text));
 
 // Module-scope lets — assigned after config loads, used by all functions below
+// Keep this list in sync with the CONFIG fan-out performed during DOMContentLoaded
 let CONFIG;
 let ORGANIZATION_NAME, CATALOG_REPO_NAME, GIT_API_BASE_URL, API_BASE_URL, REFRESH_INTERVAL_DAYS, ADDITIONAL_REPOS, ADDITIONAL_HF_REPOS;
 
