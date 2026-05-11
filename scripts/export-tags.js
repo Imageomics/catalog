@@ -8,8 +8,8 @@
 //
 // Output: scripts/tag-export.txt (one tag per line, sorted, deduplicated)
 //
-// Reads ORGANIZATION_NAME, API_BASE_URL, and ADDITIONAL_REPOS from
-// public/config.yaml
+// Reads ORGANIZATION_NAME, GIT_API_BASE_URL, API_BASE_URL, and ADDITIONAL_REPOS
+// from public/config.yaml
 //
 
 import fs from 'fs';
@@ -33,12 +33,13 @@ if (errors.length) {
 }
 
 const CONFIG = rawConfig;
-const { ORGANIZATION_NAME, API_BASE_URL, ADDITIONAL_REPOS } = CONFIG;
+const { ORGANIZATION_NAME, GIT_API_BASE_URL, API_BASE_URL, ADDITIONAL_REPOS } = CONFIG;
 const ADDITIONAL_HF_REPOS = CONFIG.ADDITIONAL_HF_REPOS;
 
 // ---------------------------------------------------------------------------
 // Fetch helpers
 // ---------------------------------------------------------------------------
+// Update this section as needed for non-GitHub code platforms (e.g., Codberg or GitLab)
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
 
 const get = async (url) => {
@@ -60,7 +61,7 @@ const allTags = new Set();
 const collectGitHubTags = async () => {
     console.log('Fetching GitHub repos...');
     let allRepos = [];
-    let nextUrl = `https://api.github.com/orgs/${ORGANIZATION_NAME}/repos?type=public&per_page=100`;
+    let nextUrl = `${GIT_API_BASE_URL}orgs/${ORGANIZATION_NAME}/repos?type=public&per_page=100`;
 
     while (nextUrl) {
         const { json: page, headers } = await get(nextUrl);
@@ -73,7 +74,7 @@ const collectGitHubTags = async () => {
     // Additional repos
     const additionalData = await Promise.all(
         ADDITIONAL_REPOS.map(ownerRepo =>
-            get(`https://api.github.com/repos/${ownerRepo}`)
+            get(`${GIT_API_BASE_URL}repos/${ownerRepo}`)
                 .then(({ json }) => json)
                 .catch(() => null)
         )

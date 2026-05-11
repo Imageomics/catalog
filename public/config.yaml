@@ -21,7 +21,14 @@ COLORS:
   tag: "#9bcb5e"          # Tag background color (Light Green)
 
 # API & Behavior Settings
+# git-based platform URL for API calls
+# Default: GitHub, but this can be customized for platforms with compatible APIs
+# E.g., Codeberg or GitLab (in development)
+GIT_API_BASE_URL: "https://api.github.com/"
+# Dataset, model, and space (demo) URL for API calls
+# Default: Hugging Face, other platforms would require a custom module
 API_BASE_URL: "https://huggingface.co/api/"
+# Define "new" repository criteria
 REFRESH_INTERVAL_DAYS: 30
 
 # Array of "owner/repo" strings to include in addition to non-forked org repos.

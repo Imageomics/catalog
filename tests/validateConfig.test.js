@@ -5,6 +5,7 @@ const VALID_CONFIG = {
     ORGANIZATION_NAME: 'imageomics',
     ORG_NAME: 'Imageomics',
     CATALOG_REPO_NAME: 'catalog',
+    GIT_API_BASE_URL: 'https://api.github.com/',
     API_BASE_URL: 'https://huggingface.co/api/',
     REFRESH_INTERVAL_DAYS: 30,
     ADDITIONAL_REPOS: [],
@@ -70,6 +71,11 @@ describe('validateConfig', () => {
         expect(validateConfig({ ...VALID_CONFIG, CATALOG_REPO_NAME: '' })).toContain('CATALOG_REPO_NAME');
     });
 
+    it('errors when GIT_API_BASE_URL is missing', () => {
+        const { GIT_API_BASE_URL: _, ...config } = VALID_CONFIG;
+        expect(validateConfig(config)).toContain('GIT_API_BASE_URL');
+    });
+
     it('errors when API_BASE_URL is missing', () => {
         const { API_BASE_URL: _, ...config } = VALID_CONFIG;
         expect(validateConfig(config)).toContain('API_BASE_URL');
@@ -132,6 +138,7 @@ describe('validateConfig', () => {
         expect(errors).toContain('ORGANIZATION_NAME');
         expect(errors).toContain('ORG_NAME');
         expect(errors).toContain('CATALOG_REPO_NAME');
+        expect(errors).toContain('GIT_API_BASE_URL');
         expect(errors).toContain('API_BASE_URL');
         expect(errors).toContain('REFRESH_INTERVAL_DAYS');
     });

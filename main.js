@@ -22,7 +22,7 @@ const configPromise = fetch('config.yaml')
 
 // Module-scope lets — assigned after config loads, used by all functions below
 let CONFIG;
-let ORGANIZATION_NAME, CATALOG_REPO_NAME, API_BASE_URL, REFRESH_INTERVAL_DAYS, ADDITIONAL_REPOS, ADDITIONAL_HF_REPOS;
+let ORGANIZATION_NAME, CATALOG_REPO_NAME, GIT_API_BASE_URL, API_BASE_URL, REFRESH_INTERVAL_DAYS, ADDITIONAL_REPOS, ADDITIONAL_HF_REPOS;
 
 // Build a reverse lookup from TAG_GROUPS (defined in tag-groups.js): raw tag → [canonical tags]
 // A raw tag may appear in multiple groups, so the value is an array.
@@ -184,7 +184,7 @@ const fetchHubItems = async (repoType) => {
 
             // Paginate through all public repos (GitHub API returns max 100 per page)
             let allRepos = [];
-            let nextUrl = `https://api.github.com/orgs/${ORGANIZATION_NAME}/repos?type=public&per_page=100`;
+            let nextUrl = `${GIT_API_BASE_URL}orgs/${ORGANIZATION_NAME}/repos?type=public&per_page=100`;
             while (nextUrl) {
                 const ghResponse = await fetch(nextUrl);
 
@@ -209,7 +209,7 @@ const fetchHubItems = async (repoType) => {
 
             const fetchedExternalData = await Promise.all(
                 toFetch.map(ownerRepo =>
-                    fetch(`https://api.github.com/repos/${ownerRepo}`)
+                    fetch(`${GIT_API_BASE_URL}repos/${ownerRepo}`)
                         .then(r => {
                             if (!r.ok) {
                                 console.warn(`Failed to fetch additional repo "${ownerRepo}": HTTP ${r.status}`);
@@ -383,12 +383,12 @@ const fetchCatalogStats = async () => {
 
     try {
         // 1. Get Stars & Forks
-        const repo = await fetch(`https://api.github.com/repos/${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`).then(r => r.ok ? r.json() : {});
+        const repo = await fetch(`${GIT_API_BASE_URL}repos/${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`).then(r => r.ok ? r.json() : {});
         if (repo.stargazers_count !== undefined) update('gh-stars', 'gh-star-container', repo.stargazers_count);
         if (repo.forks_count !== undefined) update('gh-forks', 'gh-fork-container', repo.forks_count);
 
         // 2. Get Version (Tag)
-        const release = await fetch(`https://api.github.com/repos/${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}/releases/latest`).then(r => r.ok ? r.json() : {});
+        const release = await fetch(`${GIT_API_BASE_URL}repos/${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}/releases/latest`).then(r => r.ok ? r.json() : {});
         if (release.tag_name) update('gh-tag', 'gh-version-container', release.tag_name);
 
     } catch (e) {
