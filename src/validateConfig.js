@@ -22,7 +22,11 @@ export function validateConfig(config) {
     } else if (!config.GIT_API_BASE_URL.endsWith('/')) {
         errors.push('GIT_API_BASE_URL must end with "/"');
     }
-    if (!config.API_BASE_URL)                 errors.push('API_BASE_URL');
+    if (typeof config.API_BASE_URL !== 'string' || !config.API_BASE_URL) {
+        errors.push('API_BASE_URL');
+    } else if (!config.API_BASE_URL.endsWith('/')) {
+        errors.push('API_BASE_URL must end with "/"');
+    }
     if (config.REFRESH_INTERVAL_DAYS == null) errors.push('REFRESH_INTERVAL_DAYS');
 
     if (!Array.isArray(config.ADDITIONAL_REPOS)) {

@@ -95,6 +95,20 @@ describe('validateConfig', () => {
         expect(validateConfig(config)).toContain('API_BASE_URL');
     });
 
+    it('errors when API_BASE_URL is empty string', () => {
+        expect(validateConfig({ ...VALID_CONFIG, API_BASE_URL: '' })).toContain('API_BASE_URL');
+    });
+
+    it('errors when API_BASE_URL has no trailing slash', () => {
+        const errors = validateConfig({ ...VALID_CONFIG, API_BASE_URL: 'https://huggingface.co/api' });
+        expect(errors.some(e => e.includes('API_BASE_URL must end with "/"'))).toBe(true);
+    });
+
+    it('accepts API_BASE_URL with trailing slash', () => {
+        const errors = validateConfig({ ...VALID_CONFIG, API_BASE_URL: 'https://huggingface.co/api/' });
+        expect(errors.some(e => e.includes('API_BASE_URL'))).toBe(false);
+    });
+
     it('errors when REFRESH_INTERVAL_DAYS is null', () => {
         expect(validateConfig({ ...VALID_CONFIG, REFRESH_INTERVAL_DAYS: null })).toContain('REFRESH_INTERVAL_DAYS');
     });
