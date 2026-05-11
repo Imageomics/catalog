@@ -696,7 +696,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             CATALOG_TITLE: 'Catalog', CATALOG_DESCRIPTION: '',
             LOGO_URL: '', FAVICON_URL: '',
             COLORS: { primary: '#92991c', secondary: '#5d8095', accent: '#0097b2', accentDark: '#4fd1eb', tag: '#9bcb5e' },
-            API_BASE_URL: 'https://huggingface.co/api/', REFRESH_INTERVAL_DAYS: 30,
+            GIT_API_BASE_URL: 'https://api.github.com/', API_BASE_URL: 'https://huggingface.co/api/', REFRESH_INTERVAL_DAYS: 30,
             ADDITIONAL_REPOS: [], ADDITIONAL_HF_REPOS: [], FONT_FAMILY: 'Inter'
         };
     }
@@ -704,6 +704,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Assign module-scope variables used by all functions
     ORGANIZATION_NAME     = CONFIG.ORGANIZATION_NAME;
     CATALOG_REPO_NAME     = CONFIG.CATALOG_REPO_NAME;
+    GIT_API_BASE_URL      = CONFIG.GIT_API_BASE_URL;
+    if (GIT_API_BASE_URL && !GIT_API_BASE_URL.endsWith('/')) GIT_API_BASE_URL += '/';
     API_BASE_URL          = CONFIG.API_BASE_URL;
     REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
     ADDITIONAL_REPOS      = CONFIG.ADDITIONAL_REPOS;

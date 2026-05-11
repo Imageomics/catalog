@@ -39,7 +39,7 @@ const ADDITIONAL_HF_REPOS = CONFIG.ADDITIONAL_HF_REPOS;
 // ---------------------------------------------------------------------------
 // Fetch helpers
 // ---------------------------------------------------------------------------
-// Update this section as needed for non-GitHub code platforms (e.g., Codberg or GitLab)
+// Update this section as needed for non-GitHub code platforms (e.g., Codeberg or GitLab)
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
 
 const get = async (url) => {
