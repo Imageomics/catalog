@@ -16,8 +16,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import jsYaml from 'js-yaml';
-import { getPlatformApiUrls } from './defineApiUrls.js';
 import { validateConfig } from '../src/validateConfig.js';
+import { getPlatformApiUrls } from '..src/defineApiUrls.js';
 import { filterNewAdditionalEntries } from '../src/filterNewAdditionalEntries.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
