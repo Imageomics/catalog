@@ -16,6 +16,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import jsYaml from 'js-yaml';
+import { getPlatformApiUrls } from './defineApiUrls.js';
 import { validateConfig } from '../src/validateConfig.js';
 import { filterNewAdditionalEntries } from '../src/filterNewAdditionalEntries.js';
 
@@ -33,12 +34,13 @@ if (errors.length) {
 }
 
 const CONFIG = rawConfig;
-const { ORGANIZATION_NAME, API_BASE_URL, ADDITIONAL_REPOS } = CONFIG;
+const { ORGANIZATION_NAME, PLATFORM, API_BASE_URL, ADDITIONAL_REPOS } = CONFIG;
 const ADDITIONAL_HF_REPOS = CONFIG.ADDITIONAL_HF_REPOS;
 
 // ---------------------------------------------------------------------------
 // Fetch helpers
 // ---------------------------------------------------------------------------
+// Update this section as needed for non-GitHub code platforms (e.g., Codeberg or GitLab)
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
 
 const get = async (url) => {
@@ -56,11 +58,12 @@ const get = async (url) => {
 // Tag collection
 // ---------------------------------------------------------------------------
 const allTags = new Set();
+const { org: ORG_API_URL, repo: REPO_API_URL } = getPlatformApiUrls(PLATFORM, ORGANIZATION_NAME);
 
 const collectGitHubTags = async () => {
-    console.log('Fetching GitHub repos...');
+    console.log(`Fetching ${PLATFORM} repos...`);
     let allRepos = [];
-    let nextUrl = `https://api.github.com/orgs/${ORGANIZATION_NAME}/repos?type=public&per_page=100`;
+    let nextUrl = `${ORG_API_URL}`;
 
     while (nextUrl) {
         const { json: page, headers } = await get(nextUrl);
@@ -73,7 +76,7 @@ const collectGitHubTags = async () => {
     // Additional repos
     const additionalData = await Promise.all(
         ADDITIONAL_REPOS.map(ownerRepo =>
-            get(`https://api.github.com/repos/${ownerRepo}`)
+            get(`${REPO_API_URL}${ownerRepo}`)
                 .then(({ json }) => json)
                 .catch(() => null)
         )
@@ -87,7 +90,7 @@ const collectGitHubTags = async () => {
         (repo.topics || []).forEach(t => allTags.add(t.toLowerCase()));
     });
 
-    console.log(`  GitHub: processed ${orgNonForks.length} org repos + ${additionalRepos.length} additional repos`);
+    console.log(`  ${PLATFORM}: processed ${orgNonForks.length} org repos + ${additionalRepos.length} additional repos`);
 };
 
 const collectHFTags = async (repoType) => {

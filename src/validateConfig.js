@@ -17,6 +17,11 @@ export function validateConfig(config) {
     if (!config.ORGANIZATION_NAME)            errors.push('ORGANIZATION_NAME');
     if (!config.ORG_NAME)                     errors.push('ORG_NAME');
     if (!config.CATALOG_REPO_NAME)            errors.push('CATALOG_REPO_NAME');
+    if (!config.PLATFORM)                     errors.push('PLATFORM');
+    /** Update to include 'codeberg' and 'gitlab' once supported */
+    if (config.PLATFORM && !['github'].includes(config.PLATFORM.toLowerCase())) {
+        errors.push('PLATFORM must be "github"');
+    }
     if (!config.API_BASE_URL)                 errors.push('API_BASE_URL');
     if (config.REFRESH_INTERVAL_DAYS == null) errors.push('REFRESH_INTERVAL_DAYS');
 
