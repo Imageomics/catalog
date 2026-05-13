@@ -60,8 +60,9 @@ const get = async (url) => {
 const allTags = new Set();
 const { org: ORG_API_URL, repo: REPO_API_URL } = getPlatformApiUrls(PLATFORM, ORGANIZATION_NAME);
 
-const collectGitHubTags = async () => {
-    console.log(`Fetching ${PLATFORM} repos...`);
+const collectCodePlatformTags = async () => {
+    const platformDisplay = getPlatformDisplay(PLATFORM);
+    console.log(`Fetching ${platformDisplay.displayName || PLATFORM} repos...`);
     let allRepos = [];
     let nextUrl = `${ORG_API_URL}`;
 
@@ -90,7 +91,7 @@ const collectGitHubTags = async () => {
         (repo.topics || []).forEach(t => allTags.add(t.toLowerCase()));
     });
 
-    console.log(`  ${PLATFORM}: processed ${orgNonForks.length} org repos + ${additionalRepos.length} additional repos`);
+    console.log(`  ${platformDisplay.displayName || PLATFORM}: processed ${orgNonForks.length} org repos + ${additionalRepos.length} additional repos`);
 };
 
 const collectHFTags = async (repoType) => {
@@ -136,7 +137,7 @@ const collectHFTags = async (repoType) => {
 // ---------------------------------------------------------------------------
 (async () => {
     try {
-        await collectGitHubTags();
+        await collectCodePlatformTags();
         await collectHFTags('datasets');
         await collectHFTags('models');
         await collectHFTags('spaces');

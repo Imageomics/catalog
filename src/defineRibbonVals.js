@@ -35,6 +35,11 @@ const platforms = {
  * @returns {object|null}
  */
 export function getPlatformDisplay(platform) {
-  const key = platform.toLowerCase();
-  return platforms[key] || null;
+  const platformKey = platform.toLowerCase();
+  /** Update to include 'codeberg' and 'gitlab' once supported */
+  const supportedPlatforms = ['github'];
+  if (!supportedPlatforms.includes(platformKey)) {
+      throw new Error(`Unsupported platform: ${platformKey}. Must be one of: ${supportedPlatforms.join(', ')}`);
+  }
+  return platforms[platformKey];
 }

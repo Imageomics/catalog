@@ -192,7 +192,8 @@ const fetchHubItems = async (repoType) => {
                 const ghResponse = await fetch(nextUrl);
 
                 if (!ghResponse.ok) {
-                    throw new Error(`${PLATFORM} error: ${ghResponse.status}`);
+                    const platformDisplay = getPlatformDisplay(PLATFORM);
+                    throw new Error(`${platformDisplay.displayName || PLATFORM} error: ${ghResponse.status}`);
                 }
 
                 const page = await ghResponse.json();
@@ -385,12 +386,14 @@ const fetchCatalogStats = async () => {
     };
 
     try {
+        //TODO: Update stars and forks to support other platforms (GitLab, Codeberg) once implemented
         // 1. Get Stars & Forks
         const repo = await fetch(`${REPO_API_URL}${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`).then(r => r.ok ? r.json() : {});
         if (repo.stargazers_count !== undefined) update('gh-stars', 'gh-star-container', repo.stargazers_count);
         if (repo.forks_count !== undefined) update('gh-forks', 'gh-fork-container', repo.forks_count);
 
         // 2. Get Version (Tag)
+        // TODO: Import from package.json
         const release = await fetch(`${REPO_API_URL}${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}/releases/latest`).then(r => r.ok ? r.json() : {});
         if (release.tag_name) update('gh-tag', 'gh-version-container', release.tag_name);
 
@@ -659,13 +662,13 @@ const initializeUIFromConfig = () => {
 
     // Set Code Repo ribbon link, SVG path, display name, and colors
     const repoRibbon = document.getElementById('repo-ribbon');
-    const platforms = getPlatformDisplay(PLATFORM);
-    if (repoRibbon) {
-        repoRibbon.href = `${platforms.ribbonUrl}${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`;
+    const platformDisplay = getPlatformDisplay(PLATFORM);
+    if (repoRibbon && platformDisplay) {
+        repoRibbon.href = `${platformDisplay.ribbonUrl}${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`;
         const pathElement = document.getElementById('repo-ribbon-icon');
-        pathElement.setAttribute('d', platforms.path);
+        pathElement.setAttribute('d', platformDisplay.path);
         const platformDisplayName = document.getElementById('platform-display-name');
-        platformDisplayName.textContent = platforms.displayName;
+        platformDisplayName.textContent = platformDisplay.displayName || PLATFORM;
         repoRibbon.style.backgroundColor = CONFIG.COLORS.secondary;
         repoRibbon.style.setProperty('--hover-color', CONFIG.COLORS.primary);
         repoRibbon.addEventListener('mouseenter', function () {
