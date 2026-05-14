@@ -4,11 +4,11 @@ This file provides guidance for AI coding agents (e.g., GitHub Copilot) working 
 
 ## Project Overview
 
-This is a **template repository** for a web-based catalog of an organization's public code, datasets, models, and spaces. It fetches live data from the GitHub API and the Hugging Face API and renders a searchable, filterable catalog page as a static site via GitHub Pages.
+This is a **template repository** for a web-based catalog of an organization's public code, datasets, models, and spaces. It fetches live data from the GitHub API and the Hugging Face API and renders a searchable, filterable catalog page as a static site via GitHub Pages. The default setup is for the Imageomics Organization's GitHub and Hugging Face products, and this Imageomics Catalog is live.
 
 ## Critical: Templated Design
 
-**Do not restructure the codebase.** This project is intentionally designed as a template where the only expected customization is editing `public/config.yaml` at instantiation — and occasionally updating `ADDITIONAL_REPOS` or `ADDITIONAL_HF_REPOS` when non-org repos must be added. The rest of the code is intended to be stable and reusable across forks.
+**Do not restructure the codebase.** This project is intentionally designed as a template where the only expected user customization is editing `public/config.yaml` at instantiation — and occasionally updating `ADDITIONAL_REPOS` or `ADDITIONAL_HF_REPOS` when non-org repos must be added. The rest of the code is intended to be stable and reusable across forks.
 
 When resolving issues or implementing features:
 - Make the **smallest change** that correctly fixes the problem.
