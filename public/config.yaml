@@ -21,7 +21,11 @@ COLORS:
   tag: "#9bcb5e"          # Tag background color (Light Green)
 
 # API & Behavior Settings
+# Codebase platform for API calls and link generation. Supported values: "github", pending: "codeberg" or "gitlab".
+PLATFORM: github
+# Dataset, model, and space (demo) default: Hugging Face, other platforms would require a custom module
 API_BASE_URL: "https://huggingface.co/api/"
+# Define "new" repository criteria
 REFRESH_INTERVAL_DAYS: 30
 
 # Array of "owner/repo" strings to include in addition to non-forked org repos.

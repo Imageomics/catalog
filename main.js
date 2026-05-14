@@ -8,6 +8,8 @@
 
 import jsYaml from 'js-yaml';
 import { normalizeTag } from './src/normalizeTag.js';
+import { getPlatformApiUrls } from './src/defineApiUrls.js';
+import { getPlatformDisplay } from './src/defineRibbonVals.js';
 import { filterItems, sortItems } from './src/filterAndSort.js';
 import { filterNewAdditionalEntries } from './src/filterNewAdditionalEntries.js';
 
@@ -22,7 +24,8 @@ const configPromise = fetch('config.yaml')
 
 // Module-scope lets — assigned after config loads, used by all functions below
 let CONFIG;
-let ORGANIZATION_NAME, CATALOG_REPO_NAME, API_BASE_URL, REFRESH_INTERVAL_DAYS, ADDITIONAL_REPOS, ADDITIONAL_HF_REPOS;
+let ORGANIZATION_NAME, CATALOG_REPO_NAME, PLATFORM, API_BASE_URL, REFRESH_INTERVAL_DAYS, ADDITIONAL_REPOS, ADDITIONAL_HF_REPOS;
+let ORG_API_URL, REPO_API_URL;
 
 // Build a reverse lookup from TAG_GROUPS (defined in tag-groups.js): raw tag → [canonical tags]
 // A raw tag may appear in multiple groups, so the value is an array.
@@ -162,7 +165,7 @@ const getCurrentState = () => {
 //
 
 /**
- * Fetches items (code, datasets, models, or spaces) for a given organization from the GitHub or Hugging Face API.
+ * Fetches items (code, datasets, models, or spaces) for a given organization from the specified code platform or Hugging Face API.
  * @async
  * @param {string} repoType - The type of repository to fetch ("code", "datasets", "models", or "spaces").
  * @returns {Promise<Array>} An array of item objects.
@@ -178,18 +181,19 @@ const fetchHubItems = async (repoType) => {
     try {
         let items = [];
 
-        // github api requests for code
+        // Platform-specific api requests for code
         if (repoType === "code") {
             if (fetchedData.code) return allItems.code // reuse if already fetched
 
-            // Paginate through all public repos (GitHub API returns max 100 per page)
+            // Paginate through all public repos (Platform determines API max returns per page)
             let allRepos = [];
-            let nextUrl = `https://api.github.com/orgs/${ORGANIZATION_NAME}/repos?type=public&per_page=100`;
+            let nextUrl = `${ORG_API_URL}`;
             while (nextUrl) {
                 const ghResponse = await fetch(nextUrl);
 
                 if (!ghResponse.ok) {
-                    throw new Error(`GitHub error: ${ghResponse.status}`);
+                    const platformDisplay = getPlatformDisplay(PLATFORM);
+                    throw new Error(`${platformDisplay.displayName || PLATFORM} error: ${ghResponse.status}`);
                 }
 
                 const page = await ghResponse.json();
@@ -209,7 +213,7 @@ const fetchHubItems = async (repoType) => {
 
             const fetchedExternalData = await Promise.all(
                 toFetch.map(ownerRepo =>
-                    fetch(`https://api.github.com/repos/${ownerRepo}`)
+                    fetch(`${REPO_API_URL}${ownerRepo}`)
                         .then(r => {
                             if (!r.ok) {
                                 console.warn(`Failed to fetch additional repo "${ownerRepo}": HTTP ${r.status}`);
@@ -382,17 +386,19 @@ const fetchCatalogStats = async () => {
     };
 
     try {
+        //TODO: Update stars and forks to support other platforms (GitLab, Codeberg) once implemented
         // 1. Get Stars & Forks
-        const repo = await fetch(`https://api.github.com/repos/${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`).then(r => r.ok ? r.json() : {});
+        const repo = await fetch(`${REPO_API_URL}${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`).then(r => r.ok ? r.json() : {});
         if (repo.stargazers_count !== undefined) update('gh-stars', 'gh-star-container', repo.stargazers_count);
         if (repo.forks_count !== undefined) update('gh-forks', 'gh-fork-container', repo.forks_count);
 
         // 2. Get Version (Tag)
-        const release = await fetch(`https://api.github.com/repos/${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}/releases/latest`).then(r => r.ok ? r.json() : {});
+        // TODO: Import from package.json
+        const release = await fetch(`${REPO_API_URL}${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}/releases/latest`).then(r => r.ok ? r.json() : {});
         if (release.tag_name) update('gh-tag', 'gh-version-container', release.tag_name);
 
     } catch (e) {
-        console.warn("Could not fetch GitHub stats", e);
+        console.warn("Could not fetch Code Repo stats", e);
     }
 };
 
@@ -469,7 +475,7 @@ const renderHubItemCard = (item, repoType) => {
             break;
     }
 
-    // stars for GitHub repos
+    // stars for code repos
     const badgeHtml = (() => {
         if (item.isNew) {
             return `<span class="new-badge inline-block text-xs font-bold text-white rounded-full px-2 py-1">
@@ -628,7 +634,7 @@ const populateTagFilter = (repoType) => {
 
 /**
  * Initializes UI elements from configuration values.
- * This sets up the header, logo, GitHub ribbon, and dynamic styles.
+ * This sets up the header, logo, repo ribbon, and dynamic styles.
  */
 const initializeUIFromConfig = () => {
     // Set header logo
@@ -654,16 +660,21 @@ const initializeUIFromConfig = () => {
         headerDesc.textContent = CONFIG.CATALOG_DESCRIPTION;
     }
 
-    // Set GitHub ribbon link and colors
-    const githubRibbon = document.getElementById('github-ribbon');
-    if (githubRibbon) {
-        githubRibbon.href = `https://github.com/${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`;
-        githubRibbon.style.backgroundColor = CONFIG.COLORS.secondary;
-        githubRibbon.style.setProperty('--hover-color', CONFIG.COLORS.primary);
-        githubRibbon.addEventListener('mouseenter', function () {
+    // Set Code Repo ribbon link, SVG path, display name, and colors
+    const repoRibbon = document.getElementById('repo-ribbon');
+    const platformDisplay = getPlatformDisplay(PLATFORM);
+    if (repoRibbon && platformDisplay) {
+        repoRibbon.href = `${platformDisplay.ribbonUrl}${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`;
+        const pathElement = document.getElementById('repo-ribbon-icon');
+        pathElement.setAttribute('d', platformDisplay.path);
+        const platformDisplayName = document.getElementById('platform-display-name');
+        platformDisplayName.textContent = platformDisplay.displayName || PLATFORM;
+        repoRibbon.style.backgroundColor = CONFIG.COLORS.secondary;
+        repoRibbon.style.setProperty('--hover-color', CONFIG.COLORS.primary);
+        repoRibbon.addEventListener('mouseenter', function () {
             this.style.backgroundColor = CONFIG.COLORS.primary;
         });
-        githubRibbon.addEventListener('mouseleave', function () {
+        repoRibbon.addEventListener('mouseleave', function () {
             this.style.backgroundColor = CONFIG.COLORS.secondary;
         });
     }
@@ -696,6 +707,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             CATALOG_TITLE: 'Catalog', CATALOG_DESCRIPTION: '',
             LOGO_URL: '', FAVICON_URL: '',
             COLORS: { primary: '#92991c', secondary: '#5d8095', accent: '#0097b2', accentDark: '#4fd1eb', tag: '#9bcb5e' },
+            PLATFORM: 'github',
             API_BASE_URL: 'https://huggingface.co/api/', REFRESH_INTERVAL_DAYS: 30,
             ADDITIONAL_REPOS: [], ADDITIONAL_HF_REPOS: [], FONT_FAMILY: 'Inter'
         };
@@ -704,6 +716,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Assign module-scope variables used by all functions
     ORGANIZATION_NAME     = CONFIG.ORGANIZATION_NAME;
     CATALOG_REPO_NAME     = CONFIG.CATALOG_REPO_NAME;
+    PLATFORM              = CONFIG.PLATFORM;
+    ORG_API_URL           = getPlatformApiUrls(PLATFORM, ORGANIZATION_NAME).org;
+    REPO_API_URL          = getPlatformApiUrls(PLATFORM, ORGANIZATION_NAME).repo;
     API_BASE_URL          = CONFIG.API_BASE_URL;
     REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
     ADDITIONAL_REPOS      = CONFIG.ADDITIONAL_REPOS;

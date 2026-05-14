@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import jsYaml from 'js-yaml';
 import { validateConfig } from '../src/validateConfig.js';
+import { getPlatformApiUrls } from '../src/defineApiUrls.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,8 +28,9 @@ const headers = TOKEN
 const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
 
 // Step 1: Fetch all public org repos (paginated, same logic as main.js)
+const { org: ORG_API_URL, repo: REPO_API_URL } = getPlatformApiUrls(CONFIG.PLATFORM, CONFIG.ORGANIZATION_NAME);
 let allOrgRepos = [];
-let nextUrl = `https://api.github.com/orgs/${CONFIG.ORGANIZATION_NAME}/repos?type=public&per_page=100`;
+let nextUrl = `${ORG_API_URL}`;
 while (nextUrl) {
     const res = await fetch(nextUrl, { headers });
     if (!res.ok) {
@@ -55,7 +57,7 @@ const repoIds = [
 const releases = {};
 for (const id of repoIds) {
     try {
-        const res = await fetch(`https://api.github.com/repos/${id}/releases/latest`, { headers });
+        const res = await fetch(`${REPO_API_URL}${id}/releases/latest`, { headers });
         if (!res.ok) { releases[id] = null; continue; }
         const data = await res.json();
         releases[id] = {
