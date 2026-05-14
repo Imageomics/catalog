@@ -16,13 +16,6 @@
  * @returns {object} An object containing ORG_API_URL and REPO_API_URL
  */
 export function getPlatformApiUrls(platform, organizationName) {
-    /** Update to include 'codeberg' and 'gitlab' once supported */
-    const supportedPlatforms = ['github'];
-    const platformKey = platform.toLowerCase();
-    if (!supportedPlatforms.includes(platformKey)) {
-        throw new Error(`Unsupported platform: ${platformKey}. Must be one of: ${supportedPlatforms.join(', ')}`);
-    }
-
     const platformApiUrls = {
         github: {
             org: `https://api.github.com/orgs/${organizationName}/repos?type=public&per_page=100`,
@@ -37,5 +30,5 @@ export function getPlatformApiUrls(platform, organizationName) {
         //     repo: "https://codeberg.org/api/v1/repos/"
         // }
     };
-    return platformApiUrls[platformKey];
+    return platformApiUrls[platform.toLowerCase()];
 }
