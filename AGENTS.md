@@ -106,7 +106,7 @@ The validator in `src/validateConfig.js` is the authoritative list of required c
 ## Build & Dev
 
 ```console
-npm install       # install dependencies (Node 24 required)
+npm install       # install dependencies (Node version in .nvmrc)
 npm run dev       # start Vite dev server (typically http://localhost:5173/)
 npm run build     # production build → dist/
 npm run preview   # preview production build locally
