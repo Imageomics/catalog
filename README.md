@@ -2,9 +2,7 @@
 
 Repository for web-based Imageomics code, data, model, and spaces catalog. This catalog is designed to use the GitHub API for searching all code repositories created under the [Imageomics GitHub Organization](https://github.com/Imageomics) and the Hugging Face API for searching all dataset, model, and spaces repositories created under the [Imageomics Hugging Face Organization](https://huggingface.co/imageomics).
 
-This repository has been set up to provide a template for others looking to create a similar catalog website. Instructions for use and personalization are provided below, under [How to Use this Template](#how-to-use-this-template).
-
-This project was initialized with the help of Gemini 2.5, accessed [through OSU](https://ai.osu.edu/faculty-staff-students/approved-ai-tools). In addition to speeding up the development of this site, I was curious about how much Gemini could do and where it would falter; see the [full prompt/discussion](catalog-generation-prompt-Gemini2.5Flash.md) for more information.
+This repository has been set up to provide a template for others looking to create a similar catalog website. Instructions for use and personalization are provided below, under [How to Use this Template](#how-to-use-this-template). More background on this site's creation is provided in the [docs](docs/).
 
 ## Features
 
