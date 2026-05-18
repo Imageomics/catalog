@@ -102,7 +102,7 @@ All runtime behavior is controlled by `public/config.yaml`. It is fetched at pag
 
 - `ORGANIZATION_NAME` — used in all API calls (must be lowercase)
 - `API_BASE_URL` — Hugging Face API base (default: `https://huggingface.co/api/`)
-- `PLATFORM` — code platform; only `github` is currently supported
+- `PLATFORM` — code repository platform; only `github` is currently supported
 - `ADDITIONAL_REPOS` — forked or external GitHub repos to include
 - `ADDITIONAL_HF_REPOS` — Hugging Face repos from outside the org to include (each entry needs `repo` and `type`)
 
