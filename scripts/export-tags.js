@@ -18,6 +18,7 @@ import { fileURLToPath } from 'url';
 import jsYaml from 'js-yaml';
 import { validateConfig } from '../src/validateConfig.js';
 import { getPlatformApiUrls } from '../src/defineApiUrls.js';
+import { getPlatformDisplay } from '../src/defineRibbonVals.js';
 import { filterNewAdditionalEntries } from '../src/filterNewAdditionalEntries.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
