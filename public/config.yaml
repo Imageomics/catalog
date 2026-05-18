@@ -39,6 +39,7 @@ ADDITIONAL_REPOS:
   - "jennamk14/autonomous_drone_simulator"
   - "ixlab/vidformer"
   - "ixlab/vega-video"
+  - "yoohj0416/predictbeetle"
 
 # Array of Hugging Face repos from outside the org to include.
 # Each entry must specify "repo" (owner/name) and "type" (datasets, models, or spaces).
@@ -49,7 +50,9 @@ ADDITIONAL_REPOS:
 #     type: "models"
 #   - repo: "user/space-name"
 #     type: "spaces"
-ADDITIONAL_HF_REPOS: []
+ADDITIONAL_HF_REPOS:
+  - repo: "yoohj0416/predictbeetle"
+    type: "models"
 
 # Typography
 FONT_FAMILY: Inter    # Font family for the site
