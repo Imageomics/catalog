@@ -8,7 +8,7 @@ This is a **template repository** for a web-based catalog of an organization's p
 
 ## Critical: Templated Design
 
-**Do not restructure the codebase.** This project is intentionally designed as a template where the only expected user customization is editing `public/config.yaml` at instantiation — and occasionally updating `ADDITIONAL_REPOS` or `ADDITIONAL_HF_REPOS` when non-org repos must be added. The rest of the code is intended to be stable and reusable across forks.
+**Do not restructure the codebase.** This project is intentionally designed as a template where the only expected user customization is editing `public/config.yaml` at instantiation — and occasionally updating `ADDITIONAL_REPOS` or `ADDITIONAL_HF_REPOS` when non-org repos must be added. The `public/config.yaml` file is intended to be stable and reusable across repositories utilizing this template; new functionality should not require changes to existing configuration settings.
 
 When resolving issues or implementing features:
 - Make the **smallest change** that correctly fixes the problem.
