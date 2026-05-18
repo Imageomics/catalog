@@ -8,13 +8,18 @@ This is a **template repository** for a web-based catalog of an organization's p
 
 ## Critical: Templated Design
 
-**Do not restructure the codebase.** This project is intentionally designed as a template where the only expected user customization is editing `public/config.yaml` at instantiation — and occasionally updating `ADDITIONAL_REPOS` or `ADDITIONAL_HF_REPOS` when non-org repos must be added. The `public/config.yaml` file is intended to be stable and reusable across repositories utilizing this template; new functionality should not require changes to existing configuration settings.
+**Do not restructure the codebase.** This project is intentionally designed as a template where the only expected user customization is editing `public/config.yaml` and `public/tag-groups.js` at instantiation — and occasionally updating `ADDITIONAL_REPOS` or `ADDITIONAL_HF_REPOS` when non-org repos must be added. 
+
+The `public/config.yaml` file is intended to be stable and reusable across repositories utilizing this template; new functionality should not require changes to existing configuration settings. The `public/tag-groups.js` file is likely to be unique to each template user and should have tag groups added as needed (proper use is described in `docs/tag-grouping-process.md`); **do not delete tag groups**.
+
+Source files (`src/`) and scripts (`scripts/`) can be updated as needed for new functionality as long as changes adhere to the templated design principles established here.
 
 When resolving issues or implementing features:
 - Make the **smallest change** that correctly fixes the problem.
 - **Do not restructure, consolidate, or refactor** functions or files unless it is strictly necessary for a correct, efficient solution.
 - A function doing multiple related things is intentional — do not split it up unless there is a clear, specific reason to do so.
 - When in doubt, ask for a plan before making changes.
+- If asked to make a fix in a pull request review, provide the fix as one or more suggested changes instead of directly committing changes.
 
 This matches the debugging philosophy documented in [`README.md`](README.md#note-on-debugging-with-gemini): *"without changing the structure of existing code more than necessary for efficient design."*
 
@@ -23,7 +28,7 @@ This matches the debugging philosophy documented in [`README.md`](README.md#note
 | Path | Purpose |
 |---|---|
 | `public/config.yaml` | **Primary customization point.** All org names, colors, API settings, and extra repos live here. |
-| `public/tag-groups.js` | Canonical tag aliases; maps raw tags to normalized display tags. |
+| `public/tag-groups.js` | **Secondary customization point.** Canonical tag aliases; maps raw tags to normalized display tags. |
 | `index.html` | Static HTML shell; config values are applied dynamically. |
 | `style.css` | Custom styles; colors are set via CSS custom properties populated from `config.yaml`. |
 | `main.js` | All application logic: config loading, API calls, filtering, sorting, and rendering. |
