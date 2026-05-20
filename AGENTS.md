@@ -25,18 +25,18 @@ This matches the debugging philosophy documented in [`README.md`](README.md#note
 
 ## Repository Layout
 
-| Path | Purpose |
-|---|---|
-| `public/config.yaml` | **Primary customization point.** All org names, colors, API settings, and extra repos live here. |
-| `public/tag-groups.js` | **Secondary customization point.** Canonical tag aliases; maps raw tags to normalized display tags. |
-| `index.html` | Static HTML shell; config values are applied dynamically. |
-| `style.css` | Custom styles; colors are set via CSS custom properties populated from `config.yaml`. |
-| `main.js` | All application logic: config loading, API calls, filtering, sorting, and rendering. |
-| `src/` | Pure utility modules imported by `main.js` and the build scripts. |
-| `scripts/` | Build-time Node scripts (`fetch-releases.js`, `export-tags.js`). |
-| `tests/` | Vitest unit and integration tests. |
-| `docs/` | Developer-facing documentation. |
-| `.github/workflows/` | CI/CD: tests on PR, deploy on push to `main`, weekly tag scan. |
+Path | Purpose
+---|---
+`public/config.yaml` | **Primary customization point.** All org names, colors, API settings, and extra repos live here.
+`public/tag-groups.js` | **Secondary customization point.** Canonical tag aliases; maps raw tags to normalized display tags.
+`index.html` | Static HTML shell; config values are applied dynamically.
+`style.css` | Custom styles; colors are set via CSS custom properties populated from `config.yaml`.
+`main.js` | All application logic: config loading, API calls, filtering, sorting, and rendering.
+`src/` | Pure utility modules imported by `main.js` and the build scripts.
+`scripts/` | Build-time Node scripts (`fetch-releases.js`, `export-tags.js`).
+`tests/` | Vitest unit and integration tests.
+`docs/` | Developer-facing documentation.
+`.github/workflows/` | CI/CD: tests on PR, deploy on push to `main`, weekly tag scan.
 
 ## Hugging Face API — Key Differences
 
@@ -44,21 +44,21 @@ These are the most commonly misunderstood aspects of the Hugging Face API integr
 
 ### URL Structure
 
-| Resource type | List (org) URL | Detail (single repo) URL |
-|---|---|---|
-| Datasets | `{API_BASE_URL}datasets?author={org}&full=true` | `{API_BASE_URL}datasets/{owner}/{repo}` |
-| Models | `{API_BASE_URL}models?author={org}&full=true` | `{API_BASE_URL}models/{owner}/{repo}` |
-| Spaces | `{API_BASE_URL}spaces?author={org}&full=true` | `{API_BASE_URL}spaces/{owner}/{repo}` |
+Resource type | List (org) URL | Detail (single repo) URL
+---|---|---
+Datasets | `{API_BASE_URL}datasets?author={org}&full=true` | `{API_BASE_URL}datasets/{owner}/{repo}`
+Models | `{API_BASE_URL}models?author={org}&full=true` | `{API_BASE_URL}models/{owner}/{repo}`
+Spaces | `{API_BASE_URL}spaces?author={org}&full=true` | `{API_BASE_URL}spaces/{owner}/{repo}`
 
 `API_BASE_URL` defaults to `https://huggingface.co/api/` (set in `config.yaml`).
 
 The **browser-facing** (non-API) URLs used for item card links are:
 
-| Resource type | Link URL |
-|---|---|
-| Datasets | `https://huggingface.co/datasets/{owner}/{repo}` |
-| Models | `https://huggingface.co/{owner}/{repo}` *(no `/models/` prefix)* |
-| Spaces | `https://huggingface.co/spaces/{owner}/{repo}` |
+Resource type | Link URL
+---|---
+Datasets | `https://huggingface.co/datasets/{owner}/{repo}`
+Models | `https://huggingface.co/{owner}/{repo}` *(no `/models/` prefix)*
+Spaces | `https://huggingface.co/spaces/{owner}/{repo}`
 
 ### Models Require a Secondary Per-Model Fetch
 
@@ -68,11 +68,11 @@ The bulk `models?author={org}&full=true` list response does **not** return `card
 
 ### `cardData` Key Differences Across Resource Types
 
-| Resource type | Display name key | Description key |
-|---|---|---|
-| Datasets | `cardData.pretty_name` | `cardData.description` |
-| Models | `cardData.model_name` | `cardData.model_description` |
-| Spaces | `cardData.title` | `cardData.description` |
+Resource type | Display name key | Description key
+---|---|---
+Datasets | `cardData.pretty_name` | `cardData.description`
+Models | `cardData.model_name` | `cardData.model_description`
+Spaces | `cardData.title` | `cardData.description`
 
 Code that accesses card metadata must account for all three shapes. The rendering function `renderHubItemCard` in `main.js` already does this with fallback chains.
 
@@ -81,7 +81,7 @@ Code that accesses card metadata must account for all three shapes. The renderin
 Tests use **Vitest** and live under `tests/`. Run them with:
 
 ```console
-npm test          # single run
+npm test            # single run
 npm run test:watch  # watch mode
 ```
 
@@ -119,11 +119,11 @@ npm run preview   # preview production build locally
 
 ## CI Workflows
 
-| Workflow | Trigger | Purpose |
-|---|---|---|
-| `test.yml` | PR to `main` | Runs `npm test` |
-| `deploy.yml` | Push to `main`, daily schedule, manual | Builds and deploys to GitHub Pages |
-| `weekly-tag-scan.yml` | Weekly schedule, manual, PR close cleanup | Detects new tags and opens a PR to update `tag-groups.js` |
-| `validate-zenodo.yaml` | Push (paths filter) | Validates `.zenodo.json` |
+Workflow | Trigger | Purpose
+---|---|---
+`test.yml` | PR to `main` | Runs `npm test`
+`deploy.yml` | Push to `main`, daily schedule, manual | Builds and deploys to GitHub Pages
+`weekly-tag-scan.yml` | Weekly schedule, manual, PR close cleanup | Detects new tags and opens a PR to update `tag-groups.js`
+`validate-zenodo.yaml` | Push (paths filter) | Validates `.zenodo.json`
 
 Tests run automatically on PRs. **Do not skip or remove the test workflow.**
