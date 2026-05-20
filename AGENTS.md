@@ -123,7 +123,7 @@ npm run preview   # preview production build locally
 |---|---|---|
 | `test.yml` | PR to `main` | Runs `npm test` |
 | `deploy.yml` | Push to `main`, daily schedule, manual | Builds and deploys to GitHub Pages |
-| `weekly-tag-scan.yml` | Weekly schedule | Detects new tags and opens a PR to update `tag-groups.js` |
-| `validate-zenodo.yaml` | PR/push | Validates `.zenodo.json` |
+| `weekly-tag-scan.yml` | Weekly schedule, manual, PR close cleanup | Detects new tags and opens a PR to update `tag-groups.js` |
+| `validate-zenodo.yaml` | Push (paths filter) | Validates `.zenodo.json` |
 
 Tests run automatically on PRs. **Do not skip or remove the test workflow.**
