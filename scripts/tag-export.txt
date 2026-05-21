@@ -30,6 +30,7 @@ autonomy
 baboons
 balanced
 basal pronotum
+beetle
 beetles
 behavior
 behavior recognition
@@ -236,6 +237,8 @@ island
 kabr
 kalij
 kenya
+keypoint-detection
+keypoint-regression
 keyword-search
 kipuka
 knowledge-guided
@@ -281,6 +284,7 @@ ml-challenge
 modality:image
 model
 models
+morphology
 morphometrics
 moths
 motion-activated
@@ -337,12 +341,14 @@ projects
 provenance
 przewalski
 pukiawe
+pytorch
 r
 rare species
 rare-species
 raw-data
 reference
 region:us
+regression
 repo-records
 reproducibility
 reproducible-research
