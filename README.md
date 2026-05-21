@@ -1,14 +1,14 @@
 # Imageomics Catalog [![DOI](https://zenodo.org/badge/1054290236.svg)](https://doi.org/10.5281/zenodo.17602801)
 
-Repository for web-based Imageomics code, data, model, and spaces catalog. This catalog is designed to use the GitHub API for searching all code repositories created under the [Imageomics GitHub Organization](https://github.com/Imageomics) and the Hugging Face API for searching all dataset, model, and spaces repositories created under the [Imageomics Hugging Face Organization](https://huggingface.co/imageomics).
+Repository for web-based catalog of Imageomics code, data, models, and spaces. This template catalog is designed to fetch live data from an organization's code repository platform (e.g., GitHub) API and dataset, model, and spaces repository data from the Hugging Face API to render a searchable, filterable catalog page as a static site via GitHub Pages. The default setup is for the Imageomics Institute's [GitHub](https://github.com/Imageomics) and [Hugging Face](https://huggingface.co/imageomics) organizations.
 
-This repository has been set up to provide a template for others looking to create a similar catalog website. Instructions for use and personalization are provided below, under [How to Use this Template](#how-to-use-this-template). More background on this site's creation is provided in the [docs](docs/).
+For those interested in creating a similar catalog website, instructions for use and personalization are provided below, under [How to Use this Template](#how-to-use-this-template). More background on this site's creation is provided in the [docs](docs/).
 
 ## Features
 
 The website is styled using the [tailwindcss](https://tailwindcss.com/) package.
 
-* **Real-time Data Fetching:** Displays all public Imageomics repositories, fetched through the GitHub and Hugging Face APIs. Includes semantically meaningful virtual markers:
+* **Real-time Data Fetching:** Displays all public organization repositories, fetched through the GitHub and Hugging Face APIs. Includes semantically meaningful virtual markers:
     * "New" badge highlights products created within the last 30 days;
     * "🚀 version-tag" badge indicates a new release within the last 2 weeks for GitHub repos, and links to that release;
     * Star (⭐️) or like (❤️) counts displayed for GitHub or Hugging Face repos, respectively;
