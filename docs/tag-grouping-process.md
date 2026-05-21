@@ -71,9 +71,8 @@ the GitHub and Hugging Face APIs, diffs them against the committed baseline in
 `scripts/tag-export.txt`, and opens (or updates) a pull request titled
 **`[Tag Scan] New tags detected — review tag-groups.js`** whenever 5 or more new tags appear.
 
-> **Prerequisite:** The workflow requires a fine-grained PAT stored as a repository secret named
-> `PR_TOKEN` with **Pull requests: Read and write** permission. Without it, the workflow will find
-> new tags and push the branch successfully, but fail when attempting to open the PR.
+> [!IMPORTANT]
+> **Required token**: The weekly tag scan workflow requires a fine-grained access token with **Pull requests: Read and write** permission on the catalog repo. Follow the instructions in [App Authentication](app-authentication.md) to create and install a private Catalog Automation App for token generation.
 
 You should update `public/tag-groups.js` when that PR is opened or updated.
 
