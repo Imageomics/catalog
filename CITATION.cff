@@ -11,14 +11,14 @@ authors:
   given-names: "Balaji"
   affiliation: "The Ohio State University"
 cff-version: 1.2.0
-date-released: "2026-04-22"
+date-released: "2026-05-21"
 identifiers:
-  - description: "The GitHub release URL of tag v4.1.0."
+  - description: "The GitHub release URL of tag v4.2.0."
     type: url
-    value: "https://github.com/Imageomics/catalog/releases/tag/v4.1.0"
-  - description: "The GitHub URL of the commit tagged with v4.1.0."
+    value: "https://github.com/Imageomics/catalog/releases/tag/v4.2.0"
+  - description: "The GitHub URL of the commit tagged with v4.2.0."
     type: url
-    value: "https://github.com/Imageomics/catalog/tree/4a35e44483f86304e05816729163b51995f1f752"
+    value: "https://github.com/Imageomics/catalog/tree/<commit-hash>" # Update on release
 keywords:
   - imageomics
   - code
@@ -37,6 +37,6 @@ license: MIT
 message: "If you use this software, please cite it as below."
 repository-code: "https://github.com/Imageomics/catalog"
 title: "Imageomics Catalog"
-version: "4.1.0"
+version: "4.2.0"
 doi: "10.5281/zenodo.17602801"
 type: software
