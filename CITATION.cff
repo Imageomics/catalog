@@ -18,7 +18,7 @@ identifiers:
     value: "https://github.com/Imageomics/catalog/releases/tag/v4.2.0"
   - description: "The GitHub URL of the commit tagged with v4.2.0."
     type: url
-    value: "https://github.com/Imageomics/catalog/tree/<commit-hash>" # Update on release
+    value: "https://github.com/Imageomics/catalog/tree/238dbf5624b0fb9b61c795624d22b082f4591cd5" # Update on release
 keywords:
   - imageomics
   - code
