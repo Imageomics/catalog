@@ -161,6 +161,7 @@ exploratory-data-analysis
 exploratory-data-visualizations
 face-detection
 fair
+fair-drones
 faiss
 fastapi
 feature-extraction
