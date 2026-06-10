@@ -53,6 +53,7 @@ const TAG_GROUPS = {
         "mammal", "mammals",
         "african painted dog", "african-painted-dog", "dog",
         "baboon", "baboons",
+        "deer", "milu",
         "giraffe", "giraffes",
         "lion", "lions",
         "onager",
@@ -111,6 +112,7 @@ const TAG_GROUPS = {
         "mammal", "mammals",
         "african painted dog", "african-painted-dog", "dog",
         "baboon", "baboons",
+        "deer", "milu",
         "giraffe", "giraffes",
         "lion", "lions",
         "onager", "persian onanger", "przewalski",
@@ -165,8 +167,10 @@ const TAG_GROUPS = {
     "image classification": [
         "image classification", "image-classification",
         "image recognition", "image-recognition",
+        "pose classification", "pose-classification",
         "species classification", "species-classification",
-        "species identification", "species-identification"
+        "species identification", "species-identification",
+        "viewpoint classification", "viewpoint-classification"
     ],
     "fine-grained classification": [
         "fine-grained classification", "fine-grained-classification"
@@ -372,7 +376,7 @@ const TAG_GROUPS = {
         "drone", "drones", "drone videos", "drone-videos", "uav"
     ],
     "geospatial": [
-        "geospatial", "geodata", "gis",
+        "geospatial", "geodata", "gis", "geolocation",
         "satellite imagery", "satellite-imagery",
         "aerial", "aerial imagery", "aerial-imagery",
         "mapping", "location", "map view", "map-view"
