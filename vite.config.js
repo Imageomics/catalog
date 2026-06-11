@@ -25,7 +25,7 @@ if (errors && errors.length > 0) {
         console.error(`  ${index + 1}. ${error}`);
     });
     
-    console.error(`\n Aborting deployment. Please fix these issues in ${CONFIG_PATH} and try again.\n`);
+    console.error(`\n Please fix the listed issue(s) in ${CONFIG_PATH} and try again.\n`);
     process.exit(1); // Safely kills the npm run dev terminal process
 }
 

@@ -15,19 +15,17 @@ export function validateConfig(config) {
     }
 
     /** Validate organization names, existence and case */
-    if (config.ORGANIZATION_NAME) {
-        if (config.ORGANIZATION_NAME !== config.ORGANIZATION_NAME.toLowerCase()) {
-            errors.push(`ORGANIZATION_NAME (${config.ORGANIZATION_NAME}) must be lowercase`);
-        }
-    } else {
+    const orgName = config.ORGANIZATION_NAME;
+    if (typeof orgName !== 'string' || !orgName.trim()) {
         errors.push('ORGANIZATION_NAME');
+    } else if (orgName !== orgName.toLowerCase()) {
+        errors.push(`ORGANIZATION_NAME (${orgName}) must be lowercase`);
     }
-    if (config.HF_ORGANIZATION_NAME) {
-        if (config.HF_ORGANIZATION_NAME !== config.HF_ORGANIZATION_NAME.toLowerCase()) {
-            errors.push(`HF_ORGANIZATION_NAME (${config.HF_ORGANIZATION_NAME}) must be lowercase`);
-        }
-    } else {
+    const hfOrgName = config.HF_ORGANIZATION_NAME;
+    if (typeof hfOrgName !== 'string' || !hfOrgName.trim()) {
         errors.push('HF_ORGANIZATION_NAME');
+    } else if (hfOrgName !== hfOrgName.toLowerCase()) {
+        errors.push(`HF_ORGANIZATION_NAME (${hfOrgName}) must be lowercase`);
     }
     if (!config.ORG_NAME)                     errors.push('ORG_NAME');
     if (!config.CATALOG_REPO_NAME)            errors.push('CATALOG_REPO_NAME');
