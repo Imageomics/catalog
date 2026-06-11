@@ -814,18 +814,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // could return unbounded results from the Hugging Face API.
     if (!ORGANIZATION_NAME || !HF_ORGANIZATION_NAME){
         console.error("Organization name is missing for one or both APIs. Halting initialization.");
-    
-        // Hide any loading skeletons and instead show a clear error message in the main content area
-        document.querySelectorAll('.skeleton-card').forEach(s => s.classList.add('hidden'));
-        const itemList = document.getElementById('itemList');
-        if (itemList) {
-            itemList.innerHTML = `
-                <div class="text-red-500 text-center col-span-full p-8 bg-red-100 rounded-lg shadow-md max-w-xl mx-auto mt-10">
-                    <p class="font-bold text-lg mb-2">Critical Configuration Error</p>
-                    <p>The application could not start because the organization name is missing for one or both APIs. Define these variables in <code>public/config.yaml</code>.</p>
-                </div>
-            `;
-        }
         return;
     }
 
