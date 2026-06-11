@@ -4,7 +4,7 @@
   "description": "Repository for web-based Imageomics code, data, model, and spaces catalog. This catalog is designed to use the GitHub API for searching all code repositories created under the [Imageomics GitHub Organization](https://github.com/Imageomics) and the Hugging Face API for searching all dataset, model, and spaces repositories created under the [Imageomics Hugging Face Organization](https://huggingface.co/imageomics).",
   "main": "main.js",
   "scripts": {
-    "dev": "vite",
+    "dev": "node src/validateConfig.js && vite",
     "build": "node scripts/fetch-releases.js && vite build",
     "preview": "vite preview",
     "test": "vitest run",

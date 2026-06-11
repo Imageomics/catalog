@@ -54,6 +54,10 @@ describe('validateConfig', () => {
         expect(validateConfig({ ...VALID_CONFIG, ORGANIZATION_NAME: '' })).toContain('ORGANIZATION_NAME');
     });
 
+    it('errors when ORGANIZATION_NAME is not lowercase', () => {
+        expect(validateConfig({ ...VALID_CONFIG, ORGANIZATION_NAME: 'Imageomics' })).toContain('ORGANIZATION_NAME');
+    });
+
     it('errors when HF_ORGANIZATION_NAME is missing', () => {
         const { HF_ORGANIZATION_NAME: _, ...config } = VALID_CONFIG;
         expect(validateConfig(config)).toContain('HF_ORGANIZATION_NAME');
@@ -61,6 +65,10 @@ describe('validateConfig', () => {
 
     it('errors when HF_ORGANIZATION_NAME is empty string', () => {
         expect(validateConfig({ ...VALID_CONFIG, HF_ORGANIZATION_NAME: '' })).toContain('HF_ORGANIZATION_NAME');
+    });
+
+    it('errors when HF_ORGANIZATION_NAME is not lowercase', () => {
+        expect(validateConfig({ ...VALID_CONFIG, HF_ORGANIZATION_NAME: 'Imageomics' })).toContain('HF_ORGANIZATION_NAME');
     });
 
     it('errors when ORG_NAME is missing', () => {

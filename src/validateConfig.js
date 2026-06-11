@@ -14,8 +14,21 @@ export function validateConfig(config) {
         return errors;
     }
 
-    if (!config.ORGANIZATION_NAME)            errors.push('ORGANIZATION_NAME');
-    if (!config.HF_ORGANIZATION_NAME)         errors.push('HF_ORGANIZATION_NAME');
+    /** Validate organization names, existence and case */
+    if (config.ORGANIZATION_NAME) {
+        if (config.ORGANIZATION_NAME !== config.ORGANIZATION_NAME.toLowerCase()) {
+            errors.push(`ORGANIZATION_NAME (${config.ORGANIZATION_NAME}) must be lowercase`);
+        }
+    } else {
+        errors.push('ORGANIZATION_NAME');
+    }
+    if (config.HF_ORGANIZATION_NAME) {
+        if (config.HF_ORGANIZATION_NAME !== config.HF_ORGANIZATION_NAME.toLowerCase()) {
+            errors.push(`HF_ORGANIZATION_NAME (${config.HF_ORGANIZATION_NAME}) must be lowercase`);
+        }
+    } else {
+        errors.push('HF_ORGANIZATION_NAME');
+    }
     if (!config.ORG_NAME)                     errors.push('ORG_NAME');
     if (!config.CATALOG_REPO_NAME)            errors.push('CATALOG_REPO_NAME');
     if (!config.PLATFORM)                     errors.push('PLATFORM');
