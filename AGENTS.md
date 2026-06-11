@@ -117,11 +117,15 @@ npm run build     # production build → dist/
 npm run preview   # preview production build locally
 ```
 
+## Contributing Workflow
+
+Changes should be made on a branch off of `dev`. All new features and development are submitted to the `dev` branch for PR review and staging before merging to `main`. Do not open pull requests to `main`; the existing GitHub Action Tag Scan workflow directed to `main` is allowed behavior, distinct from these instructions.
+
 ## CI Workflows
 
 Workflow | Trigger | Purpose
 ---|---|---
-`test.yml` | PR to `main` | Runs `npm test`
+`test.yml` | PR to `main` and `dev` | Runs `npm test`
 `deploy.yml` | Push to `main`, daily schedule, manual | Builds and deploys to GitHub Pages
 `weekly-tag-scan.yml` | Weekly schedule, manual, PR close cleanup | Detects new tags and opens a PR to update `tag-groups.js`
 `validate-zenodo.yaml` | Push (paths filter) | Validates `.zenodo.json`
