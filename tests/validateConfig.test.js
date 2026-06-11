@@ -55,7 +55,9 @@ describe('validateConfig', () => {
     });
 
     it('errors when ORGANIZATION_NAME is not lowercase', () => {
-        expect(validateConfig({ ...VALID_CONFIG, ORGANIZATION_NAME: 'Imageomics' })).toContain('ORGANIZATION_NAME');
+        expect(
+            validateConfig({ ...VALID_CONFIG, ORGANIZATION_NAME: 'Imageomics' })
+        ).toContain('ORGANIZATION_NAME (Imageomics) must be lowercase');
     });
 
     it('errors when HF_ORGANIZATION_NAME is missing', () => {
@@ -68,7 +70,9 @@ describe('validateConfig', () => {
     });
 
     it('errors when HF_ORGANIZATION_NAME is not lowercase', () => {
-        expect(validateConfig({ ...VALID_CONFIG, HF_ORGANIZATION_NAME: 'Imageomics' })).toContain('HF_ORGANIZATION_NAME');
+        expect(
+            validateConfig({ ...VALID_CONFIG, HF_ORGANIZATION_NAME: 'Imageomics' })
+        ).toContain('HF_ORGANIZATION_NAME (Imageomics) must be lowercase');
     });
 
     it('errors when ORG_NAME is missing', () => {
