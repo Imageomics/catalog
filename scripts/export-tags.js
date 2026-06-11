@@ -35,7 +35,7 @@ if (errors.length) {
 }
 
 const CONFIG = rawConfig;
-const { ORGANIZATION_NAME, PLATFORM, API_BASE_URL, ADDITIONAL_REPOS } = CONFIG;
+const { ORGANIZATION_NAME, HF_ORGANIZATION_NAME, PLATFORM, API_BASE_URL, ADDITIONAL_REPOS } = CONFIG;
 const ADDITIONAL_HF_REPOS = CONFIG.ADDITIONAL_HF_REPOS;
 
 // ---------------------------------------------------------------------------
@@ -97,7 +97,7 @@ const collectCodePlatformTags = async () => {
 
 const collectHFTags = async (repoType) => {
     console.log(`Fetching HF ${repoType}...`);
-    let items = (await get(`${API_BASE_URL}${repoType}?author=${ORGANIZATION_NAME}&full=true`)).json;
+    let items = (await get(`${API_BASE_URL}${repoType}?author=${HF_ORGANIZATION_NAME}&full=true`)).json;
 
     // Fetch additional HF repos of this type
     const additionalForType = ADDITIONAL_HF_REPOS.filter(entry => entry.type === repoType);
