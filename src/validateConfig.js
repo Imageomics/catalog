@@ -15,6 +15,7 @@ export function validateConfig(config) {
     }
 
     if (!config.ORGANIZATION_NAME)            errors.push('ORGANIZATION_NAME');
+    if (!config.HF_ORGANIZATION_NAME)         errors.push('HF_ORGANIZATION_NAME');
     if (!config.ORG_NAME)                     errors.push('ORG_NAME');
     if (!config.CATALOG_REPO_NAME)            errors.push('CATALOG_REPO_NAME');
     if (!config.PLATFORM)                     errors.push('PLATFORM');
