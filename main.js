@@ -826,8 +826,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             `;
         }
-        return
-    };
+        return;
+    }
 
     fetchCatalogStats();
 

@@ -101,7 +101,7 @@ When adding a new utility to `src/`, add a corresponding test file. Do **not** a
 All runtime behavior is controlled by `public/config.yaml`. It is fetched at page load (not bundled), so changes take effect on the next page load without a rebuild. Key fields:
 
 - `ORGANIZATION_NAME` — used in all code repository platform API calls (must be lowercase)
-- `HF_ORGANIZATION_NAME` - used in all Hugging Face API calls (must be lowercase)
+- `HF_ORGANIZATION_NAME` — used in all Hugging Face API calls (must be lowercase)
 - `API_BASE_URL` — Hugging Face API base (default: `https://huggingface.co/api/`)
 - `PLATFORM` — code repository platform; only `github` is currently supported
 - `ADDITIONAL_REPOS` — forked or external GitHub repos to include
