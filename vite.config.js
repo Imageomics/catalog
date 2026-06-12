@@ -7,12 +7,12 @@ import { validateConfig } from './src/validateConfig.js';
 let CONFIG_PATH = './public/config.yaml';
 let parsedConfig;
 
-// Run config validation before starting the dev server
+// Run config validation before Vite starts (dev/build/preview)
 try {
     const fileContents = fs.readFileSync(CONFIG_PATH, 'utf8');
     parsedConfig = jsYaml.load(fileContents);
 } catch (error) {
-    console.error(`\n❌ [CONFIG ERROR] Failed to read or parse config.yaml: ${error.message}\n`);
+    console.error(`\n❌ [CONFIG ERROR] Failed to read or parse ${CONFIG_PATH}: ${error.message}\n`);
     process.exit(1); // Stop Vite immediately if the file is completely unreadable or broken YAML
 }
 
