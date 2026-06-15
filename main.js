@@ -725,6 +725,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     ADDITIONAL_REPOS      = CONFIG.ADDITIONAL_REPOS;
     ADDITIONAL_HF_REPOS   = CONFIG.ADDITIONAL_HF_REPOS;
 
+    // Guard: if ORGANIZATION_NAME or HF_ORGANIZATION_NAME is missing (e.g. config.yaml failed to load),
+    // stop here — proceeding would fire requests like ?author=&full=true which
+    // could return unbounded results from the Hugging Face API.
+    if (!ORGANIZATION_NAME || !HF_ORGANIZATION_NAME){
+        console.error("Organization name is missing for one or both APIs. Halting initialization.");
+        return;
+    }
+    
     // Apply CSS custom properties and document metadata
     document.title = CONFIG.CATALOG_TITLE || `${CONFIG.ORG_NAME} Catalog`;
     document.documentElement.style.setProperty('--color-primary',     CONFIG.COLORS?.primary     || '#92991c');
@@ -809,14 +817,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Initialize the Catalog Badge (Stars/Forks/Version)
-    // Guard: if ORGANIZATION_NAME or HF_ORGANIZATION_NAME is missing (e.g. config.yaml failed to load),
-    // stop here — proceeding would fire requests like ?author=&full=true which
-    // could return unbounded results from the Hugging Face API.
-    if (!ORGANIZATION_NAME || !HF_ORGANIZATION_NAME){
-        console.error("Organization name is missing for one or both APIs. Halting initialization.");
-        return;
-    }
-
     fetchCatalogStats();
 
     // Load pre-built release data (written by scripts/fetch-releases.js at build time)
