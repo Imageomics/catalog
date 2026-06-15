@@ -14,7 +14,7 @@ export function validateConfig(config) {
         return errors;
     }
 
-    /** Validate organization names, existence, format, and case */
+    /** Validate organization names, existence and allowed characters */
     const ghOrgRegex = /^[a-zA-Z0-9-]+$/;
     const orgName = config.ORGANIZATION_NAME;
     if (typeof orgName !== 'string' || !orgName.trim()) {
@@ -22,7 +22,7 @@ export function validateConfig(config) {
     } else if (!ghOrgRegex.test(orgName)) {
         errors.push(`ORGANIZATION_NAME (${orgName}) is invalid, only letters, numbers, and hyphens are allowed`);
     }
-    const hfOrgRegex = /^[a-zA-Z0-9-_\.]+$/;
+    const hfOrgRegex = /^[a-zA-Z0-9_\-]+$/;
     const hfOrgName = config.HF_ORGANIZATION_NAME;
     if (typeof hfOrgName !== 'string' || !hfOrgName.trim()) {
         errors.push('HF_ORGANIZATION_NAME');
