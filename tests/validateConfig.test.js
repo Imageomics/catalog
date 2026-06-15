@@ -54,10 +54,10 @@ describe('validateConfig', () => {
         expect(validateConfig({ ...VALID_CONFIG, ORGANIZATION_NAME: '' })).toContain('ORGANIZATION_NAME');
     });
 
-    it('errors when ORGANIZATION_NAME is not lowercase', () => {
+    it('errors when ORGANIZATION_NAME is not in accepted format', () => {
         expect(
-            validateConfig({ ...VALID_CONFIG, ORGANIZATION_NAME: 'Imageomics' })
-        ).toContain('ORGANIZATION_NAME (Imageomics) must be lowercase');
+            validateConfig({ ...VALID_CONFIG, ORGANIZATION_NAME: 'abc center' })
+        ).toContain('ORGANIZATION_NAME (abc center) is invalid, only letters, numbers, and hyphens are allowed');
     });
 
     it('errors when HF_ORGANIZATION_NAME is missing', () => {
@@ -69,10 +69,10 @@ describe('validateConfig', () => {
         expect(validateConfig({ ...VALID_CONFIG, HF_ORGANIZATION_NAME: '' })).toContain('HF_ORGANIZATION_NAME');
     });
 
-    it('errors when HF_ORGANIZATION_NAME is not lowercase', () => {
+    it('errors when HF_ORGANIZATION_NAME is not in accepted format', () => {
         expect(
-            validateConfig({ ...VALID_CONFIG, HF_ORGANIZATION_NAME: 'Imageomics' })
-        ).toContain('HF_ORGANIZATION_NAME (Imageomics) must be lowercase');
+            validateConfig({ ...VALID_CONFIG, HF_ORGANIZATION_NAME: 'abc center' })
+        ).toContain('HF_ORGANIZATION_NAME (abc center) is invalid, only letters, numbers, hyphens, and underscores are allowed');
     });
 
     it('errors when ORG_NAME is missing', () => {

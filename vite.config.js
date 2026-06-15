@@ -4,7 +4,7 @@ import fs from 'fs';
 import jsYaml from 'js-yaml';
 import { validateConfig } from './src/validateConfig.js'; 
 
-let CONFIG_PATH = './public/config.yaml';
+const CONFIG_PATH = './public/config.yaml';
 let parsedConfig;
 
 // Run config validation before Vite starts (dev/build/preview)

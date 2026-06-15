@@ -14,18 +14,20 @@ export function validateConfig(config) {
         return errors;
     }
 
-    /** Validate organization names, existence and case */
+    /** Validate organization names, existence, format, and case */
+    const ghOrgRegex = /^[a-zA-Z0-9-]+$/;
     const orgName = config.ORGANIZATION_NAME;
     if (typeof orgName !== 'string' || !orgName.trim()) {
         errors.push('ORGANIZATION_NAME');
-    } else if (orgName !== orgName.toLowerCase()) {
-        errors.push(`ORGANIZATION_NAME (${orgName}) must be lowercase`);
+    } else if (!ghOrgRegex.test(orgName)) {
+        errors.push(`ORGANIZATION_NAME (${orgName}) is invalid, only letters, numbers, and hyphens are allowed`);
     }
+    const hfOrgRegex = /^[a-zA-Z0-9-_\.]+$/;
     const hfOrgName = config.HF_ORGANIZATION_NAME;
     if (typeof hfOrgName !== 'string' || !hfOrgName.trim()) {
         errors.push('HF_ORGANIZATION_NAME');
-    } else if (hfOrgName !== hfOrgName.toLowerCase()) {
-        errors.push(`HF_ORGANIZATION_NAME (${hfOrgName}) must be lowercase`);
+    } else if (!hfOrgRegex.test(hfOrgName)) {
+        errors.push(`HF_ORGANIZATION_NAME (${hfOrgName}) is invalid, only letters, numbers, hyphens, and underscores are allowed`);
     }
     if (!config.ORG_NAME)                     errors.push('ORG_NAME');
     if (!config.CATALOG_REPO_NAME)            errors.push('CATALOG_REPO_NAME');

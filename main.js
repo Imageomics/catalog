@@ -651,7 +651,7 @@ const initializeUIFromConfig = () => {
     // Set header title and description
     const headerTitle = document.getElementById('header-title');
     if (headerTitle) {
-        headerTitle.textContent = CONFIG.CATALOG_TITLE;
+        headerTitle.textContent = CONFIG.CATALOG_TITLE || `${CONFIG.ORG_NAME} Catalog`;
         headerTitle.style.color = CONFIG.COLORS.primary;
     }
 
