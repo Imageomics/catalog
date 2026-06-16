@@ -24,7 +24,7 @@ const configPromise = fetch('config.yaml')
 
 // Module-scope lets — assigned after config loads, used by all functions below
 let CONFIG;
-let ORGANIZATION_NAME, CATALOG_REPO_NAME, PLATFORM, API_BASE_URL, REFRESH_INTERVAL_DAYS, ADDITIONAL_REPOS, ADDITIONAL_HF_REPOS;
+let ORGANIZATION_NAME, HF_ORGANIZATION_NAME, CATALOG_REPO_NAME, PLATFORM, API_BASE_URL, REFRESH_INTERVAL_DAYS, ADDITIONAL_REPOS, ADDITIONAL_HF_REPOS;
 let ORG_API_URL, REPO_API_URL;
 
 // Build a reverse lookup from TAG_GROUPS (defined in tag-groups.js): raw tag → [canonical tags]
@@ -279,7 +279,7 @@ const fetchHubItems = async (repoType) => {
         }
 
         // hugging face api requests for datasets/models/spaces
-        const response = await fetch(`${API_BASE_URL}${repoType}?author=${ORGANIZATION_NAME}&full=true`);
+        const response = await fetch(`${API_BASE_URL}${repoType}?author=${HF_ORGANIZATION_NAME}&full=true`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -651,7 +651,7 @@ const initializeUIFromConfig = () => {
     // Set header title and description
     const headerTitle = document.getElementById('header-title');
     if (headerTitle) {
-        headerTitle.textContent = CONFIG.CATALOG_TITLE;
+        headerTitle.textContent = CONFIG.CATALOG_TITLE || `${CONFIG.ORG_NAME} Catalog`;
         headerTitle.style.color = CONFIG.COLORS.primary;
     }
 
@@ -703,7 +703,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => errorDiv.remove(), 10000);
         // Fall back to defaults so the page isn't completely broken
         CONFIG = {
-            ORGANIZATION_NAME: '', CATALOG_REPO_NAME: '', ORG_NAME: '',
+            ORGANIZATION_NAME: '', HF_ORGANIZATION_NAME: '', CATALOG_REPO_NAME: '', ORG_NAME: '',
             CATALOG_TITLE: 'Catalog', CATALOG_DESCRIPTION: '',
             LOGO_URL: '', FAVICON_URL: '',
             COLORS: { primary: '#92991c', secondary: '#5d8095', accent: '#0097b2', accentDark: '#4fd1eb', tag: '#9bcb5e' },
@@ -715,6 +715,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Assign module-scope variables used by all functions
     ORGANIZATION_NAME     = CONFIG.ORGANIZATION_NAME;
+    HF_ORGANIZATION_NAME  = CONFIG.HF_ORGANIZATION_NAME;
     CATALOG_REPO_NAME     = CONFIG.CATALOG_REPO_NAME;
     PLATFORM              = CONFIG.PLATFORM;
     ORG_API_URL           = getPlatformApiUrls(PLATFORM, ORGANIZATION_NAME).org;
@@ -724,6 +725,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     ADDITIONAL_REPOS      = CONFIG.ADDITIONAL_REPOS;
     ADDITIONAL_HF_REPOS   = CONFIG.ADDITIONAL_HF_REPOS;
 
+    // Guard: if ORGANIZATION_NAME or HF_ORGANIZATION_NAME is missing (e.g. config.yaml failed to load),
+    // stop here — proceeding would fire requests like ?author=&full=true which
+    // could return unbounded results from the Hugging Face API.
+    if (!ORGANIZATION_NAME || !HF_ORGANIZATION_NAME){
+        console.error("Organization name is missing for one or both APIs. Halting initialization.");
+        return;
+    }
+    
     // Apply CSS custom properties and document metadata
     document.title = CONFIG.CATALOG_TITLE || `${CONFIG.ORG_NAME} Catalog`;
     document.documentElement.style.setProperty('--color-primary',     CONFIG.COLORS?.primary     || '#92991c');
@@ -808,11 +817,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Initialize the Catalog Badge (Stars/Forks/Version)
-    // Guard: if ORGANIZATION_NAME is missing (e.g. config.yaml failed to load),
-    // stop here — proceeding would fire requests like ?author=&full=true which
-    // could return unbounded results from the Hugging Face API.
-    if (!ORGANIZATION_NAME) return;
-
     fetchCatalogStats();
 
     // Load pre-built release data (written by scripts/fetch-releases.js at build time)

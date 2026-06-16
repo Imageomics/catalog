@@ -8,8 +8,9 @@ Welcome to your new catalog repo! The primary way to personalize this catalog is
 
 ### Organization & Repository Settings
 
-  * `ORGANIZATION_NAME`: Your GitHub/Hugging Face organization name (lowercase for API calls)
-  * `ORG_NAME`: Display name for your organization (can differ from API name); used as fallback site title if `CATALOG_TITLE` is not set
+  * `ORGANIZATION_NAME`: Your code platform (e.g., GitHub) organization name (for API calls)
+  * `HF_ORGANIZATION_NAME`: Your Hugging Face organization name (**case-sensitive**, for API calls)
+  * `ORG_NAME`: Display name for your organization (can differ from API name); used for logo alt-text and as fallback site title if `CATALOG_TITLE` is not set
   * `CATALOG_REPO_NAME`: Repository name for the catalog itself (used for stats badge)
 
 ### Branding
