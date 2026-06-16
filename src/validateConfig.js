@@ -31,12 +31,18 @@ export function validateConfig(config) {
     }
     if (!config.ORG_NAME)                     errors.push('ORG_NAME');
     if (!config.CATALOG_REPO_NAME)            errors.push('CATALOG_REPO_NAME');
-    if (!config.PLATFORM)                     errors.push('PLATFORM');
-    /** Update to include 'codeberg' and 'gitlab' once supported */
+    
+    /** Update to include 'codeberg' and 'gitlab' once supported 
+     * PLATFORM will be parsed without whitespace, but must be string to avoid undefined errors
+    */
     const supportedPlatforms = ['github'];
-    if (config.PLATFORM && !supportedPlatforms.includes(config.PLATFORM.toLowerCase())) {
+    const platform = config.PLATFORM;
+    if (!platform || typeof platform !== 'string') {
+        errors.push('PLATFORM');
+    } else if (!supportedPlatforms.includes(platform.toLowerCase())) {
         errors.push(`PLATFORM must be one of: ${supportedPlatforms.join(', ')}`);
     }
+
     if (!config.API_BASE_URL)                 errors.push('API_BASE_URL');
     if (config.REFRESH_INTERVAL_DAYS == null) errors.push('REFRESH_INTERVAL_DAYS');
 

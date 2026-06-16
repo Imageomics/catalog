@@ -97,6 +97,10 @@ describe('validateConfig', () => {
         const { PLATFORM: _, ...config } = VALID_CONFIG;
         expect(validateConfig(config)).toContain('PLATFORM');
     });
+
+    it('errors when PLATFORM is not a string', () => {
+        expect(validateConfig({ ...VALID_CONFIG, PLATFORM: 123 })).toContain('PLATFORM');
+    });
     
     it('errors when PLATFORM is unrecognized', () => {
         const errors = validateConfig({ ...VALID_CONFIG, PLATFORM: 'blah' });
