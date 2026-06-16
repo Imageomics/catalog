@@ -2,8 +2,9 @@
 # Customize these values to personalize the catalog for your organization
 
 # Organization & Repository Settings
-ORGANIZATION_NAME: imageomics       # GitHub/Hugging Face organization name (lowercase for API calls)
-ORG_NAME: Imageomics                 # Display name for GitHub organization (can differ from API name)
+ORGANIZATION_NAME: imageomics       # Codebase platform organization name (for API calls)
+HF_ORGANIZATION_NAME: imageomics    # Hugging Face organization name (case-sensitive, for API calls)
+ORG_NAME: Imageomics                # Display name for Codebase platform organization (can differ from API name)
 CATALOG_REPO_NAME: catalog          # Repository name for the catalog itself (used for stats badge)
 
 # Branding
@@ -43,6 +44,7 @@ ADDITIONAL_REPOS:
 
 # Array of Hugging Face repos from outside the org to include.
 # Each entry must specify "repo" (owner/name) and "type" (datasets, models, or spaces).
+# Organization names are case-sensitive in the Hugging Face API.
 # ADDITIONAL_HF_REPOS:
 #   - repo: "user/dataset-name"
 #     type: "datasets"

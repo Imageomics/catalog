@@ -14,15 +14,35 @@ export function validateConfig(config) {
         return errors;
     }
 
-    if (!config.ORGANIZATION_NAME)            errors.push('ORGANIZATION_NAME');
+    /** Validate organization names, existence and allowed characters */
+    const ghOrgRegex = /^[a-zA-Z0-9-]+$/;
+    const orgName = config.ORGANIZATION_NAME;
+    if (typeof orgName !== 'string' || !orgName.trim()) {
+        errors.push('ORGANIZATION_NAME');
+    } else if (!ghOrgRegex.test(orgName)) {
+        errors.push(`ORGANIZATION_NAME (${orgName}) is invalid, only letters, numbers, and hyphens are allowed`);
+    }
+    const hfOrgRegex = /^[a-zA-Z0-9_\-]+$/;
+    const hfOrgName = config.HF_ORGANIZATION_NAME;
+    if (typeof hfOrgName !== 'string' || !hfOrgName.trim()) {
+        errors.push('HF_ORGANIZATION_NAME');
+    } else if (!hfOrgRegex.test(hfOrgName)) {
+        errors.push(`HF_ORGANIZATION_NAME (${hfOrgName}) is invalid, only letters, numbers, hyphens, and underscores are allowed`);
+    }
     if (!config.ORG_NAME)                     errors.push('ORG_NAME');
     if (!config.CATALOG_REPO_NAME)            errors.push('CATALOG_REPO_NAME');
-    if (!config.PLATFORM)                     errors.push('PLATFORM');
-    /** Update to include 'codeberg' and 'gitlab' once supported */
+    
+    /** Update to include 'codeberg' and 'gitlab' once supported 
+     * PLATFORM will be parsed without whitespace, but must be string to avoid undefined errors
+    */
     const supportedPlatforms = ['github'];
-    if (config.PLATFORM && !supportedPlatforms.includes(config.PLATFORM.toLowerCase())) {
+    const platform = config.PLATFORM;
+    if (!platform || typeof platform !== 'string') {
+        errors.push('PLATFORM');
+    } else if (!supportedPlatforms.includes(platform.toLowerCase())) {
         errors.push(`PLATFORM must be one of: ${supportedPlatforms.join(', ')}`);
     }
+
     if (!config.API_BASE_URL)                 errors.push('API_BASE_URL');
     if (config.REFRESH_INTERVAL_DAYS == null) errors.push('REFRESH_INTERVAL_DAYS');
 
