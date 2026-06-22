@@ -300,6 +300,7 @@ const TAG_GROUPS = {
     "traits": [
         "trait", "traits",
         "trait detection", "trait-detection",
+        "trait discovery", "trait-discovery",
         "trait identification", "trait-identification",
         "trait segmentation", "trait-segmentation",
         "trait masking", "trait-masking",
