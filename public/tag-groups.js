@@ -300,6 +300,7 @@ const TAG_GROUPS = {
     "traits": [
         "trait", "traits",
         "trait detection", "trait-detection",
+        "trait discovery", "trait-discovery",
         "trait identification", "trait-identification",
         "trait segmentation", "trait-segmentation",
         "trait masking", "trait-masking",
@@ -334,7 +335,12 @@ const TAG_GROUPS = {
         "tree seedling detection", "tree-seedling-detection",
         // foliage
         "leaf", "leaves",
-        "leaf damage", "leaf-damage"
+        "leaf damage", "leaf-damage",
+        // keep flowers distinct from flowering
+        "flowers", "flower"
+    ],
+    "flowers": [
+        "flowers", "flower"
     ],
     "forest": [
         "cloud forest", "cloud-forest",
@@ -342,6 +348,7 @@ const TAG_GROUPS = {
     ],
     "hawaiian plants": [
         "acacia koa", "koa", "o'hia", "ohelo", "pilo", "pukiawe",
+        "akala",
         "clidemia hirta", "small leaf kolea", "small-leaf-kolea",
         "hawaiian forest", "hawaiian-forest"
     ],

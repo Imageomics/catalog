@@ -120,8 +120,10 @@ deer
 desert
 detection
 detectron2
+dichotomous-keys
 diffusion-models
 dimensionality-reduction
+dino
 dinov2
 discoverability
 discrete wavelet transform
@@ -155,6 +157,8 @@ evaluation
 evolution
 evolutionary biology
 evolutionary-biology
+evolutionary-traits
+explainable ai
 explainable-ai
 exploration
 exploratory-data-analysis
@@ -163,7 +167,6 @@ face-detection
 fair
 fair-drones
 faiss
-fastapi
 feature-extraction
 fiftyone
 file-verification
@@ -171,6 +174,7 @@ fine-grained classification
 fine-grained-classification
 fine-tuned
 fish
+flowers
 focal-observation
 forewings
 format:imagefolder
@@ -233,6 +237,7 @@ interactive-evaluation
 interdisciplinary
 interpretability
 interpretable
+interpretable machine learning
 interpretable-ai
 interpretable-machine-learning
 interpretation
@@ -250,6 +255,7 @@ keypoint-regression
 keyword-search
 kipuka
 knowledge-guided
+knowledge-guided machine learning
 knowledge-guided-machine-learning
 koa
 lab-bred
@@ -265,7 +271,6 @@ leaves
 lepidoptera
 library:datasets
 library:mlcroissant
-license:apache-2.0
 license:cc0-1.0
 license:mit
 lions
@@ -321,7 +326,6 @@ ohio
 ol pejeta conservancy
 omao
 onager
-onnx
 ontology
 open-science
 open-source
@@ -334,6 +338,7 @@ parallel
 parquet
 passive acoustic monitoring
 persian onanger
+pets
 phenology
 phenoscape
 phylogenetic-trees
@@ -354,6 +359,7 @@ pose-estimation
 processed
 project-website
 projects
+prompt tuning
 provenance
 przewalski
 pukiawe
@@ -375,6 +381,7 @@ robotics
 rodents
 ruler
 sahi
+saliency map
 saliency-map
 saliency-maps
 sample-code
@@ -398,6 +405,7 @@ snakemake
 snakes
 soundscape
 spaces
+sparse-autoencoders
 species
 species classification
 species-classification
@@ -417,6 +425,7 @@ toads
 tools
 trait
 trait counting
+trait discovery
 trait grounding
 trait identification
 trait referring
@@ -432,8 +441,11 @@ tree
 tree planting
 tree-of-life
 tree-seedling-detection
+trees
+tsne
 tutorials
 uav
+umap
 understory
 ungulates
 unlabeled
@@ -448,6 +460,7 @@ video-query
 viewpoint
 viewpoint-classification
 vision
+vision transformer
 vision-transformer
 vision-transformers
 visual-analytics
