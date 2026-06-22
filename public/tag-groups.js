@@ -335,6 +335,11 @@ const TAG_GROUPS = {
         // foliage
         "leaf", "leaves",
         "leaf damage", "leaf-damage"
+        // keep flowers distinct from flowering
+        "flowers", "flower"
+    ],
+    "flowers": [
+        "flowers", "flower"
     ],
     "forest": [
         "cloud forest", "cloud-forest",
@@ -342,6 +347,7 @@ const TAG_GROUPS = {
     ],
     "hawaiian plants": [
         "acacia koa", "koa", "o'hia", "ohelo", "pilo", "pukiawe",
+        "akala",
         "clidemia hirta", "small leaf kolea", "small-leaf-kolea",
         "hawaiian forest", "hawaiian-forest"
     ],
