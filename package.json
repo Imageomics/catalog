@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/Imageomics/catalog#readme",
   "dependencies": {
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.2.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.2.1",
