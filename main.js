@@ -7,11 +7,10 @@
 //
 
 import jsYaml from 'js-yaml';
-import { normalizeTag } from './src/normalizeTag.js';
 import { getPlatformApiUrls } from './src/defineApiUrls.js';
 import { getPlatformDisplay } from './src/defineRibbonVals.js';
 import { filterItems, sortItems } from './src/filterAndSort.js';
-import { filterNewAdditionalEntries } from './src/filterNewAdditionalEntries.js';
+import { fetchCodeRepos } from './src/fetchCodeRepos.js';
 
 // Start fetching config immediately when the module loads (before DOMContentLoaded)
 // so the fetch is in-flight while the DOM is being parsed.
@@ -178,193 +177,24 @@ const fetchHubItems = async (repoType) => {
     const skeletons = document.querySelectorAll('.skeleton-card');
     skeletons.forEach(s => s.classList.remove('hidden'));
 
-    try {
-        let items = [];
-
-        // Platform-specific api requests for code
-        if (repoType === "code") {
-            if (fetchedData.code) return allItems.code // reuse if already fetched
-
-            // Paginate through all public repos (Platform determines API max returns per page)
-            let allRepos = [];
-            let nextUrl = `${ORG_API_URL}`;
-            while (nextUrl) {
-                const ghResponse = await fetch(nextUrl);
-
-                if (!ghResponse.ok) {
-                    const platformDisplay = getPlatformDisplay(PLATFORM);
-                    throw new Error(`${platformDisplay.displayName || PLATFORM} error: ${ghResponse.status}`);
-                }
-
-                const page = await ghResponse.json();
-                allRepos = allRepos.concat(page);
-
-                // Parse the Link header to find the next page URL, if any
-                const linkHeader = ghResponse.headers.get('Link');
-                const match = linkHeader && linkHeader.match(/<([^>]+)>;\s*rel="next"/);
-                nextUrl = match ? match[1] : null;
-            }
-
-            // For org-owned entries in ADDITIONAL_REPOS, reuse data already in allRepos to avoid redundant API calls.
-            // Only fetch entries that belong to a different org (external repos).
-            const allReposByFullName = new Map(allRepos.map(r => [r.full_name, r]));
-            const toFetch = ADDITIONAL_REPOS.filter(ownerRepo => !allReposByFullName.has(ownerRepo));
-            const fromAllRepos = ADDITIONAL_REPOS.map(ownerRepo => allReposByFullName.get(ownerRepo)).filter(Boolean);
-
-            const fetchedExternalData = await Promise.all(
-                toFetch.map(ownerRepo =>
-                    fetch(`${REPO_API_URL}${ownerRepo}`)
-                        .then(r => {
-                            if (!r.ok) {
-                                console.warn(`Failed to fetch additional repo "${ownerRepo}": HTTP ${r.status}`);
-                                return null;
-                            }
-                            return r.json();
-                        })
-                        .catch(err => {
-                            console.warn(`Network error fetching additional repo "${ownerRepo}":`, err);
-                            return null;
-                        })
-                )
-            );
-            const additionalRepos = [...fromAllRepos, ...fetchedExternalData.filter(Boolean)];
-
-            // Keep only non-forks from org; deduplicate against additional repos by full_name
-            const orgRepoNames = new Set(additionalRepos.map(r => r.full_name));
-            const orgNonForks = allRepos.filter(repo => repo.name !== ".github" && !repo.fork && !orgRepoNames.has(repo.full_name));
-
-            // Process additional repos and all remaining org non-forks to include metadata and 'new' flag as appropriate
-            items = [...additionalRepos, ...orgNonForks]
-                .map(repo => {
-                    const createdAt = new Date(repo.created_at);
-                    const lastModified = new Date(repo.updated_at);
-                    const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
-
-                    const rawTags = (repo.topics || []).map(t => t.toLowerCase());
-                    const tags = [...new Set(rawTags.flatMap(t => normalizeTag(t, tagLookup)).filter(Boolean))];
-                    const displayTags = rawTags.filter(t => !t.includes(':'));
-                    tags.forEach(tag => tagsMap.code.add(tag));
-
-                    const release = releasesMap[repo.full_name] ?? null;
-
-                    return {
-                        id: repo.full_name, // "Imageomics/<repo-name>", used as backup if can't get repo.name
-                        repoType: "code",
-                        createdAt,
-                        lastModified,
-                        isNew,
-                        archived: repo.archived || false,
-                        tags,
-                        rawTags,
-                        displayTags,
-                        description: repo.description || "No description provided.",
-                        html_url: repo.html_url,
-                        hasNewRelease: release?.isNew ?? false,
-                        latestReleaseUrl: release?.url ?? null,
-                        latestReleaseTag: release?.tag ?? null,
-                        cardData: {
-                            pretty_name: repo.name, // <repo-name>, the one used for card title display
-                            description: repo.description,
-                            stars: repo.stargazers_count
-                        }
-                    };
-                });
-
-            allItems.code = items;
-            fetchedData.code = true;
-
-            skeletons.forEach(s => s.classList.add('hidden'));
-
-            return items;
-        }
-
-        // hugging face api requests for datasets/models/spaces
-        const response = await fetch(`${API_BASE_URL}${repoType}?author=${HF_ORGANIZATION_NAME}&full=true`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        let hfItems = await response.json();
-
-        // Fetch additional HF repos of this type from outside the org
-        const additionalForType = ADDITIONAL_HF_REPOS.filter(entry => entry.type === repoType);
-        if (additionalForType.length) {
-            const existingIds = new Set(hfItems.map(item => item.id));
-            const toFetch = filterNewAdditionalEntries(existingIds, additionalForType);
-
-            const fetched = await Promise.all(
-                toFetch.map(entry =>
-                    fetch(`${API_BASE_URL}${repoType}/${entry.repo}`)
-                        .then(r => {
-                            if (!r.ok) {
-                                console.warn(`Failed to fetch additional HF repo "${entry.repo}": HTTP ${r.status}`);
-                                return null;
-                            }
-                            return r.json();
-                        })
-                        .catch(err => {
-                            console.warn(`Network error fetching additional HF repo "${entry.repo}":`, err);
-                            return null;
-                        })
-                )
-            );
-            hfItems = [...hfItems, ...fetched.filter(item => item && !existingIds.has(item.id))];
-        }
-
-        // Step 2: If we are fetching models, get the full details for each one.
-        if (repoType === 'models') {
-            const detailPromises = hfItems.map(item =>
-                fetch(`${API_BASE_URL}models/${item.id}`).then(res => {
-                    if (!res.ok) {
-                        console.error(`Failed to fetch details for ${item.id}`);
-                        return null; // Return null for failed requests
-                    }
-                    return res.json();
-                })
-            );
-
-            // Wait for all detail requests to complete in parallel.
-            const detailedItems = await Promise.all(detailPromises);
-
-            // Filter out any models that failed to fetch and assign the detailed list.
-            hfItems = detailedItems.filter(Boolean);
-        }
-
-        // Process the data to include metadata and a 'new' flag
-        const processedItems = hfItems.map(item => {
-            const createdAt = new Date(item.createdAt);
-            const lastModified = new Date(item.lastModified);
-            const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
-
-            // Extract tags from the YAML metadata (handling different structures)
-            const rawTags = (item.cardData?.tags || item.tags || []).map(t => String(t).toLowerCase());
-            const tags = [...new Set(rawTags.flatMap(t => normalizeTag(t, tagLookup)).filter(Boolean))];
-            const displayTags = rawTags.filter(t => !t.includes(':'));
-            tags.forEach(tag => tagsMap[repoType].add(tag));
-
-            return {
-                ...item,
-                repoType,
-                createdAt,
-                lastModified,
-                isNew,
-                archived: false,
-                likes: item.likes || 0,
-                tags,
-                rawTags,
-                displayTags
-            };
-        });
-
-        allItems[repoType] = processedItems;
-        fetchedData[repoType] = true;
-
-        skeletons.forEach(s => s.classList.add('hidden'));
-
-        return processedItems;
-    } catch (error) {
-        handleError(error, `Failed to fetch ${repoType}. Please check your network connection or the API.`);
-        return [];
+    let items = []
+    
+    if (repoType === 'code') {
+        items = await fetchCodeRepos(PLATFORM, ADDITIONAL_REPOS, ORG_API_URL, REPO_API_URL, REFRESH_INTERVAL_DAYS, releasesMap, tagLookup);
+    } else {
+        items = await fetchHfRepos(repoType, ADDITIONAL_HF_REPOS, API_BASE_URL, HF_ORGANIZATION_NAME, REFRESH_INTERVAL_DAYS, tagLookup);
     }
+
+    // Store fetched items and mark as fetched
+    allItems[repoType] = items;
+    fetchedData[repoType] = true;
+    items.forEach(item => {
+        item.tags.forEach(tag => tagsMap[repoType].add(tag));
+    });
+
+    skeletons.forEach(s => s.classList.add('hidden'));
+
+    return items;
 };
 
 /**
