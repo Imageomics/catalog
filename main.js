@@ -11,6 +11,7 @@ import { getPlatformApiUrls } from './src/defineApiUrls.js';
 import { getPlatformDisplay } from './src/defineRibbonVals.js';
 import { filterItems, sortItems } from './src/filterAndSort.js';
 import { fetchCodeRepos } from './src/fetchCodeRepos.js';
+import { fetchHfRepos } from './src/fetchHfRepos.js';
 import { renderItemList } from './src/render.js';
 
 // Start fetching config immediately when the module loads (before DOMContentLoaded)

@@ -1,5 +1,5 @@
 import { normalizeTag } from "./normalizeTag";
-import { filterNewAdditionalEntries } from './src/filterNewAdditionalEntries.js';
+import { filterNewAdditionalEntries } from './filterNewAdditionalEntries.js';
 
 /**
  * Function for fetching Hugging Face repositories (models, datasets, or spaces) from the specified organization.
