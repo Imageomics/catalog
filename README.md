@@ -28,12 +28,17 @@ The site runs based on four primary files:
 * `public/config.yaml`: Contains all customizable settings including organization names, colors, branding, and API settings. This is the main file to edit for personalization. Placed in `public/` so Vite copies it to `dist/` without bundling, keeping it editable after deployment.
 * `index.html`: The main HTML file that provides the structure of the webpage and links to the CSS and JavaScript files. Config values are applied dynamically from `config.yaml`.
 * `style.css`: Custom styling for the application, including color schemes, layout, and animations. Colors are set via CSS custom properties that are populated from `config.yaml`.
-* `main.js`: Handles the application's logic, including config loading, API calls, data filtering, sorting, and dynamic rendering of the catalog items. Relies on the build-time Node script `fetch-releases.js` for version-tag badge feature.
+* `main.js`: Application manager, handles config loading, event listeners, and coordinates UI updates based on API fetches for dynamic rendering of the catalog items.
+* `src/`: Modular application logic, organized by purpose:
+    * `api/`: Data fetching modules for external platforms (Code and Hugging Face).
+    * `ui/`: DOM manipulation, HTML templating, and URL/State routing.
+    * `utils/`: Utility functions such as data filtering, sorting, and tag (keyword) normalization. 
 
 Two additional files support the build tooling:
 
 * `package.json`: Declares npm dependencies (`vite`, `tailwindcss`, `@tailwindcss/vite`) and defines the `dev`, `build`, and `preview` scripts.
 * `vite.config.js`: Vite configuration that registers the Tailwind CSS plugin.
+* `scripts/fetch-releases.js`: Build-time Node script to fetch GitHub repo release data for version-tag badge feature.
 
 ## How to Use This Template
 
