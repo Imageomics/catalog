@@ -179,11 +179,26 @@ const fetchHubItems = async (repoType) => {
     skeletons.forEach(s => s.classList.remove('hidden'));
 
     let items = []
-    
+
     if (repoType === 'code') {
-        items = await fetchCodeRepos(PLATFORM, ADDITIONAL_REPOS, ORG_API_URL, REPO_API_URL, REFRESH_INTERVAL_DAYS, releasesMap, tagLookup);
+        items = await fetchCodeRepos(
+            PLATFORM,
+            ADDITIONAL_REPOS,
+            ORG_API_URL,
+            REPO_API_URL,
+            REFRESH_INTERVAL_DAYS,
+            releasesMap,
+            tagLookup
+        );
     } else {
-        items = await fetchHfRepos(repoType, ADDITIONAL_HF_REPOS, API_BASE_URL, HF_ORGANIZATION_NAME, REFRESH_INTERVAL_DAYS, tagLookup);
+        items = await fetchHfRepos(
+            repoType,
+            ADDITIONAL_HF_REPOS,
+            API_BASE_URL,
+            HF_ORGANIZATION_NAME,
+            REFRESH_INTERVAL_DAYS,
+            tagLookup
+        );
     }
 
     // Store fetched items and mark as fetched
@@ -407,7 +422,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error("Organization name is missing for one or both APIs. Halting initialization.");
         return;
     }
-    
+
     // Apply CSS custom properties and document metadata
     document.title = CONFIG.CATALOG_TITLE || `${CONFIG.ORG_NAME} Catalog`;
     document.documentElement.style.setProperty('--color-primary',     CONFIG.COLORS?.primary     || '#92991c');

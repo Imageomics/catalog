@@ -13,7 +13,14 @@ import { filterNewAdditionalEntries } from './src/filterNewAdditionalEntries.js'
  * @param {object} tagLookup - An object for normalizing tags, uses specified tag-groups
  * @returns {Promise<Array>} processedItems - A promise resolving to an array of Hugging Face repositories with metadata
  */
-export async function fetchHfRepos(repoType, additionalHfRepos, apiBaseUrl, hfOrgName, refreshIntervalDays, tagLookup) {
+export async function fetchHfRepos(
+    repoType,
+    additionalHfRepos,
+    apiBaseUrl,
+    hfOrgName,
+    refreshIntervalDays,
+    tagLookup
+) {
 
     try {
         // hugging face api requests for datasets/models/spaces

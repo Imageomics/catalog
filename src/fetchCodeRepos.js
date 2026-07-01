@@ -15,7 +15,15 @@ import { getPlatformDisplay } from './defineRibbonVals.js';
  * @param {object} tagLookup - An object for normalizing tags, uses specified tag-groups
  * @returns {Promise<Array>} processedItems - A promise resolving to an array of code repositories
  */
-export async function fetchCodeRepos(platform, additionalRepos, orgApiUrl, repoApiUrl, refreshIntervalDays, releasesMap, tagLookup) {
+export async function fetchCodeRepos(
+    platform,
+    additionalRepos,
+    orgApiUrl,
+    repoApiUrl,
+    refreshIntervalDays,
+    releasesMap,
+    tagLookup
+) {
 
     let allRepos = [];
     let nextUrl = `${orgApiUrl}`;
