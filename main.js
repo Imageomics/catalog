@@ -30,23 +30,6 @@ let CONFIG;
 let ORGANIZATION_NAME, HF_ORGANIZATION_NAME, CATALOG_REPO_NAME, PLATFORM, API_BASE_URL, REFRESH_INTERVAL_DAYS, ADDITIONAL_REPOS, ADDITIONAL_HF_REPOS;
 let ORG_API_URL, REPO_API_URL;
 
-// Build a reverse lookup from TAG_GROUPS (defined in tag-groups.js): raw tag → [canonical tags]
-// A raw tag may appear in multiple groups, so the value is an array.
-const tagLookup = Object.create(null);
-if (typeof TAG_GROUPS !== 'undefined') {
-    for (const [canonical, aliases] of Object.entries(TAG_GROUPS)) {
-        for (const alias of aliases) {
-            const key = alias.toLowerCase();
-            if (tagLookup[key]) {
-                tagLookup[key].push(canonical);
-            } else {
-                tagLookup[key] = [canonical];
-            }
-        }
-    }
-}
-
-
 let releasesMap = {};
 
 let allItems = {
@@ -105,8 +88,7 @@ const fetchHubItems = async (repoType) => {
             ORG_API_URL,
             REPO_API_URL,
             REFRESH_INTERVAL_DAYS,
-            releasesMap,
-            tagLookup
+            releasesMap
         );
     } else {
         items = await fetchHfRepos(
@@ -114,8 +96,7 @@ const fetchHubItems = async (repoType) => {
             ADDITIONAL_HF_REPOS,
             API_BASE_URL,
             HF_ORGANIZATION_NAME,
-            REFRESH_INTERVAL_DAYS,
-            tagLookup
+            REFRESH_INTERVAL_DAYS
         );
     }
 

@@ -1,13 +1,36 @@
 /**
+ * Builds a reverse lookup map from tag groups (defined in tag-groups.js): raw tag → [canonical tags]
+// A raw tag may appear in multiple groups, so the value is an array.
+ * @returns {Object} The reverse lookup map.
+ */
+export const buildTagLookup = () => {
+    const lookup = Object.create(null);
+    if (typeof TAG_GROUPS !== 'undefined') {
+        for (const [canonical, aliases] of Object.entries(TAG_GROUPS)) {
+            for (const alias of aliases) {
+                const key = alias.toLowerCase();
+                if (lookup[key]) {
+                    lookup[key].push(canonical);
+                } else {
+                    lookup[key] = [canonical];
+                }
+            }
+        }
+    }
+    return lookup;
+};
+
+const tagLookup = buildTagLookup();
+
+/**
  * Normalizes a raw tag string.
  * - Returns null for Hugging Face system metadata tags (tags containing a colon).
  * - Maps known aliases to their canonical tag(s) via tagLookup.
  * - Falls back to the lowercased original if no mapping exists.
  * @param {string} tag
- * @param {Object} tagLookup - Reverse lookup map: lowercased alias → [canonical tags]
  * @returns {string[]|null}
  */
-export function normalizeTag(tag, tagLookup) {
+export function normalizeTag(tag) {
     const lower = String(tag).toLowerCase();
     // OPTION LINE -- REMOVE IF UNWANTED
     // Removes Hugging Face auto-generated system tags (e.g. "license:mit", "format:parquet").

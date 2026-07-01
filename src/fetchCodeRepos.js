@@ -12,7 +12,6 @@ import { getPlatformDisplay } from './defineRibbonVals.js';
  * @param {string} repoApiUrl - The API URL for fetching individual repo details
  * @param {number} refreshIntervalDays - The cutoff in days for determining if a repo is "new"
  * @param {Map} releasesMap - A Map of release information for repos, keyed by full_name
- * @param {object} tagLookup - An object for normalizing tags, uses specified tag-groups
  * @returns {Promise<Array>} processedItems - A promise resolving to an array of code repositories
  */
 export async function fetchCodeRepos(
@@ -21,8 +20,7 @@ export async function fetchCodeRepos(
     orgApiUrl,
     repoApiUrl,
     refreshIntervalDays,
-    releasesMap,
-    tagLookup
+    releasesMap
 ) {
 
     let allRepos = [];
@@ -81,7 +79,7 @@ export async function fetchCodeRepos(
                 const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < refreshIntervalDays;
 
                 const rawTags = (repo.topics || []).map(t => t.toLowerCase());
-                const tags = [...new Set(rawTags.flatMap(t => normalizeTag(t, tagLookup)).filter(Boolean))];
+                const tags = [...new Set(rawTags.flatMap(t => normalizeTag(t)).filter(Boolean))];
                 const displayTags = rawTags.filter(t => !t.includes(':'));
 
                 const release = releasesMap[repo.full_name] ?? null;

@@ -10,7 +10,6 @@ import { filterNewAdditionalEntries } from './filterNewAdditionalEntries.js';
  * @param {string} apiBaseUrl - The base URL for the Hugging Face API
  * @param {string} hfOrgName - The Hugging Face organization name
  * @param {number} refreshIntervalDays - The cutoff in days for determining if a repo is "new"
- * @param {object} tagLookup - An object for normalizing tags, uses specified tag-groups
  * @returns {Promise<Array>} processedItems - A promise resolving to an array of Hugging Face repositories with metadata
  */
 export async function fetchHfRepos(
@@ -18,8 +17,7 @@ export async function fetchHfRepos(
     additionalHfRepos,
     apiBaseUrl,
     hfOrgName,
-    refreshIntervalDays,
-    tagLookup
+    refreshIntervalDays
 ) {
 
     try {
@@ -81,7 +79,7 @@ export async function fetchHfRepos(
 
             // Extract tags from the YAML metadata (handling different structures)
             const rawTags = (item.cardData?.tags || item.tags || []).map(t => String(t).toLowerCase());
-            const tags = [...new Set(rawTags.flatMap(t => normalizeTag(t, tagLookup)).filter(Boolean))];
+            const tags = [...new Set(rawTags.flatMap(t => normalizeTag(t)).filter(Boolean))];
             const displayTags = rawTags.filter(t => !t.includes(':'));
 
             return {
