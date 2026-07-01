@@ -7,7 +7,7 @@
 //
 
 import jsYaml from 'js-yaml';
-import { initializeUIFromConfig } from './src/initUserInterface.js';
+import { initializeUIFromConfig, setThemeToggle } from './src/initUserInterface.js';
 import { getPlatformApiUrls } from './src/defineApiUrls.js';
 import { filterItems, sortItems } from './src/filterAndSort.js';
 import { fetchCodeRepos } from './src/fetchCodeRepos.js';
@@ -368,6 +368,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initialize UI from config
     initializeUIFromConfig(CONFIG);
+    setThemeToggle();
 
     const searchInput = document.getElementById('searchInput');
     const sortBySelect = document.getElementById('sortBy');
@@ -469,19 +470,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     // (handles cases where URL params were invalid and not applied)
     await applyFiltersAndSort(false);
     updateUrlParams(getCurrentState());
-});
-
-//
-// THEME TOGGLE LOGIC
-//
-const themeToggleBtn = document.getElementById('themeToggleBtn');
-
-themeToggleBtn.addEventListener('click', () => {
-    if (document.documentElement.classList.contains('dark')) {
-        document.documentElement.classList.remove('dark');
-        localStorage.theme = 'light';
-    } else {
-        document.documentElement.classList.add('dark');
-        localStorage.theme = 'dark';
-    }
 });

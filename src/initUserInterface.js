@@ -78,3 +78,29 @@ export const initializeUIFromConfig = (config) => {
     `;
     document.head.appendChild(style);
 };
+
+//
+// THEME TOGGLE LOGIC
+// Establishes a button to toggle between light and dark themes, storing the preference in localStorage.
+export const setThemeToggle = () => {
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+    if (
+        localStorage.theme === 'dark' ||
+        (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+        if (document.documentElement.classList.contains('dark')) {
+            document.documentElement.classList.remove('dark');
+            localStorage.theme = 'light';
+        } else {
+            document.documentElement.classList.add('dark');
+            localStorage.theme = 'dark';
+        }
+    });
+};
