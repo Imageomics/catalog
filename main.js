@@ -12,6 +12,7 @@ import { getPlatformApiUrls } from './src/defineApiUrls.js';
 import { filterItems, sortItems } from './src/filterAndSort.js';
 import { fetchCodeRepos } from './src/fetchCodeRepos.js';
 import { fetchHfRepos } from './src/fetchHfRepos.js';
+import { fetchCatalogStats } from './src/fetchStats.js';
 import { renderItemList } from './src/render.js';
 
 // Start fetching config immediately when the module loads (before DOMContentLoaded)
@@ -214,41 +215,6 @@ const fetchHubItems = async (repoType) => {
     return items;
 };
 
-/**
- * Fetches statistics for the Catalog repository itself (Stars, Forks, Version)
- * populates the badge in the top right corner.
- */
-const fetchCatalogStats = async () => {
-    // Helper: Updates text, shows the specific stat, and ensures the divider is visible
-    const update = (textId, containerId, value) => {
-        const el = document.getElementById(textId);
-        const container = document.getElementById(containerId);
-        if (el && container && value !== undefined) {
-            el.innerText = value;
-            if (value != 0) {
-                container.classList.remove('hidden');
-                container.classList.add('flex');
-            }
-        }
-    };
-
-    try {
-        //TODO: Update stars and forks to support other platforms (GitLab, Codeberg) once implemented
-        // 1. Get Stars & Forks
-        const repo = await fetch(`${REPO_API_URL}${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`).then(r => r.ok ? r.json() : {});
-        if (repo.stargazers_count !== undefined) update('gh-stars', 'gh-star-container', repo.stargazers_count);
-        if (repo.forks_count !== undefined) update('gh-forks', 'gh-fork-container', repo.forks_count);
-
-        // 2. Get Version (Tag)
-        // TODO: Import from package.json
-        const release = await fetch(`${REPO_API_URL}${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}/releases/latest`).then(r => r.ok ? r.json() : {});
-        if (release.tag_name) update('gh-tag', 'gh-version-container', release.tag_name);
-
-    } catch (e) {
-        console.warn("Could not fetch Code Repo stats", e);
-    }
-};
-
 //
 // SECTION 3: SEARCH, FILTER, AND SORT LOGIC
 //
@@ -430,7 +396,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Initialize the Catalog Badge (Stars/Forks/Version)
-    fetchCatalogStats();
+    fetchCatalogStats(REPO_API_URL, ORGANIZATION_NAME, CATALOG_REPO_NAME)
 
     // Load pre-built release data (written by scripts/fetch-releases.js at build time)
     releasesMap = await fetch('./releases.json')
