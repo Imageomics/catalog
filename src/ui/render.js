@@ -1,6 +1,7 @@
-//
-// SECTION 3: RENDERING LOGIC
-//
+/**
+ * This module contains functions for presentation of code repositories, datasets, models, or spaces in HTML.
+ * It includes functions for escaping HTML, adding word break opportunities, and rendering item cards.
+ */
 
 /**
  * Escapes HTML special characters in a string to prevent XSS.

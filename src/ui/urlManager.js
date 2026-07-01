@@ -1,6 +1,7 @@
-//
-// URL PARAMETER HANDLING
-//
+/**
+ * This module manages URL parameters for the catalog application: parsing, updating, and reflecting the
+ * current filter state in the URL for shareable searches.
+ */
 
 /**
  * Parses URL parameters from both query string (?key=value) and hash (#key=value).

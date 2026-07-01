@@ -1,6 +1,11 @@
 /**
- * Builds a reverse lookup map from tag groups (defined in tag-groups.js): raw tag → [canonical tags]
-// A raw tag may appear in multiple groups, so the value is an array.
+ * Tag (keyword) processing, including normalization and tag-group lookup.
+ * These functions are used to standardize tags across different repositories and platforms.
+ */
+
+/**
+ * Builds a reverse lookup map from TAG_GROUPS (defined in tag-groups.js): raw tag → [canonical tags]
+ * A raw tag may appear in multiple groups, so the value is an array.
  * @returns {Object} The reverse lookup map.
  */
 export const buildTagLookup = () => {
