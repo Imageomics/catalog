@@ -30,7 +30,7 @@ The site runs based on four primary files:
 * `style.css`: Custom styling for the application, including color schemes, layout, and animations. Colors are set via CSS custom properties that are populated from `config.yaml`.
 * `main.js`: Application manager, handles config loading, event listeners, and coordinates UI updates based on API fetches for dynamic rendering of the catalog items.
 * `src/`: Modular application logic, organized by purpose:
-    * `api/`: Data fetching modules for external platforms (Code and Hugging Face).
+    * `api/`: Data fetching modules for external platforms (GitHub and Hugging Face).
     * `ui/`: DOM manipulation, HTML templating, and URL/State routing.
     * `utils/`: Utility functions such as data filtering, sorting, and tag (keyword) normalization. 
 
