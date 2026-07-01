@@ -1,6 +1,6 @@
-import { normalizeTag } from '../utils/normalizeTag.js';
 import { handleError } from '../ui/render.js';
-import { getPlatformDisplay } from '../ui/defineRibbonVals.js';
+import { normalizeTag } from '../utils/normalizeTag.js';
+import { getPlatformDisplay } from '../utils/defineRibbonVals.js';
 
 /**
  * Function for fetching code repositories from the specified platform (GitHub, GitLab, or Codeberg).
@@ -8,11 +8,13 @@ import { getPlatformDisplay } from '../ui/defineRibbonVals.js';
  * It also determines if a repo is "new" based on the provided refresh interval.
  * @async
  * @param {string} platform  - 'github', pending: 'gitlab', or 'codeberg'
- * @param {Array} additionalRepos - An array of additional "owner/repo" strings to include in addition to non-forked org repos.
+ * @param {Array} additionalRepos - An array of additional "owner/repo" strings to include in addition to non-forked
+ * org repos.
  * @param {string} orgApiUrl - The API URL for fetching organization repos
  * @param {string} repoApiUrl - The API URL for fetching individual repo details
  * @param {number} refreshIntervalDays - The cutoff in days for determining if a repo is "new"
- * @param {Map} releasesMap - A Map of release information for repos, keyed by full_name
+ * @param {Record<string, { tag: string, url: string, publishedAt: string, isNew: boolean } | null>} releasesMap -
+ * Release information for repos, keyed by full_name
  * @returns {Promise<Array>} processedItems - A promise resolving to an array of code repositories
  */
 export async function fetchCodeRepos(
