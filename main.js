@@ -7,14 +7,14 @@
 //
 
 import jsYaml from 'js-yaml';
-import { initializeUIFromConfig, setThemeToggle } from './src/initUserInterface.js';
-import { parseUrlParams, updateUrlParams, getCurrentState } from './src/urlManager.js';
-import { getPlatformApiUrls } from './src/defineApiUrls.js';
-import { filterItems, sortItems } from './src/filterAndSort.js';
-import { fetchCodeRepos } from './src/fetchCodeRepos.js';
-import { fetchHfRepos } from './src/fetchHfRepos.js';
-import { fetchCatalogStats } from './src/fetchStats.js';
-import { renderItemList } from './src/render.js';
+import { initializeUIFromConfig, setThemeToggle } from './src/ui/initUserInterface.js';
+import { parseUrlParams, updateUrlParams, getCurrentState } from './src/ui/urlManager.js';
+import { renderItemList } from './src/ui/render.js';
+import { getPlatformApiUrls } from './src/utils/defineApiUrls.js';
+import { filterItems, sortItems } from './src/utils/filterAndSort.js';
+import { fetchCodeRepos } from './src/api/fetchCodeRepos.js';
+import { fetchHfRepos } from './src/api/fetchHfRepos.js';
+import { fetchCatalogStats } from './src/api/fetchStats.js';
 
 // Start fetching config immediately when the module loads (before DOMContentLoaded)
 // so the fetch is in-flight while the DOM is being parsed.

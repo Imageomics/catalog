@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { normalizeTag } from '../src/normalizeTag.js';
+import { normalizeTag } from '../../src/utils/normalizeTag.js';
 
 // tagLookup format: lowercased alias → [canonical tags]
 const LOOKUP = {

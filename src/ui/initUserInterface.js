@@ -1,4 +1,4 @@
-import { getPlatformDisplay } from './defineRibbonVals.js';
+import { getPlatformDisplay } from '../utils/defineRibbonVals.js';
 
 /**
  * Initializes UI elements from configuration values.

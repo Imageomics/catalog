@@ -1,5 +1,5 @@
-import { normalizeTag } from './normalizeTag.js';
-import { getPlatformDisplay } from './defineRibbonVals.js';
+import { normalizeTag } from '..utils/normalizeTag.js';
+import { getPlatformDisplay } from '..ui/defineRibbonVals.js';
 
 /**
  * Function for fetching code repositories from the specified platform (GitHub, GitLab, or Codeberg).
