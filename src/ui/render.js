@@ -154,3 +154,13 @@ export const renderItemList = (items, repoType) => {
         emptyStateElement.classList.add('hidden');
     }
 };
+
+// Utility function to handle errors and display a user-friendly message
+export const handleError = (error, message) => {
+    console.error(message, error);
+    const itemList = document.getElementById('itemList');
+    itemList.innerHTML = `<div class="text-red-500 text-center col-span-full p-8 bg-red-100 rounded-lg">
+        <p class="font-bold">Error loading items.</p>
+        <p>${message}</p>
+    </div>`;
+};

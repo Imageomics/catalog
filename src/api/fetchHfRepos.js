@@ -1,5 +1,6 @@
-import { normalizeTag } from '..utils/normalizeTag.js';
-import { filterNewAdditionalEntries } from '..utils/filterNewAdditionalEntries.js';
+import { normalizeTag } from '../utils/normalizeTag.js';
+import { handleError } from '../ui/render.js';
+import { filterNewAdditionalEntries } from '../utils/filterNewAdditionalEntries.js';
 
 /**
  * Function for fetching Hugging Face repositories (models, datasets, or spaces) from the specified organization.
@@ -101,4 +102,4 @@ export async function fetchHfRepos(
         handleError(error, `Failed to fetch ${repoType} from Hugging Face. Please check your network connection or the API.`);
         return [];
     }
-};
+}
