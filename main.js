@@ -7,8 +7,8 @@
 //
 
 import jsYaml from 'js-yaml';
+import { initializeUIFromConfig } from './src/initUserInterface.js';
 import { getPlatformApiUrls } from './src/defineApiUrls.js';
-import { getPlatformDisplay } from './src/defineRibbonVals.js';
 import { filterItems, sortItems } from './src/filterAndSort.js';
 import { fetchCodeRepos } from './src/fetchCodeRepos.js';
 import { fetchHfRepos } from './src/fetchHfRepos.js';
@@ -322,64 +322,6 @@ const populateTagFilter = (repoType) => {
 //
 // SECTION 4: EVENT LISTENERS AND INITIALIZATION
 //
-
-/**
- * Initializes UI elements from configuration values.
- * This sets up the header, logo, repo ribbon, and dynamic styles.
- */
-const initializeUIFromConfig = () => {
-    // Set header logo
-    const logoImg = document.getElementById('logo-img');
-    if (logoImg) {
-        logoImg.src = CONFIG.LOGO_URL;
-        logoImg.alt = CONFIG.ORG_NAME + ' Logo';
-
-        logoImg.onload = () => {
-            logoImg.classList.remove('opacity-0');
-        };
-    }
-
-    // Set header title and description
-    const headerTitle = document.getElementById('header-title');
-    if (headerTitle) {
-        headerTitle.textContent = CONFIG.CATALOG_TITLE || `${CONFIG.ORG_NAME} Catalog`;
-        headerTitle.style.color = CONFIG.COLORS.primary;
-    }
-
-    const headerDesc = document.getElementById('header-description');
-    if (headerDesc) {
-        headerDesc.textContent = CONFIG.CATALOG_DESCRIPTION;
-    }
-
-    // Set Code Repo ribbon link, SVG path, display name, and colors
-    const repoRibbon = document.getElementById('repo-ribbon');
-    const platformDisplay = getPlatformDisplay(PLATFORM);
-    if (repoRibbon && platformDisplay) {
-        repoRibbon.href = `${platformDisplay.ribbonUrl}${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`;
-        const pathElement = document.getElementById('repo-ribbon-icon');
-        pathElement.setAttribute('d', platformDisplay.path);
-        const platformDisplayName = document.getElementById('platform-display-name');
-        platformDisplayName.textContent = platformDisplay.displayName || PLATFORM;
-        repoRibbon.style.backgroundColor = CONFIG.COLORS.secondary;
-        repoRibbon.style.setProperty('--hover-color', CONFIG.COLORS.primary);
-        repoRibbon.addEventListener('mouseenter', function () {
-            this.style.backgroundColor = CONFIG.COLORS.primary;
-        });
-        repoRibbon.addEventListener('mouseleave', function () {
-            this.style.backgroundColor = CONFIG.COLORS.secondary;
-        });
-    }
-
-    // Set focus ring colors for form inputs and link hover colors
-    const style = document.createElement('style');
-    style.textContent = `
-        .focus\\:ring-2:focus { --tw-ring-color: var(--color-accent) !important; }
-        .item-link:hover { color: var(--color-accent) !important; }
-        .dark .item-link:hover { color: var(--color-accent-dark) !important; }
-    `;
-    document.head.appendChild(style);
-};
-
 document.addEventListener('DOMContentLoaded', async () => {
     // Load config before anything else
     try {
@@ -424,29 +366,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // Apply CSS custom properties and document metadata
-    document.title = CONFIG.CATALOG_TITLE || `${CONFIG.ORG_NAME} Catalog`;
-    document.documentElement.style.setProperty('--color-primary',     CONFIG.COLORS?.primary     || '#92991c');
-    document.documentElement.style.setProperty('--color-secondary',   CONFIG.COLORS?.secondary   || '#5d8095');
-    document.documentElement.style.setProperty('--color-accent',      CONFIG.COLORS?.accent      || '#0097b2');
-    document.documentElement.style.setProperty('--color-accent-dark', CONFIG.COLORS?.accentDark  || '#4fd1eb');
-    document.documentElement.style.setProperty('--color-tag',         CONFIG.COLORS?.tag         || '#9bcb5e');
-    const fontFamily = CONFIG.FONT_FAMILY || 'Inter';
-    document.documentElement.style.setProperty('--font-family', fontFamily.includes(' ') ? `"${fontFamily}"` : fontFamily);
-
-    // Update Google Fonts link
-    if (CONFIG.FONT_FAMILY) {
-        const fontFamily = CONFIG.FONT_FAMILY.replace(/\s+/g, '+');
-        const fontLink = document.getElementById('font-link');
-        if (fontLink) fontLink.href = `https://fonts.googleapis.com/css2?family=${fontFamily}:wght@400;500;600;700&display=swap`;
-    }
-
-    // Set favicon
-    const faviconLink = document.getElementById('favicon-link');
-    if (faviconLink && CONFIG.FAVICON_URL) faviconLink.href = CONFIG.FAVICON_URL;
-
     // Initialize UI from config
-    initializeUIFromConfig();
+    initializeUIFromConfig(CONFIG);
 
     const searchInput = document.getElementById('searchInput');
     const sortBySelect = document.getElementById('sortBy');
