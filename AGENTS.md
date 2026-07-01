@@ -31,10 +31,12 @@ Path | Purpose
 `public/tag-groups.js` | **Secondary customization point.** Canonical tag aliases; maps raw tags to normalized display tags.
 `index.html` | Static HTML shell; config values are applied dynamically.
 `style.css` | Custom styles; colors are set via CSS custom properties populated from `config.yaml`.
-`main.js` | All application logic: config loading, API calls, filtering, sorting, and rendering.
-`src/` | Pure utility modules imported by `main.js` and the build scripts.
+`main.js` | Application orchestrator. Wires up event listeners and coordinates data flow between UI and API layers.
+`src/api/` | Data fetching modules (`fetchCodeRepos.js`, `fetchHfRepos.js`, etc.).
+`src/ui/` | DOM manipulation, HTML templating (`render.js`), and URL/State routing.
+`src/utils/` | Pure utility functions (filtering, sorting, tag normalization).
 `scripts/` | Build-time Node scripts (`fetch-releases.js`, `export-tags.js`).
-`tests/` | Vitest unit and integration tests.
+`tests/` | Vitest unit and integration tests. Subdirectories mirror the `src/` folder layout.
 `docs/` | Developer-facing documentation.
 `.github/workflows/` | CI/CD: tests on PR, deploy on push to `main`, weekly tag scan.
 
@@ -90,9 +92,9 @@ npm run test:watch  # watch mode
 Current test files:
 - `tests/validateConfig.test.js` — unit tests for `src/validateConfig.js`
 - `tests/config.integration.test.js` — confirms `public/config.yaml` passes validation
-- `tests/filterAndSort.test.js` — unit tests for `src/filterAndSort.js`
-- `tests/filterNewAdditionalEntries.test.js` — unit tests for `src/filterNewAdditionalEntries.js`
-- `tests/normalizeTag.test.js` — unit tests for `src/normalizeTag.js`
+- `tests/utils/filterAndSort.test.js` — unit tests for `src/utils/filterAndSort.js`
+- `tests/utils/filterNewAdditionalEntries.test.js` — unit tests for `src/utils/filterNewAdditionalEntries.js`
+- `tests/utils/normalizeTag.test.js` — unit tests for `src/utils/normalizeTag.js`
 
 When adding a new utility to `src/`, add a corresponding test file. Do **not** add tests that make live network calls.
 
