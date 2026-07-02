@@ -66,7 +66,7 @@ Spaces | `https://huggingface.co/spaces/{owner}/{repo}`
 
 The bulk `models?author={org}&full=true` list response does **not** return `cardData` for models. `cardData` (which contains `model_name`, `description`, tags, etc.) is only available when each model is fetched individually.
 
-`main.js` handles this with an extra parallel fetch after the list call (search `Step 2: If we are fetching models`). **Any change to model fetching must preserve this secondary per-model call.**
+`src/api/fetchHfRepos.js` handles this with an extra parallel fetch after the list call (search `Step 2: If we are fetching models`). **Any change to model fetching must preserve this secondary per-model call.**
 
 ### `cardData` Key Differences Across Resource Types
 
@@ -76,7 +76,7 @@ Datasets | `cardData.pretty_name` | `cardData.description`
 Models | `cardData.model_name` | `cardData.model_description`
 Spaces | `cardData.title` | `cardData.description`
 
-Code that accesses card metadata must account for all three shapes. The rendering function `renderHubItemCard` in `main.js` already does this with fallback chains.
+Code that accesses card metadata must account for all three shapes. The rendering function `renderHubItemCard` in `src/ui/render.js` already does this with fallback chains.
 
 ## Testing
 
