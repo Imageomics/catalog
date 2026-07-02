@@ -105,7 +105,7 @@ export async function fetchCodeRepos(
                     cardData: {
                         pretty_name: repo.name, // <repo-name>, the one used for card title display
                         description: repo.description,
-                        stars: repo.stargazers_count
+                        stars: repo.stargazers_count || 0
                     }
                 };
             });
