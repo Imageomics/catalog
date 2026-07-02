@@ -142,7 +142,7 @@ const applyFiltersAndSort = async (updateUrl = true) => {
 
     const filtered = filterItems(currentItems, { searchTerm, tagFilter, archiveFilter });
     const sorted = sortItems(filtered, sortBy);
-    renderItemList(sorted, repoType);
+    renderItemList(sorted);
 };
 
 /**

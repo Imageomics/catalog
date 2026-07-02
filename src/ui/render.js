@@ -33,10 +33,9 @@ const addWordBreakOpportunities = (str) => {
 /**
  * Renders a single item card (code, dataset, model, or space) to HTML.
  * @param {Object} item - The item object to render.
- * @param {string} repoType - The type of repository.
  * @returns {string} The HTML string for the item card.
  */
-const renderHubItemCard = (item, repoType) => {
+const renderHubItemCard = (item) => {
     const lastUpdatedDate = new Date(item.lastModified).toLocaleDateString();
     const tagsHtml = (item.displayTags || item.rawTags || []).map(tag =>
         `<span class="tag text-xs font-semibold px-2 py-1 rounded-full">${escapeHTML(tag)}</span>`
@@ -140,9 +139,8 @@ const renderHubItemCard = (item, repoType) => {
 /**
  * Renders the list of items to the DOM.
  * @param {Array} items - The array of item objects to render.
- * @param {string} repoType - The type of repository.
  */
-export const renderItemList = (items, repoType) => {
+export const renderItemList = (items) => {
     const itemListElement = document.getElementById('itemList');
     const emptyStateElement = document.getElementById('emptyState');
 
@@ -150,7 +148,7 @@ export const renderItemList = (items, repoType) => {
         itemListElement.innerHTML = '';
         emptyStateElement.classList.remove('hidden');
     } else {
-        itemListElement.innerHTML = items.map(item => renderHubItemCard(item, repoType)).join('');
+        itemListElement.innerHTML = items.map(item => renderHubItemCard(item)).join('');
         emptyStateElement.classList.add('hidden');
     }
 };
