@@ -34,7 +34,7 @@ export const parseUrlParams = () => {
 
 /**
  * Updates the URL hash with the current filter state without triggering a page reload.
- * @param {Object} state - The current state object with type, q, sort, tag properties.
+ * @param {Object} state - The current state object with type, q, sort, tag, archived properties.
  */
 export const updateUrlParams = (state) => {
     const params = new URLSearchParams();
