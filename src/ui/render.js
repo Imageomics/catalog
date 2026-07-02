@@ -39,7 +39,7 @@ const addWordBreakOpportunities = (str) => {
 const renderHubItemCard = (item, repoType) => {
     const lastUpdatedDate = new Date(item.lastModified).toLocaleDateString();
     const tagsHtml = (item.displayTags || item.rawTags || []).map(tag =>
-        `<span class="tag text-xs font-semibold px-2 py-1 rounded-full">${tag}</span>`
+        `<span class="tag text-xs font-semibold px-2 py-1 rounded-full">${escapeHTML(tag)}</span>`
     ).join('');
 
     // Use pretty_name for the heading, with a fallback
@@ -80,7 +80,7 @@ const renderHubItemCard = (item, repoType) => {
                     </span>`;
         }
 
-        if (typeof item.cardData.stars === "number" && item.cardData.stars > 0) {
+        if (typeof item.cardData?.stars === "number" && item.cardData.stars > 0) {
             return `<span class="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1">
                         ⭐ ${item.cardData.stars}
                     </span>`;
@@ -103,7 +103,7 @@ const renderHubItemCard = (item, repoType) => {
             <div>
                 <div class="flex justify-between items-start gap-2 mb-2">
                     <h2 title="${escapedTitle}" class="text-xl font-bold text-gray-800 dark:text-gray-100 flex-1 line-clamp-3">
-                        <a href="${itemUrl}" target="_blank" class="break-words hover:underline transition-colors item-link">
+                        <a href="${itemUrl}" target="_blank" rel="noopener noreferrer" class="break-words hover:underline transition-colors item-link">
                             ${displayTitle}
                         </a>
                     </h2>
@@ -121,7 +121,7 @@ const renderHubItemCard = (item, repoType) => {
             </div>
 
             <p class="flex-grow basis-0 min-h-[5rem] overflow-y-auto text-sm text-gray-600 dark:text-gray-400 mb-4 dark:[color-scheme:dark]">
-                ${displayDescription}
+                ${escapeHTML(displayDescription)}
             </p>
 
             <div>
@@ -161,6 +161,6 @@ export const handleError = (error, message) => {
     const itemList = document.getElementById('itemList');
     itemList.innerHTML = `<div class="text-red-500 text-center col-span-full p-8 bg-red-100 rounded-lg">
         <p class="font-bold">Error loading items.</p>
-        <p>${message}</p>
+        <p>${escapeHTML(message)}</p>
     </div>`;
 };
