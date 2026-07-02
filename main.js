@@ -72,6 +72,12 @@ const fetchHubItems = async (repoType) => {
     let items = []
 
     if (repoType === 'code') {
+        // Check that releasesMap is populated; if not, fetch it from releases.json
+        if (Object.keys(releasesMap).length === 0) {
+            releasesMap = await fetch('./releases.json')
+                .then(res => res.ok ? res.json() : {})
+                .catch(() => ({}));
+        }
         items = await fetchCodeRepos(
             PLATFORM,
             ADDITIONAL_REPOS,
