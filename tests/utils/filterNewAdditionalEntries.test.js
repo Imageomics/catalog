@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { filterNewAdditionalEntries } from '../src/filterNewAdditionalEntries.js';
+import { filterNewAdditionalEntries } from '../../src/utils/filterNewAdditionalEntries.js';
 
 describe('filterNewAdditionalEntries', () => {
     it('returns all entries when existingIds is empty', () => {

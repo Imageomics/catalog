@@ -7,11 +7,14 @@
 //
 
 import jsYaml from 'js-yaml';
-import { normalizeTag } from './src/normalizeTag.js';
-import { getPlatformApiUrls } from './src/defineApiUrls.js';
-import { getPlatformDisplay } from './src/defineRibbonVals.js';
-import { filterItems, sortItems } from './src/filterAndSort.js';
-import { filterNewAdditionalEntries } from './src/filterNewAdditionalEntries.js';
+import { initializeUIFromConfig, setThemeToggle } from './src/ui/initUserInterface.js';
+import { parseUrlParams, updateUrlParams, getCurrentState } from './src/ui/urlManager.js';
+import { renderItemList } from './src/ui/render.js';
+import { getPlatformApiUrls } from './src/utils/defineApiUrls.js';
+import { filterItems, sortItems } from './src/utils/filterAndSort.js';
+import { fetchCodeRepos } from './src/api/fetchCodeRepos.js';
+import { fetchHfRepos } from './src/api/fetchHfRepos.js';
+import { fetchCatalogStats } from './src/api/fetchStats.js';
 
 // Start fetching config immediately when the module loads (before DOMContentLoaded)
 // so the fetch is in-flight while the DOM is being parsed.
@@ -26,23 +29,6 @@ const configPromise = fetch('config.yaml')
 let CONFIG;
 let ORGANIZATION_NAME, HF_ORGANIZATION_NAME, CATALOG_REPO_NAME, PLATFORM, API_BASE_URL, REFRESH_INTERVAL_DAYS, ADDITIONAL_REPOS, ADDITIONAL_HF_REPOS;
 let ORG_API_URL, REPO_API_URL;
-
-// Build a reverse lookup from TAG_GROUPS (defined in tag-groups.js): raw tag → [canonical tags]
-// A raw tag may appear in multiple groups, so the value is an array.
-const tagLookup = Object.create(null);
-if (typeof TAG_GROUPS !== 'undefined') {
-    for (const [canonical, aliases] of Object.entries(TAG_GROUPS)) {
-        for (const alias of aliases) {
-            const key = alias.toLowerCase();
-            if (tagLookup[key]) {
-                tagLookup[key].push(canonical);
-            } else {
-                tagLookup[key] = [canonical];
-            }
-        }
-    }
-}
-
 
 let releasesMap = {};
 
@@ -65,103 +51,8 @@ let fetchedData = {
     spaces: false
 };
 
-// Utility function to handle errors and display a user-friendly message
-const handleError = (error, message) => {
-    console.error(message, error);
-    const itemList = document.getElementById('itemList');
-    itemList.innerHTML = `<div class="text-red-500 text-center col-span-full p-8 bg-red-100 rounded-lg">
-        <p class="font-bold">Error loading items.</p>
-        <p>${message}</p>
-    </div>`;
-};
-
 //
-// SECTION 1B: URL PARAMETER HANDLING
-//
-
-/**
- * Parses URL parameters from both query string (?key=value) and hash (#key=value).
- * Query parameters take precedence over hash parameters.
- * @returns {Object} An object containing the parsed parameters.
- */
-const parseUrlParams = () => {
-    const params = {};
-
-    // Parse query string parameters (e.g., ?type=datasets&q=fish)
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-
-    // Parse hash parameters (e.g., #type=datasets&q=fish)
-    const hash = window.location.hash.slice(1); // Remove the leading '#'
-    const hashParams = new URLSearchParams(hash);
-
-    // Hash parameters first (lower precedence)
-    for (const [key, value] of hashParams) {
-        params[key] = value;
-    }
-
-    // Query parameters override hash parameters (higher precedence)
-    for (const [key, value] of urlParams) {
-        params[key] = value;
-    }
-
-    return params;
-};
-
-/**
- * Updates the URL hash with the current filter state without triggering a page reload.
- * @param {Object} state - The current state object with type, q, sort, tag properties.
- */
-const updateUrlParams = (state) => {
-    const params = new URLSearchParams();
-
-    // Only add non-default values to the URL
-    if (state.type && state.type !== 'all') {
-        params.set('type', state.type);
-    }
-    if (state.q && state.q.trim() !== '') {
-        params.set('q', state.q);
-    }
-    if (state.sort && state.sort !== 'lastModified') {
-        params.set('sort', state.sort);
-    }
-    if (state.tag && state.tag !== '') {
-        params.set('tag', state.tag);
-    }
-    if (state.archived && state.archived !== 'active') {
-        params.set('archived', state.archived);
-    }
-
-    const paramString = params.toString();
-    const newHash = paramString ? `#${paramString}` : '';
-
-    // Build the new URL preserving the pathname and any query parameters when clearing hash
-    const baseUrl = window.location.pathname + window.location.search;
-    const newUrl = newHash ? baseUrl + newHash : baseUrl;
-
-    // Update the URL without triggering a page reload
-    const currentUrl = window.location.pathname + window.location.search + window.location.hash;
-    if (currentUrl !== newUrl) {
-        history.replaceState(null, '', newUrl);
-    }
-};
-
-/**
- * Gets the current filter state from form elements.
- * @returns {Object} The current state object.
- */
-const getCurrentState = () => {
-    return {
-        type: document.getElementById('repoType')?.value || 'all',
-        q: document.getElementById('searchInput')?.value || '',
-        sort: document.getElementById('sortBy')?.value || 'lastModified',
-        tag: document.getElementById('tagFilter')?.value || '',
-        archived: document.getElementById('archiveFilter')?.value || 'active'
-    };
-};
-
-//
-// SECTION 2: DATA FETCHING LOGIC
+// SECTION 2: DATA FETCHING
 //
 
 /**
@@ -178,388 +69,47 @@ const fetchHubItems = async (repoType) => {
     const skeletons = document.querySelectorAll('.skeleton-card');
     skeletons.forEach(s => s.classList.remove('hidden'));
 
-    try {
-        let items = [];
+    let items = []
 
-        // Platform-specific api requests for code
-        if (repoType === "code") {
-            if (fetchedData.code) return allItems.code // reuse if already fetched
-
-            // Paginate through all public repos (Platform determines API max returns per page)
-            let allRepos = [];
-            let nextUrl = `${ORG_API_URL}`;
-            while (nextUrl) {
-                const ghResponse = await fetch(nextUrl);
-
-                if (!ghResponse.ok) {
-                    const platformDisplay = getPlatformDisplay(PLATFORM);
-                    throw new Error(`${platformDisplay.displayName || PLATFORM} error: ${ghResponse.status}`);
-                }
-
-                const page = await ghResponse.json();
-                allRepos = allRepos.concat(page);
-
-                // Parse the Link header to find the next page URL, if any
-                const linkHeader = ghResponse.headers.get('Link');
-                const match = linkHeader && linkHeader.match(/<([^>]+)>;\s*rel="next"/);
-                nextUrl = match ? match[1] : null;
-            }
-
-            // For org-owned entries in ADDITIONAL_REPOS, reuse data already in allRepos to avoid redundant API calls.
-            // Only fetch entries that belong to a different org (external repos).
-            const allReposByFullName = new Map(allRepos.map(r => [r.full_name, r]));
-            const toFetch = ADDITIONAL_REPOS.filter(ownerRepo => !allReposByFullName.has(ownerRepo));
-            const fromAllRepos = ADDITIONAL_REPOS.map(ownerRepo => allReposByFullName.get(ownerRepo)).filter(Boolean);
-
-            const fetchedExternalData = await Promise.all(
-                toFetch.map(ownerRepo =>
-                    fetch(`${REPO_API_URL}${ownerRepo}`)
-                        .then(r => {
-                            if (!r.ok) {
-                                console.warn(`Failed to fetch additional repo "${ownerRepo}": HTTP ${r.status}`);
-                                return null;
-                            }
-                            return r.json();
-                        })
-                        .catch(err => {
-                            console.warn(`Network error fetching additional repo "${ownerRepo}":`, err);
-                            return null;
-                        })
-                )
-            );
-            const additionalRepos = [...fromAllRepos, ...fetchedExternalData.filter(Boolean)];
-
-            // Keep only non-forks from org; deduplicate against additional repos by full_name
-            const orgRepoNames = new Set(additionalRepos.map(r => r.full_name));
-            const orgNonForks = allRepos.filter(repo => repo.name !== ".github" && !repo.fork && !orgRepoNames.has(repo.full_name));
-
-            // Process additional repos and all remaining org non-forks to include metadata and 'new' flag as appropriate
-            items = [...additionalRepos, ...orgNonForks]
-                .map(repo => {
-                    const createdAt = new Date(repo.created_at);
-                    const lastModified = new Date(repo.updated_at);
-                    const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
-
-                    const rawTags = (repo.topics || []).map(t => t.toLowerCase());
-                    const tags = [...new Set(rawTags.flatMap(t => normalizeTag(t, tagLookup)).filter(Boolean))];
-                    const displayTags = rawTags.filter(t => !t.includes(':'));
-                    tags.forEach(tag => tagsMap.code.add(tag));
-
-                    const release = releasesMap[repo.full_name] ?? null;
-
-                    return {
-                        id: repo.full_name, // "Imageomics/<repo-name>", used as backup if can't get repo.name
-                        repoType: "code",
-                        createdAt,
-                        lastModified,
-                        isNew,
-                        archived: repo.archived || false,
-                        tags,
-                        rawTags,
-                        displayTags,
-                        description: repo.description || "No description provided.",
-                        html_url: repo.html_url,
-                        hasNewRelease: release?.isNew ?? false,
-                        latestReleaseUrl: release?.url ?? null,
-                        latestReleaseTag: release?.tag ?? null,
-                        cardData: {
-                            pretty_name: repo.name, // <repo-name>, the one used for card title display
-                            description: repo.description,
-                            stars: repo.stargazers_count
-                        }
-                    };
-                });
-
-            allItems.code = items;
-            fetchedData.code = true;
-
-            skeletons.forEach(s => s.classList.add('hidden'));
-
-            return items;
+    if (repoType === 'code') {
+        // Check that releasesMap is populated; if not, fetch it from releases.json
+        if (Object.keys(releasesMap).length === 0) {
+            releasesMap = await fetch('./releases.json')
+                .then(res => res.ok ? res.json() : {})
+                .catch(() => ({}));
         }
-
-        // hugging face api requests for datasets/models/spaces
-        const response = await fetch(`${API_BASE_URL}${repoType}?author=${HF_ORGANIZATION_NAME}&full=true`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        let hfItems = await response.json();
-
-        // Fetch additional HF repos of this type from outside the org
-        const additionalForType = ADDITIONAL_HF_REPOS.filter(entry => entry.type === repoType);
-        if (additionalForType.length) {
-            const existingIds = new Set(hfItems.map(item => item.id));
-            const toFetch = filterNewAdditionalEntries(existingIds, additionalForType);
-
-            const fetched = await Promise.all(
-                toFetch.map(entry =>
-                    fetch(`${API_BASE_URL}${repoType}/${entry.repo}`)
-                        .then(r => {
-                            if (!r.ok) {
-                                console.warn(`Failed to fetch additional HF repo "${entry.repo}": HTTP ${r.status}`);
-                                return null;
-                            }
-                            return r.json();
-                        })
-                        .catch(err => {
-                            console.warn(`Network error fetching additional HF repo "${entry.repo}":`, err);
-                            return null;
-                        })
-                )
-            );
-            hfItems = [...hfItems, ...fetched.filter(item => item && !existingIds.has(item.id))];
-        }
-
-        // Step 2: If we are fetching models, get the full details for each one.
-        if (repoType === 'models') {
-            const detailPromises = hfItems.map(item =>
-                fetch(`${API_BASE_URL}models/${item.id}`).then(res => {
-                    if (!res.ok) {
-                        console.error(`Failed to fetch details for ${item.id}`);
-                        return null; // Return null for failed requests
-                    }
-                    return res.json();
-                })
-            );
-
-            // Wait for all detail requests to complete in parallel.
-            const detailedItems = await Promise.all(detailPromises);
-
-            // Filter out any models that failed to fetch and assign the detailed list.
-            hfItems = detailedItems.filter(Boolean);
-        }
-
-        // Process the data to include metadata and a 'new' flag
-        const processedItems = hfItems.map(item => {
-            const createdAt = new Date(item.createdAt);
-            const lastModified = new Date(item.lastModified);
-            const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < REFRESH_INTERVAL_DAYS;
-
-            // Extract tags from the YAML metadata (handling different structures)
-            const rawTags = (item.cardData?.tags || item.tags || []).map(t => String(t).toLowerCase());
-            const tags = [...new Set(rawTags.flatMap(t => normalizeTag(t, tagLookup)).filter(Boolean))];
-            const displayTags = rawTags.filter(t => !t.includes(':'));
-            tags.forEach(tag => tagsMap[repoType].add(tag));
-
-            return {
-                ...item,
-                repoType,
-                createdAt,
-                lastModified,
-                isNew,
-                archived: false,
-                likes: item.likes || 0,
-                tags,
-                rawTags,
-                displayTags
-            };
-        });
-
-        allItems[repoType] = processedItems;
-        fetchedData[repoType] = true;
-
-        skeletons.forEach(s => s.classList.add('hidden'));
-
-        return processedItems;
-    } catch (error) {
-        handleError(error, `Failed to fetch ${repoType}. Please check your network connection or the API.`);
-        return [];
-    }
-};
-
-/**
- * Fetches statistics for the Catalog repository itself (Stars, Forks, Version)
- * populates the badge in the top right corner.
- */
-const fetchCatalogStats = async () => {
-    // Helper: Updates text, shows the specific stat, and ensures the divider is visible
-    const update = (textId, containerId, value) => {
-        const el = document.getElementById(textId);
-        const container = document.getElementById(containerId);
-        if (el && container && value !== undefined) {
-            el.innerText = value;
-            if (value != 0) {
-                container.classList.remove('hidden');
-                container.classList.add('flex');
-            }
-        }
-    };
-
-    try {
-        //TODO: Update stars and forks to support other platforms (GitLab, Codeberg) once implemented
-        // 1. Get Stars & Forks
-        const repo = await fetch(`${REPO_API_URL}${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`).then(r => r.ok ? r.json() : {});
-        if (repo.stargazers_count !== undefined) update('gh-stars', 'gh-star-container', repo.stargazers_count);
-        if (repo.forks_count !== undefined) update('gh-forks', 'gh-fork-container', repo.forks_count);
-
-        // 2. Get Version (Tag)
-        // TODO: Import from package.json
-        const release = await fetch(`${REPO_API_URL}${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}/releases/latest`).then(r => r.ok ? r.json() : {});
-        if (release.tag_name) update('gh-tag', 'gh-version-container', release.tag_name);
-
-    } catch (e) {
-        console.warn("Could not fetch Code Repo stats", e);
-    }
-};
-
-//
-// SECTION 3: RENDERING LOGIC
-//
-
-/**
- * Escapes HTML special characters in a string to prevent XSS.
- * @param {string} str - The input string.
- * @returns {string} The escaped string.
- */
-const escapeHTML = (str) => {
-    if (!str) return "";
-    return str.replace(/[&<>"']/g, (m) => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
-    }[m]));
-};
-
-/**
- * Adds word break opportunities after underscores to allow proper text wrapping.
- * @param {string} str - The input string.
- * @returns {string} The string with <wbr> tags inserted after underscores.
- */
-const addWordBreakOpportunities = (str) => {
-    if (!str) return "";
-    // Replace underscores with underscore + word break opportunity
-    return str.replace(/_/g, '_<wbr>');
-};
-
-/**
- * Renders a single item card (code, dataset, model, or space) to HTML.
- * @param {Object} item - The item object to render.
- * @param {string} repoType - The type of repository.
- * @returns {string} The HTML string for the item card.
- */
-const renderHubItemCard = (item, repoType) => {
-    const lastUpdatedDate = new Date(item.lastModified).toLocaleDateString();
-    const tagsHtml = (item.displayTags || item.rawTags || []).map(tag =>
-        `<span class="tag text-xs font-semibold px-2 py-1 rounded-full">${tag}</span>`
-    ).join('');
-
-    // Use pretty_name for the heading, with a fallback
-    // HF API keys for CardData: https://huggingface.co/docs/huggingface_hub/main/en/package_reference/cards#huggingface_hub.CardData
-    // datasets have pretty_name, models have model_name, spaces have title
-    const prettyName = item.cardData?.pretty_name || item.cardData?.model_name || item.cardData?.title || item.id.split('/')[1];
-
-    // Use the description from cardData, with fallbacks
-    const displayDescription = item.cardData?.description || item.cardData?.model_description || item.description || 'No description provided.';
-
-    // Construct the correct URL based on the repository type
-    let itemUrl;
-
-    switch (item.repoType) {
-        case "code":
-            itemUrl = item.html_url;
-            break;
-        case "datasets":
-            itemUrl = `https://huggingface.co/datasets/${item.id}`;
-            break;
-        case "spaces":
-            itemUrl = `https://huggingface.co/spaces/${item.id}`;
-            break;
-        case "models":
-            itemUrl = `https://huggingface.co/${item.id}`;
-            break;
-        default:
-            // fallback for "all"
-            itemUrl = `https://huggingface.co/${item.id}`;
-            break;
-    }
-
-    // stars for code repos
-    const badgeHtml = (() => {
-        if (item.isNew) {
-            return `<span class="new-badge inline-block text-xs font-bold text-white rounded-full px-2 py-1">
-                        New!
-                    </span>`;
-        }
-
-        if (typeof item.cardData.stars === "number" && item.cardData.stars > 0) {
-            return `<span class="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                        ⭐ ${item.cardData.stars}
-                    </span>`;
-        }
-
-        if (typeof item.likes === "number" && item.likes > 0) {
-            return `
-        <span class="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1">
-            ❤️ ${item.likes}
-        </span>`;
-        }
-        return "";
-    })();
-
-    const escapedTitle = escapeHTML(prettyName);
-    const displayTitle = addWordBreakOpportunities(escapedTitle);
-
-    return `
-        <div class="item-card rounded-xl shadow-lg p-6 flex flex-col justify-between bg-white dark:bg-slate-800 transition-colors duration-200">
-            <div>
-                <div class="flex justify-between items-start gap-2 mb-2">
-                    <h2 title="${escapedTitle}" class="text-xl font-bold text-gray-800 dark:text-gray-100 flex-1 line-clamp-3">
-                        <a href="${itemUrl}" target="_blank" class="break-words hover:underline transition-colors item-link">
-                            ${displayTitle}
-                        </a>
-                    </h2>
-                    <div class="flex-shrink-0 ml-2 flex flex-row items-center gap-2">
-                        ${badgeHtml}
-                        ${(item.repoType === 'code' && item.hasNewRelease)
-                            ? `<a href="${item.latestReleaseUrl}" target="_blank" rel="noopener noreferrer"
-                                  class="release-badge inline-block text-xs font-bold text-white rounded-full px-2 py-1 hover:opacity-80 transition-opacity"
-                                  title="New release: ${escapeHTML(item.latestReleaseTag)}">
-                                  🚀 ${escapeHTML(item.latestReleaseTag)}
-                               </a>`
-                            : ''}
-                    </div>
-                </div>
-            </div>
-
-            <p class="flex-grow basis-0 min-h-[5rem] overflow-y-auto text-sm text-gray-600 dark:text-gray-400 mb-4 dark:[color-scheme:dark]">
-                ${displayDescription}
-            </p>
-
-            <div>
-                <div class="flex flex-wrap gap-2 max-h-[2.5rem] overflow-y-auto tag-container pb-2 dark:[color-scheme:dark]">
-                    ${tagsHtml}
-                </div>
-                <div class="flex justify-between items-center mt-4 text-xs text-gray-400 dark:text-gray-500">
-                    <span>Updated: ${lastUpdatedDate}</span>
-                    ${item.archived ? `<span class="archived-badge text-xs font-medium px-2.5 py-1 rounded-full">Archived</span>` : ''}
-                </div>
-            </div>
-        </div>
-    `;
-};
-
-/**
- * Renders the list of items to the DOM.
- * @param {Array} items - The array of item objects to render.
- * @param {string} repoType - The type of repository.
- */
-const renderItemList = (items, repoType) => {
-    const itemListElement = document.getElementById('itemList');
-    const emptyStateElement = document.getElementById('emptyState');
-
-    if (items.length === 0) {
-        itemListElement.innerHTML = '';
-        emptyStateElement.classList.remove('hidden');
+        items = await fetchCodeRepos(
+            PLATFORM,
+            ADDITIONAL_REPOS,
+            ORG_API_URL,
+            REPO_API_URL,
+            REFRESH_INTERVAL_DAYS,
+            releasesMap
+        );
     } else {
-        itemListElement.innerHTML = items.map(item => renderHubItemCard(item, repoType)).join('');
-        emptyStateElement.classList.add('hidden');
+        items = await fetchHfRepos(
+            repoType,
+            ADDITIONAL_HF_REPOS,
+            API_BASE_URL,
+            HF_ORGANIZATION_NAME,
+            REFRESH_INTERVAL_DAYS
+        );
     }
+
+    // Store fetched items and mark as fetched
+    allItems[repoType] = items;
+    fetchedData[repoType] = true;
+    items.forEach(item => {
+        item.tags.forEach(tag => tagsMap[repoType].add(tag));
+    });
+
+    skeletons.forEach(s => s.classList.add('hidden'));
+
+    return items;
 };
 
 //
-// SECTION 4: SEARCH, FILTER, AND SORT LOGIC
+// SECTION 3: SEARCH, FILTER, AND SORT LOGIC
 //
 
 /**
@@ -592,7 +142,7 @@ const applyFiltersAndSort = async (updateUrl = true) => {
 
     const filtered = filterItems(currentItems, { searchTerm, tagFilter, archiveFilter });
     const sorted = sortItems(filtered, sortBy);
-    renderItemList(sorted, repoType);
+    renderItemList(sorted);
 };
 
 /**
@@ -629,66 +179,8 @@ const populateTagFilter = (repoType) => {
 };
 
 //
-// SECTION 5: EVENT LISTENERS AND INITIALIZATION
+// SECTION 4: EVENT LISTENERS AND INITIALIZATION
 //
-
-/**
- * Initializes UI elements from configuration values.
- * This sets up the header, logo, repo ribbon, and dynamic styles.
- */
-const initializeUIFromConfig = () => {
-    // Set header logo
-    const logoImg = document.getElementById('logo-img');
-    if (logoImg) {
-        logoImg.src = CONFIG.LOGO_URL;
-        logoImg.alt = CONFIG.ORG_NAME + ' Logo';
-
-        logoImg.onload = () => {
-            logoImg.classList.remove('opacity-0');
-        };
-    }
-
-    // Set header title and description
-    const headerTitle = document.getElementById('header-title');
-    if (headerTitle) {
-        headerTitle.textContent = CONFIG.CATALOG_TITLE || `${CONFIG.ORG_NAME} Catalog`;
-        headerTitle.style.color = CONFIG.COLORS.primary;
-    }
-
-    const headerDesc = document.getElementById('header-description');
-    if (headerDesc) {
-        headerDesc.textContent = CONFIG.CATALOG_DESCRIPTION;
-    }
-
-    // Set Code Repo ribbon link, SVG path, display name, and colors
-    const repoRibbon = document.getElementById('repo-ribbon');
-    const platformDisplay = getPlatformDisplay(PLATFORM);
-    if (repoRibbon && platformDisplay) {
-        repoRibbon.href = `${platformDisplay.ribbonUrl}${ORGANIZATION_NAME}/${CATALOG_REPO_NAME}`;
-        const pathElement = document.getElementById('repo-ribbon-icon');
-        pathElement.setAttribute('d', platformDisplay.path);
-        const platformDisplayName = document.getElementById('platform-display-name');
-        platformDisplayName.textContent = platformDisplay.displayName || PLATFORM;
-        repoRibbon.style.backgroundColor = CONFIG.COLORS.secondary;
-        repoRibbon.style.setProperty('--hover-color', CONFIG.COLORS.primary);
-        repoRibbon.addEventListener('mouseenter', function () {
-            this.style.backgroundColor = CONFIG.COLORS.primary;
-        });
-        repoRibbon.addEventListener('mouseleave', function () {
-            this.style.backgroundColor = CONFIG.COLORS.secondary;
-        });
-    }
-
-    // Set focus ring colors for form inputs and link hover colors
-    const style = document.createElement('style');
-    style.textContent = `
-        .focus\\:ring-2:focus { --tw-ring-color: var(--color-accent) !important; }
-        .item-link:hover { color: var(--color-accent) !important; }
-        .dark .item-link:hover { color: var(--color-accent-dark) !important; }
-    `;
-    document.head.appendChild(style);
-};
-
 document.addEventListener('DOMContentLoaded', async () => {
     // Load config before anything else
     try {
@@ -732,30 +224,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error("Organization name is missing for one or both APIs. Halting initialization.");
         return;
     }
-    
-    // Apply CSS custom properties and document metadata
-    document.title = CONFIG.CATALOG_TITLE || `${CONFIG.ORG_NAME} Catalog`;
-    document.documentElement.style.setProperty('--color-primary',     CONFIG.COLORS?.primary     || '#92991c');
-    document.documentElement.style.setProperty('--color-secondary',   CONFIG.COLORS?.secondary   || '#5d8095');
-    document.documentElement.style.setProperty('--color-accent',      CONFIG.COLORS?.accent      || '#0097b2');
-    document.documentElement.style.setProperty('--color-accent-dark', CONFIG.COLORS?.accentDark  || '#4fd1eb');
-    document.documentElement.style.setProperty('--color-tag',         CONFIG.COLORS?.tag         || '#9bcb5e');
-    const fontFamily = CONFIG.FONT_FAMILY || 'Inter';
-    document.documentElement.style.setProperty('--font-family', fontFamily.includes(' ') ? `"${fontFamily}"` : fontFamily);
-
-    // Update Google Fonts link
-    if (CONFIG.FONT_FAMILY) {
-        const fontFamily = CONFIG.FONT_FAMILY.replace(/\s+/g, '+');
-        const fontLink = document.getElementById('font-link');
-        if (fontLink) fontLink.href = `https://fonts.googleapis.com/css2?family=${fontFamily}:wght@400;500;600;700&display=swap`;
-    }
-
-    // Set favicon
-    const faviconLink = document.getElementById('favicon-link');
-    if (faviconLink && CONFIG.FAVICON_URL) faviconLink.href = CONFIG.FAVICON_URL;
 
     // Initialize UI from config
-    initializeUIFromConfig();
+    initializeUIFromConfig(CONFIG);
+    setThemeToggle();
 
     const searchInput = document.getElementById('searchInput');
     const sortBySelect = document.getElementById('sortBy');
@@ -817,7 +289,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Initialize the Catalog Badge (Stars/Forks/Version)
-    fetchCatalogStats();
+    fetchCatalogStats(REPO_API_URL, ORGANIZATION_NAME, CATALOG_REPO_NAME)
 
     // Load pre-built release data (written by scripts/fetch-releases.js at build time)
     releasesMap = await fetch('./releases.json')
@@ -857,19 +329,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     // (handles cases where URL params were invalid and not applied)
     await applyFiltersAndSort(false);
     updateUrlParams(getCurrentState());
-});
-
-//
-// THEME TOGGLE LOGIC
-//
-const themeToggleBtn = document.getElementById('themeToggleBtn');
-
-themeToggleBtn.addEventListener('click', () => {
-    if (document.documentElement.classList.contains('dark')) {
-        document.documentElement.classList.remove('dark');
-        localStorage.theme = 'light';
-    } else {
-        document.documentElement.classList.add('dark');
-        localStorage.theme = 'dark';
-    }
 });
