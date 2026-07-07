@@ -5,7 +5,8 @@ import { handleError } from '../../src/ui/render.js';
 
 // Mock the internal dependencies
 vi.mock('../../src/utils/normalizeTag.js', () => ({
-    normalizeTag: vi.fn((tag) => [tag.toLowerCase()])
+    normalizeTag: vi.fn((tag) => [tag.toLowerCase()]),
+    filterDisplayTags: vi.fn((rawTags) => (rawTags || []).filter(t => !t.includes(':')))
 }));
 
 vi.mock('../../src/ui/render.js', () => ({

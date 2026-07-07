@@ -1,4 +1,4 @@
-import { normalizeTag } from '../utils/normalizeTag.js';
+import { normalizeTag, filterDisplayTags } from '../utils/normalizeTag.js';
 import { handleError } from '../ui/render.js';
 import { filterNewAdditionalEntries } from '../utils/filterNewAdditionalEntries.js';
 
@@ -81,7 +81,7 @@ export async function fetchHfRepos(
             // Extract tags from the YAML metadata (handling different structures)
             const rawTags = (item.cardData?.tags || item.tags || []).map(t => String(t).toLowerCase());
             const tags = [...new Set(rawTags.flatMap(t => normalizeTag(t)).filter(Boolean))];
-            const displayTags = rawTags.filter(t => !t.includes(':'));
+            const displayTags = filterDisplayTags(rawTags);
 
             return {
                 ...item,

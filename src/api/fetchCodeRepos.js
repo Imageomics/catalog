@@ -1,5 +1,5 @@
 import { handleError } from '../ui/render.js';
-import { normalizeTag } from '../utils/normalizeTag.js';
+import { normalizeTag, filterDisplayTags } from '../utils/normalizeTag.js';
 import { getPlatformDisplay } from '../utils/defineRibbonVals.js';
 
 /**
@@ -83,7 +83,7 @@ export async function fetchCodeRepos(
 
                 const rawTags = (repo.topics || []).map(t => t.toLowerCase());
                 const tags = [...new Set(rawTags.flatMap(t => normalizeTag(t)).filter(Boolean))];
-                const displayTags = rawTags.filter(t => !t.includes(':'));
+                const displayTags = filterDisplayTags(rawTags);
 
                 const release = releasesMap[repo.full_name] ?? null;
 
