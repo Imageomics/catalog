@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { filterItems, sortItems } from '../src/filterAndSort.js';
+import { filterItems, sortItems } from '../../src/utils/filterAndSort.js';
 
 // Minimal item factory — only the fields filterItems/sortItems actually read.
 const makeItem = (overrides = {}) => ({

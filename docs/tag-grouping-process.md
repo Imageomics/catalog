@@ -19,8 +19,7 @@ const TAG_GROUPS = {
 - The **key** (`"canonical tag"`) is the display tag shown in the UI filter dropdown.
 - The **value array** lists every raw API tag that should be normalized to that key.
 - Raw tags not present in any array pass through unchanged and appear as-is in the UI.
-- Raw tags that contain a colon (e.g. `license:mit`, `format:parquet`) are automatically
-  filtered out as Hugging Face system metadata so they never reach the UI. This can be changed in [src/normalizeTag.js](../src/normalizeTag.js), by removing the marked option line.
+- Raw tags that contain a colon (e.g. `license:mit`, `format:parquet`) are automatically filtered out as Hugging Face system metadata so they never reach the UI. This can be changed in [src/normalizeTag.js](../src/normalizeTag.js), by removing the marked option lines in `normalizeTag` and `filterDisplayTags`.
 - Raw tags are maintained and matched-against for keyword searching and do appear in repo cards.
 
 ---
