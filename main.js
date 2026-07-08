@@ -6,7 +6,7 @@
 // SECTION 1: CONFIGURATION AND STATE MANAGEMENT
 //
 
-import jsYaml from 'js-yaml';
+import { load } from 'js-yaml';
 import { initializeUIFromConfig, setThemeToggle } from './src/ui/initUserInterface.js';
 import { parseUrlParams, updateUrlParams, getCurrentState } from './src/ui/urlManager.js';
 import { renderItemList } from './src/ui/render.js';
@@ -23,7 +23,7 @@ const configPromise = fetch('config.yaml')
         if (!r.ok) throw new Error(`Failed to load config.yaml: HTTP ${r.status}`);
         return r.text();
     })
-    .then(text => jsYaml.load(text));
+    .then(text => load(text));
 
 // Module-scope lets — assigned after config loads, used by all functions below
 let CONFIG;
