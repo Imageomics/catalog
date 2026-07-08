@@ -4,9 +4,9 @@ Thank you for your interest in contributing to the catalog! This document outlin
 
 ## Overview
 
-This catalog is built with JavaScript and relies on API calls to code, data, model, and spaces repositories to populate the web app in real time. It is deployed via GitHub Pages.
+This catalog is built with JavaScript and relies on API calls to code, data, model, and spaces repositories to populate the web app in real time. Deployment only requires a static site-capable web server. The [Imageomics instance](https://catalog.imageomics.org) is currently deployed via GitHub Pages.
 
-This is a template repository designed to be copied (with "Use this Template") and customized by different organizations to present their code, data, models, and spaces in a dynamic, searchable site. The default setup is for the Imageomics Institute's GitHub and Hugging Face products, which is hosted from this repo.
+This is a template repository designed to be copied (with "Use this Template") and customized by different organizations to present their code, data, models, and spaces in a dynamic, searchable site. The default setup is for the Imageomics Institute's GitHub and Hugging Face products.
 
 ## Getting Started
 
@@ -28,7 +28,7 @@ Please refer to our [AGENTS.md](AGENTS.md). This also includes special notes on 
 
 ## Contribution Process
 
-1. **Create an issue** describing the change or problem **in your own words**.
+1. **Create an issue** describing the problem or necessary change **in your own words**.
     - Check existing [issues](https://github.com/Imageomics/catalog/issues) first.
     - If you'd like to work on an existing issue, please comment on it to express interest or describe your potential fix.
 2. **Create a feature branch** from `dev`. 
