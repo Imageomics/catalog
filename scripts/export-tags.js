@@ -12,10 +12,10 @@
 // public/config.yaml
 //
 
-import fs from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import jsYaml from 'js-yaml';
+import { load } from 'js-yaml';
 import { validateConfig } from '../src/validateConfig.js';
 import { getPlatformApiUrls } from '../src/utils/defineApiUrls.js';
 import { getPlatformDisplay } from '../src/utils/defineRibbonVals.js';
@@ -27,7 +27,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Parse config.yaml to extract the CONFIG object values we need
 // ---------------------------------------------------------------------------
 const configPath = path.resolve(__dirname, '../public/config.yaml');
-const rawConfig = jsYaml.load(fs.readFileSync(configPath, 'utf8'));
+const rawConfig = load(readFileSync(configPath, 'utf8'));
 
 const errors = validateConfig(rawConfig);
 if (errors.length) {
@@ -145,7 +145,7 @@ const collectHFTags = async (repoType) => {
 
         const sorted = Array.from(allTags).sort();
         const outPath = path.resolve(__dirname, 'tag-export.txt');
-        fs.writeFileSync(outPath, sorted.join('\n') + '\n', 'utf8');
+        writeFileSync(outPath, sorted.join('\n') + '\n', 'utf8');
 
         console.log(`\nDone. ${sorted.length} unique tags written to scripts/tag-export.txt`);
     } catch (err) {
