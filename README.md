@@ -2,7 +2,7 @@
 
 Repository for web-based catalog of Imageomics code, data, models, and spaces. This template catalog is designed to fetch live data from an organization's code repository platform (e.g., GitHub) API and dataset, model, and spaces repository data from the Hugging Face API to render a searchable, filterable catalog page as a static site via GitHub Pages. The default setup is for the Imageomics Institute's [GitHub](https://github.com/Imageomics) and [Hugging Face](https://huggingface.co/imageomics) organizations.
 
-For those interested in creating a similar catalog website, instructions for use and personalization are provided below, under [How to Use this Template](#how-to-use-this-template). More background on this site's creation is provided in the [docs](docs/).
+For those interested in creating a similar catalog website or contributing to this template, instructions for use and personalization are provided below, under [How to Use this Template](#how-to-use-this-template). More background on this site's creation is provided in the [docs](docs/).
 
 ## Features
 
@@ -44,6 +44,8 @@ Two additional files support the build tooling:
 
 This Catalog is set up as a template repository. To build a personalized version of the Catalog, select "Use this Template" at the top of the repo to generate your own version. This will create a new repository (generated from the template repo) that does not share the commit history of the template. Updates can still be added from the template upstream through `git cherry-pick`.[^1] 
 [^1]: We recommend following the [Git Cherry-pick Guide](https://imageomics.github.io/Collaborative-distributed-science-guide/wiki-guide/Git-Cherry-Pick-Guide/) from the [Collaborative Distributed Science Guide](https://imageomics.github.io/Collaborative-distributed-science-guide/) for those unfamiliar with this process.
+
+For those looking to contribute to the template, please read our [contributing guide](CONTRIBUTING.md) and fork the repository.
 
 ### Personalizing Your Catalog
 
