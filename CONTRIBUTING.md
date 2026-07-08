@@ -24,7 +24,7 @@ UI features should be tested locally through running a preview.
 
 ## Coding Style, Conventions, and Project Structure
 
-Please refer to our [AGENTS.md](AGENTS.md). This also includes special notes on key differences with the Hugging Face API and important considerations for the templated design of this repository.
+Please refer to our [AGENTS.md](AGENTS.md). This also includes special notes on key differences between the repo types (datasets, models, and spaces) in Hugging Face API calls and returns,  as well as important considerations for the templated design of this repository.
 
 ## Contribution Process
 
