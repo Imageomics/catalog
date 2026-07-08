@@ -6,7 +6,7 @@ Thank you for your interest in contributing to the catalog! This document outlin
 
 This catalog is built with JavaScript and relies on API calls to code, data, model, and spaces repositories to populate the web app in real time. It is deployed via GitHub Pages.
 
-This is a template repository designed to be copied (with "Use this Template") and customized by different organizations to present their code, data, models, and spaces in a dynamic, searchable site.
+This is a template repository designed to be copied (with "Use this Template") and customized by different organizations to present their code, data, models, and spaces in a dynamic, searchable site. The default setup is for the Imageomics Institute's GitHub and Hugging Face products, which is hosted from this repo.
 
 ## Getting Started
 
@@ -48,7 +48,7 @@ Please refer to our [AGENTS.md](AGENTS.md). This also includes special notes on 
 ### Pull Request Guidelines
 
 - Keep PRs focused on a single topic when possible.
-- Included tests and documentation updates for changes, as needed.
+- Include tests and documentation updates for changes, as needed.
 - Follow commit message conventions (see below).
 - Test that the site builds without errors.
 
