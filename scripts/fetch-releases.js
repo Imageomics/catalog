@@ -4,7 +4,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import jsYaml from 'js-yaml';
+import { load } from 'js-yaml';
 import { validateConfig } from '../src/validateConfig.js';
 import { getPlatformApiUrls } from '../src/utils/defineApiUrls.js';
 
@@ -13,7 +13,7 @@ const __dirname = dirname(__filename);
 
 // Load CONFIG from public/config.yaml
 const configPath = join(__dirname, '../public/config.yaml');
-const CONFIG = jsYaml.load(readFileSync(configPath, 'utf8'));
+const CONFIG = load(readFileSync(configPath, 'utf8'));
 
 const errors = validateConfig(CONFIG);
 if (errors.length) {
