@@ -10,7 +10,7 @@ This is a template repository designed to be copied (with "Use this Template") a
 
 ## Getting Started
 
-Follow [development guidance](README.md#development-prerequisites) for local setup. 
+Follow [development guidance](README.md#development-prerequisites) for local setup and formatting expectations. 
 
 ### Testing Changes
 
@@ -25,15 +25,6 @@ UI features should be tested locally through running a preview.
 ## Coding Style, Conventions, and Project Structure
 
 Please refer to our [AGENTS.md](AGENTS.md). This also includes special notes on key differences with the Hugging Face API and important considerations for the templated design of this repository.
-
-### Code Formatting
-
-VS Code "Format on Save" enabled with CSS & HTML format enabled or linter(s) for package languages (JavaScript, HTML, and CSS) with the following settings:
-
-- Indent Size: 4
-- Wrap Line Length: 120
-- Rules: Remove trailing whitespace and empty tabs.
-- Use consistent line breaks
 
 ## Contribution Process
 
@@ -56,13 +47,14 @@ VS Code "Format on Save" enabled with CSS & HTML format enabled or linter(s) for
 
 ### Pull Request Guidelines
 
-- Keep PRs focused on a single topic when possible
-- Follow commit message conventions (see below)
-- Test that the site builds without errors
+- Keep PRs focused on a single topic when possible.
+- Included tests and documentation updates for changes, as needed.
+- Follow commit message conventions (see below).
+- Test that the site builds without errors.
 
 ### Commit Message Guidelines
 
-The most important aspects of good commit messages are that they should be **descriptive** and **atomic** (each commit should represent a single logical change). We use squash merges for this repository, so strict adherence to, e.g., the [Conventional Commits](https://www.conventionalcommits.org/) format for commit messages is not necessary, but helpful for PR titles. 
+Commit messages should be **descriptive** and the PR should be **self-contained** (code change accompanied by tests and documentation of new functionality). We use squash merges for this repository, so strict adherence to, e.g., the [Conventional Commits](https://www.conventionalcommits.org/) format for commit messages is not necessary, but helpful for PR titles. 
 
 ### Content Review
 
