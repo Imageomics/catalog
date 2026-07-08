@@ -42,7 +42,7 @@ Please refer to our [AGENTS.md](AGENTS.md). This also includes special notes on 
    - Reference to related issue.
    - Screenshots if UI changes are involved.
 
-> ![IMPORTANT]
+> [!IMPORTANT]
 > Please describe your changes or issues in your own words, not with AI-generated text. We understand that AI is sometimes used to help refine or improve writing; this is fine. AI has been used collaboratively in developing this template, and similar use is acceptable, though **AI use in PRs must be acknowledged and checked by the PR author**.
 
 ### Pull Request Guidelines
