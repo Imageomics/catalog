@@ -1,13 +1,12 @@
 /**
- * A collection of platform-specific display information (e.g., SVG path data)
- * for code developer platforms including GitHub, pending: GitLab and Codeberg.
+ * A collection of platform-specific display information (e.g., SVGs and URLs)
+ * for code developer platforms including GitHub and Codeberg, pending: GitLab.
  * Used for linking to repo and rendering icon and platform name in the ribbon component of the UI.
- * All paths are optimized for a 0 0 24 24 viewBox.
  *
  * Usage: import { getPlatformDisplay } from './defineRibbonVals.js';
  *
  * Input: platform (e.g., 'github'), defined from config.yaml and passed to this function.
- * Output: platformDisplays[platform] = { path: SVG_PATH_DATA, viewBox: VIEWBOX_DATA,
+ * Output: platformDisplays[platform] = { svg: CODE_PLATFORM_SVG,
  *                                        displayName: DISPLAY_NAME, ribbonUrl: RIBBON_URL }
  */
 

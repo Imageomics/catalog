@@ -32,7 +32,7 @@ Welcome to your new catalog repo! The primary way to personalize this catalog is
 
 ### API & Behavior Settings
 
-  * `PLATFORM`: Coding platform used (default: 'github', Codeberg and GitLab support in development)
+  * `PLATFORM`: Coding platform used: 'github' or 'codeberg' (default: 'github', GitLab support in development). Please see [notes on platform setup](#non-github-code-platform-setup) if using for non-GitHub code repositories
   * `API_BASE_URL`: Hugging Face API base URL (default: `"https://huggingface.co/api/"`)
   * `REFRESH_INTERVAL_DAYS`: Number of days to consider an item "new" (default: `30`)
   * `ADDITIONAL_REPOS`: Array of forked or non-org GitHub repositories to include, formatted `<owner>/<repo-name>` (non-forks are included by default). Use `[]` if there are none you wish to include
@@ -88,3 +88,7 @@ When first setting up your catalog, run the export script to generate a full lis
 > **Required token**: The weekly tag scan workflow requires a fine-grained access token with **Pull requests: Read and write** permission on the catalog repo. Follow the instructions in [App Authentication](app-authentication.md) to create and install a private Catalog Automation App for token generation.
 
 See **[tag-grouping-process.md](tag-grouping-process.md)** for full setup instructions, conventions, and guidance on using AI assistance for the initial grouping pass.
+
+## Non-GitHub Code Platform Setup
+
+The default code platform for this catalog is GitHub. If you wish to use another supported platform (Codeberg), please note that the [tag export](../scripts/export-tags.js) and [fetch release](../scripts/fetch-releases.js) scripts may require header definition modifications to function properly. Workflows would also require token and other platform-specific updates if running from a non-GitHub repository. Otherwise, this app is set up to be able to run from Codeberg to fetch and display Codeberg repositories.
