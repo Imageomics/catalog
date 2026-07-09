@@ -46,9 +46,8 @@ export async function fetchCodeRepos(
     let allRepos = [];
     let nextUrl = `${orgApiUrl}`;
     // get platform-specific keys
-    const platformConfig = PLATFORM_CONFIGS[platform];
-    const starsKey = platformConfig.starsKey;
-    const profileRepo = platformConfig.profileRepo;
+    const platformConfig = PLATFORM_CONFIGS[platform.toLowerCase()];
+    const { starsKey, profileRepo } = platformConfig;
     try {
         while (nextUrl) {
             const ghResponse = await fetch(nextUrl);
