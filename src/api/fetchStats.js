@@ -30,7 +30,7 @@ export const fetchCatalogStats = async (repoApiUrl, organizationName, catalogRep
         // 2. Get Version (Tag)
         // TODO: Import from package.json
         const release = await fetch(`${repoApiUrl}${organizationName}/${catalogRepoName}/releases/latest`).then(r => r.ok ? r.json() : {});
-        if (release.tag_name) update('gh-tag', 'gh-version-container', release.tag_name);
+        if (release.tag_name !== undefined) update('gh-tag', 'gh-version-container', release.tag_name);
 
     } catch (e) {
         console.warn("Could not fetch Code Repo stats", e);
