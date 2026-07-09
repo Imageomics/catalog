@@ -4,7 +4,7 @@ Welcome to your new catalog repo! The primary way to personalize this catalog is
 
 ## Primary Configuration File
 
-[**`public/config.yaml`**](../public/config.yaml): This is the main file to edit. It contains all configuration options (e.g., organization names, colors, branding, and API settings) with inline comments explaining each setting. Replace Imageomics-specific values with those appropriate for your organzation and catalog repository.
+[**`public/config.yaml`**](../public/config.yaml): This is the main file to edit. It contains all configuration options (e.g., organization names, colors, branding, and API settings) with inline comments explaining each setting. Replace Imageomics-specific values with those appropriate for your organzation and catalog repository. A [template config](../public/config-template.yaml) is also provided for reference.
 
 ### Organization & Repository Settings
 

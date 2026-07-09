@@ -1,0 +1,51 @@
+# Configuration file for Catalog Template
+# Customize these values to personalize the catalog for your organization
+
+# Organization & Repository Settings
+ORGANIZATION_NAME: imageomics       # Codebase platform organization name (for API calls)
+HF_ORGANIZATION_NAME: ""    # Hugging Face organization name (case-sensitive, for API calls)
+ORG_NAME: Imageomics                # Display name for Codebase platform organization (can differ from API name)
+CATALOG_REPO_NAME: catalog          # Repository name for the catalog itself (used for stats badge)
+
+# Branding
+CATALOG_TITLE: ''
+CATALOG_DESCRIPTION: "Explore and discover public code, datasets, models, and spaces."
+LOGO_URL: "https://github.com/Imageomics/Imageomics-guide/raw/3478acc0068a87a5604069d04a29bdb0795c2045/docs/logos/Imageomics_logo_butterfly.png"
+FAVICON_URL: ""
+
+# Colors (CSS custom properties)
+COLORS:
+  primary: ""      # Primary brand color
+  secondary: ""    # Secondary brand color
+  accent: ""       # Accent color
+  accentDark: ""   # Dark mode accent color
+  tag: ""          # Tag background color
+
+# API & Behavior Settings
+# Codebase platform for API calls and link generation. Supported values: "github" or "codeberg", pending: "gitlab".
+PLATFORM: github
+# Dataset, model, and space (demo) default: Hugging Face, other platforms would require a custom module
+API_BASE_URL: "https://huggingface.co/api/"
+# Define "new" repository criteria
+REFRESH_INTERVAL_DAYS: 30
+
+# Array of "owner/repo" strings to include in addition to non-forked org repos.
+# Use this for forked repos within the org and repos outside the org entirely.
+# ADDITIONAL_REPOS:
+#   - "user/repo-name"
+ADDITIONAL_REPOS: []
+
+# Array of Hugging Face repos from outside the org to include.
+# Each entry must specify "repo" (owner/name) and "type" (datasets, models, or spaces).
+# Organization names are case-sensitive in the Hugging Face API.
+# ADDITIONAL_HF_REPOS:
+#   - repo: "user/dataset-name"
+#     type: "datasets"
+#   - repo: "user/model-name"
+#     type: "models"
+#   - repo: "user/space-name"
+#     type: "spaces"
+ADDITIONAL_HF_REPOS: []
+
+# Typography
+FONT_FAMILY: Inter    # Font family for the site
