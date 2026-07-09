@@ -2,6 +2,23 @@ import { handleError } from '../ui/render.js';
 import { normalizeTag, filterDisplayTags } from '../utils/normalizeTag.js';
 import { getPlatformDisplay } from '../utils/defineRibbonVals.js';
 
+// Define platform-specific values
+const PLATFORM_CONFIGS = {
+    github: {
+        starsKey: 'stargazers_count',
+        profileRepo: '.github'
+    },
+    /* gitlab: {
+        starsKey: 'star_count',
+        profileRepo: 'gitlab-profile',
+        //TODO
+    }, */
+    codeberg: {
+        starsKey: 'stars_count',
+        profileRepo: '.profile'
+    }
+};
+
 /**
  * Function for fetching code repositories from the specified platform (GitHub, GitLab, or Codeberg).
  * Both org-owned (non-forks) and additional repos are fetched; metadata is processed for each repo.
@@ -28,6 +45,10 @@ export async function fetchCodeRepos(
 
     let allRepos = [];
     let nextUrl = `${orgApiUrl}`;
+    // get platform-specific keys
+    const platformConfig = PLATFORM_CONFIGS[platform];
+    const starsKey = platformConfig.starsKey;
+    const profileRepo = platformConfig.profileRepo;
     try {
         while (nextUrl) {
             const ghResponse = await fetch(nextUrl);
@@ -72,7 +93,10 @@ export async function fetchCodeRepos(
 
         // Keep only non-forks from org; deduplicate against additional repos by full_name
         const orgRepoNames = new Set(filteredAdditionalRepos.map(r => r.full_name));
-        const orgNonForks = allRepos.filter(repo => repo.name !== ".github" && !repo.fork && !orgRepoNames.has(repo.full_name));
+        const orgNonForks = allRepos.filter(repo =>
+            repo.name !== profileRepo &&
+            !repo.fork &&
+            !orgRepoNames.has(repo.full_name));
 
         // Process additional repos and all remaining org non-forks to include metadata and 'new' flag as appropriate
         let processedItems = [...filteredAdditionalRepos, ...orgNonForks]
@@ -105,7 +129,7 @@ export async function fetchCodeRepos(
                     cardData: {
                         pretty_name: repo.name, // <repo-name>, the one used for card title display
                         description: repo.description,
-                        stars: repo.stargazers_count || repo.stars_count || 0
+                        stars: repo[starsKey] ?? 0
                     }
                 };
             });
