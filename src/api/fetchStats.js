@@ -24,7 +24,7 @@ export const fetchCatalogStats = async (repoApiUrl, organizationName, catalogRep
         //TODO: Update stars and forks to support other platforms (GitLab, Codeberg) once implemented
         // 1. Get Stars & Forks
         const repo = await fetch(`${repoApiUrl}${organizationName}/${catalogRepoName}`).then(r => r.ok ? r.json() : {});
-        if (repo.stargazers_count !== undefined) update('gh-stars', 'gh-star-container', repo.stargazers_count);
+        if (repo.stargazers_count !== undefined  || repo.stars_count !== undefined) update('gh-stars', 'gh-star-container', repo.stargazers_count || repo.stars_count);
         if (repo.forks_count !== undefined) update('gh-forks', 'gh-fork-container', repo.forks_count);
 
         // 2. Get Version (Tag)

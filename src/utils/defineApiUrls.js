@@ -2,9 +2,9 @@
  * Defines API URLs based on the selected platform (GitHub, note: GitLab and Codeberg support under development).
  * This allows the rest of the codebase to use these constants when making API calls,
  * abstracting away platform-specific URL structures.
- * 
+ *
  * Usage: import { getPlatformApiUrls } from './defineApiUrls.js';
- * 
+ *
  * Input: platform and organizationName (e.g., 'github' and 'imageomics'), defined from config.yaml and passed to this function.
  * Output: platformApiUrls[platform] = { org: ORG_API_URL, repo: REPO_API_URL }
  */
@@ -25,10 +25,10 @@ export function getPlatformApiUrls(platform, organizationName) {
         //     org: `https://gitlab.com/api/v4/groups/${organizationName}/projects?per_page=100`,
         //     repo: "https://gitlab.com/api/v4/projects/"
         // },
-        // codeberg: {
-        //     org: `https://codeberg.org/api/v1/orgs/${organizationName}/repos?limit=50`,
-        //     repo: "https://codeberg.org/api/v1/repos/"
-        // }
+        codeberg: {
+            org: `https://codeberg.org/api/v1/orgs/${organizationName}/repos?limit=50`,
+            repo: "https://codeberg.org/api/v1/repos/"
+        }
     };
     return platformApiUrls[platform.toLowerCase()];
 }
