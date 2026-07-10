@@ -22,7 +22,7 @@ COLORS:
   tag: "#9bcb5e"          # Tag background color (Light Green)
 
 # API & Behavior Settings
-# Codebase platform for API calls and link generation. Supported values: "github", pending: "codeberg" or "gitlab".
+# Codebase platform for API calls and link generation. Supported values: "github" or "codeberg", pending: "gitlab".
 PLATFORM: github
 # Dataset, model, and space (demo) default: Hugging Face, other platforms would require a custom module
 API_BASE_URL: "https://huggingface.co/api/"

@@ -2,10 +2,15 @@
 
 ## What Are Tag Groups?
 
-Tags on GitHub repos (topics) and Hugging Face repos (card metadata) are free-form text, so
+Tags on code platform[^1] repos (topics) and Hugging Face repos (card metadata) are free-form text, so
 the same concept often appears under multiple spellings: `computer-vision`, `computer vision`,
 `cv`. Tag groups normalize this noise so the catalog filter dropdown shows one clean canonical
 tag instead of a dozen near-duplicates.
+
+> [!NOTE]
+> This workflow has only been run on GitHub. It may need platform-based adjustments to function as expected on other code platforms, such as Codeberg or GitLab.
+
+[^1]: GitHub, Codeberg, and GitLab.
 
 Tag groups live in **`public/tag-groups.js`** as a plain JavaScript object:
 

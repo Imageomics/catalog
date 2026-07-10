@@ -55,8 +55,8 @@ export const initializeUIFromConfig = (config) => {
     const platformDisplay = getPlatformDisplay(config.PLATFORM);
     if (repoRibbon && platformDisplay) {
         repoRibbon.href = `${platformDisplay.ribbonUrl}${config.ORGANIZATION_NAME}/${config.CATALOG_REPO_NAME}`;
-        const pathElement = document.getElementById('repo-ribbon-icon');
-        pathElement.setAttribute('d', platformDisplay.path);
+        const svgElement = document.getElementById('repo-ribbon-icon-container');
+        svgElement.innerHTML = platformDisplay.svg;
         const platformDisplayName = document.getElementById('platform-display-name');
         platformDisplayName.textContent = platformDisplay.displayName || config.PLATFORM;
         repoRibbon.style.backgroundColor = config.COLORS.secondary;
