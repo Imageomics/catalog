@@ -89,6 +89,6 @@ When first setting up your catalog, run the export script to generate a full lis
 
 See **[tag-grouping-process.md](tag-grouping-process.md)** for full setup instructions, conventions, and guidance on using AI assistance for the initial grouping pass.
 
-## Non-GitHub Code Platform Setup
+## Code Repository Platform Setup
 
-The default code platform for this catalog is GitHub. If you wish to use another supported platform (Codeberg), please note that the [tag export](../scripts/export-tags.js) and [fetch release](../scripts/fetch-releases.js) scripts may require header definition modifications to function properly. Workflows would also require token and other platform-specific updates if running from a non-GitHub repository. Otherwise, this app is set up to be able to run from Codeberg to fetch and display Codeberg repositories.
+The default code repository platform for this catalog is GitHub. If you wish to use another supported platform (Codeberg), please note that the [tag export](../scripts/export-tags.js) and [fetch release](../scripts/fetch-releases.js) scripts may require header definition modifications to function properly. Workflows would also require token and other platform-specific updates if running from a non-GitHub repository. Otherwise, this app is set up to be able to run from Codeberg to fetch and display Codeberg repositories.
