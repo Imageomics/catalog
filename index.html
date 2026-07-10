@@ -28,9 +28,8 @@
         class="fixed top-6 right-6 hidden md:flex items-center gap-3 text-white py-2 px-4 rounded-lg shadow-md transition-all z-50 no-underline group font-sans border border-white/10">
         <!-- Code Platform Logo -->
         <div class="flex-shrink-0">
-            <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path id="repo-ribbon-icon" fill-rule="evenodd" clip-rule="evenodd"></path>
-            </svg>
+            <div id="repo-ribbon-icon-container" class="w-10 h-10 text-white [&>svg]:w-full [&>svg]:h-full"
+                aria-hidden="true"></div>
         </div>
         <div class="flex flex-col justify-center">
             <!-- Platform Display Name -->

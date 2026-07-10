@@ -14,7 +14,32 @@ vi.mock('../../src/utils/defineRibbonVals.js', () => ({
     getPlatformDisplay: vi.fn(() => 'GitHub')
 }));
 
-describe('fetchCodeRepos', () => {
+// define configs for each platform
+const platformConfigs = [
+    {
+        name: 'github',
+        orgApiUrl: 'https://api.github.com/orgs/test-org/repos',
+        repoApiUrl: 'https://api.github.com/repos/',
+        platformProfileRepo: '.github',
+        starsKey: 'stargazers_count'
+    },
+    /* {
+        name: 'gitlab',
+        orgApiUrl: 'https://gitlab.com/api/v4/groups/test-org/projects',
+        repoApiUrl: 'https://gitlab.com/api/v4/projects/',
+        platformProfileRepo: 'gitlab-profile',
+        starsKey: 'star_count'
+    }, */
+    {
+        name: 'codeberg',
+        orgApiUrl: 'https://codeberg.org/api/v1/orgs/test-org/repos',
+        repoApiUrl: 'https://codeberg.org/api/v1/repos/',
+        platformProfileRepo: '.profile',
+        starsKey: 'stars_count'
+    }
+];
+
+describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
     const originalFetch = global.fetch;
 
     beforeEach(() => {
@@ -25,8 +50,11 @@ describe('fetchCodeRepos', () => {
         vi.clearAllMocks();
     });
 
-    const orgApiUrl = 'https://api.github.com/orgs/test-org/repos';
-    const repoApiUrl = 'https://api.github.com/repos/';
+    const orgApiUrl = platformConfig.orgApiUrl;
+    const repoApiUrl = platformConfig.repoApiUrl;
+    const platform = platformConfig.name;
+    const starsKey = platformConfig.starsKey;
+    const platformProfileRepo = platformConfig.platformProfileRepo;
     const refreshIntervalDays = 30;
     const releasesMap = {};
 
@@ -37,7 +65,7 @@ describe('fetchCodeRepos', () => {
     const oldestDateISO = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000).toISOString(); // 90 days ago
 
     it('maps raw repo data and attaches release data from releasesMap', async () => {
-        // Mock a single page GitHub response
+        // Mock a single page platform response
         global.fetch.mockResolvedValueOnce({
             ok: true,
             headers: { get: () => null }, // No 'link' header means no pagination
@@ -47,7 +75,7 @@ describe('fetchCodeRepos', () => {
                 updated_at: now.toISOString(),
                 created_at: recentDateISO,
                 topics: ['python'],
-                stargazers_count: 42,
+                [starsKey]: 42,
             }])
         });
 
@@ -57,7 +85,7 @@ describe('fetchCodeRepos', () => {
         };
 
         const items = await fetchCodeRepos(
-            'github',
+            platform,
             [], // No additional repos
             orgApiUrl,
             repoApiUrl,
@@ -108,7 +136,7 @@ describe('fetchCodeRepos', () => {
         });
 
         const items = await fetchCodeRepos(
-            'github',
+            platform,
             [],
             orgApiUrl,
             repoApiUrl,
@@ -164,7 +192,7 @@ describe('fetchCodeRepos', () => {
         ];
 
         const items = await fetchCodeRepos(
-            'github',
+            platform,
             additionalRepos,
             orgApiUrl,
             repoApiUrl,
@@ -189,8 +217,8 @@ describe('fetchCodeRepos', () => {
         expect(items.map(i => i.id)).toContain('external-org/external-additional');
     });
 
-    // Test that forks and .github repos are excluded from the final list
-    it('excludes repository targets designated as forks and .github', async () => {
+    // Test that forks and platform profile repos are excluded from the final list
+    it('excludes repository targets designated as forks and platform profile repos', async () => {
         global.fetch.mockResolvedValueOnce({
             ok: true,
             headers: { get: () => null },
@@ -217,8 +245,8 @@ describe('fetchCodeRepos', () => {
                     updated_at: recentDateISO
                 },
                 {
-                    full_name: 'test-org/.github',
-                    name: '.github',
+                    full_name: `test-org/${platformProfileRepo}`,
+                    name: platformProfileRepo,
                     fork: false,
                     created_at: recentDateISO,
                     updated_at: recentDateISO
@@ -231,7 +259,7 @@ describe('fetchCodeRepos', () => {
         ];
 
         const items = await fetchCodeRepos(
-            'github',
+            platform,
             additionalRepos,
             orgApiUrl,
             repoApiUrl,
@@ -242,7 +270,7 @@ describe('fetchCodeRepos', () => {
         expect(items.map(i => i.id)).toContain('test-org/valid-repo');
         expect(items.map(i => i.id)).toContain('test-org/forked-in-list');
         expect(items.map(i => i.id)).not.toContain('test-org/forked-repo');
-        expect(items.map(i => i.id)).not.toContain('test-org/.github');
+        expect(items.map(i => i.id)).not.toContain(`test-org/${platformProfileRepo}`);
     });
 
     // Test that isNew flag is set correctly based on creation date and refresh interval
@@ -267,7 +295,7 @@ describe('fetchCodeRepos', () => {
         });
 
         const items = await fetchCodeRepos(
-            'github',
+            platform,
             [],
             orgApiUrl,
             repoApiUrl,
@@ -292,7 +320,7 @@ describe('fetchCodeRepos', () => {
         });
 
         const items = await fetchCodeRepos(
-            'github',
+            platform,
             [],
             orgApiUrl,
             repoApiUrl,
@@ -302,7 +330,7 @@ describe('fetchCodeRepos', () => {
 
         expect(handleError).toHaveBeenCalledWith(
             expect.any(Error),
-            expect.stringContaining('Failed to fetch code from github')
+            expect.stringContaining(`Failed to fetch code from ${platform}`)
         );
         expect(items).toEqual([]);
     });

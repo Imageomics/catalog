@@ -8,13 +8,13 @@ For those interested in creating a similar catalog website or contributing to th
 
 The website is styled using the [tailwindcss](https://tailwindcss.com/) package.
 
-* **Real-time Data Fetching:** Displays all public organization repositories, fetched through the GitHub and Hugging Face APIs. Includes semantically meaningful virtual markers:
+* **Real-time Data Fetching:** Displays all public organization repositories, fetched through the code platform and Hugging Face APIs. Includes semantically meaningful virtual markers:
     * "New" badge highlights products created within the last 30 days;
-    * "🚀 version-tag" badge indicates a new release within the last 2 weeks for GitHub repos, and links to that release;
-    * Star (⭐️) or like (❤️) counts displayed for GitHub or Hugging Face repos, respectively;
-    * Archived badge flags GitHub repos no longer under active development (read-only).
+    * "🚀 version-tag" badge indicates a new release within the last 2 weeks for code repos, and links to that release;
+    * Star (⭐️) or like (❤️) counts displayed for code platform or Hugging Face repos, respectively;
+    * Archived badge flags code repos no longer under active development (read-only).
 * **Search Functionality:** Quickly find items by keyword.
-* **Filtering:** Filter by repository type (Code, Datasets, Models, Spaces) and tags. Optionally include archived GitHub repos.
+* **Filtering:** Filter by repository type (Code, Datasets, Models, Spaces) and tags. Optionally include archived code repos.
 * **Sorting:** Sort items by last updated, date created, stars/likes ascending or descending, or alphabetically.
 * **URL Parameter Support:** Persist and share search states via URL hash (`#type=datasets&q=fish`) or query parameters (`?type=datasets`). Supports `type`, `q` (search query), `sort`, and `tag` parameters.
 * **Responsive Design:** The layout is optimized for use on computers and mobile devices.
@@ -30,7 +30,7 @@ The site runs based on four primary files:
 * `style.css`: Custom styling for the application, including color schemes, layout, and animations. Colors are set via CSS custom properties that are populated from `config.yaml`.
 * `main.js`: Application manager, handles config loading, event listeners, and coordinates UI updates based on API fetches for dynamic rendering of the catalog items.
 * `src/`: Modular application logic, organized by purpose:
-    * `api/`: Data fetching modules for external platforms (GitHub and Hugging Face).
+    * `api/`: Data fetching modules for external platforms (code and Hugging Face).
     * `ui/`: DOM manipulation, HTML templating, and URL/State routing.
     * `utils/`: Utility functions such as data filtering, sorting, and tag (keyword) normalization. 
 

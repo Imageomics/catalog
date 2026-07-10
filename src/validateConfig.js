@@ -31,11 +31,11 @@ export function validateConfig(config) {
     }
     if (!config.ORG_NAME)                     errors.push('ORG_NAME');
     if (!config.CATALOG_REPO_NAME)            errors.push('CATALOG_REPO_NAME');
-    
-    /** Update to include 'codeberg' and 'gitlab' once supported 
+
+    /** Update to include 'gitlab' once supported
      * PLATFORM will be parsed without whitespace, but must be string to avoid undefined errors
     */
-    const supportedPlatforms = ['github'];
+    const supportedPlatforms = ['github', 'codeberg'];
     const platform = config.PLATFORM;
     if (!platform || typeof platform !== 'string') {
         errors.push('PLATFORM');
