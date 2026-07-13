@@ -154,6 +154,7 @@ embeddings
 endangered species
 endemic-birds
 endemic-species
+entomology
 erato
 evaluation
 evolution
@@ -168,6 +169,7 @@ exploratory-data-visualizations
 face-detection
 fair
 fair-drones
+fair-principles
 faiss
 feature-extraction
 fiftyone
@@ -231,6 +233,7 @@ image-filtering
 image-preview
 image-recognition
 image-search
+image-segmentation
 imageomics
 images
 imbalanced
@@ -284,6 +287,7 @@ mammals
 map-view
 mapping
 marmoset
+mask2former
 mcp
 mds
 measurements
@@ -291,6 +295,7 @@ megadetector
 melpomene
 metadata
 metadata generation
+metadata-export
 metadata-generation
 metadata-standards
 miew-id
@@ -376,6 +381,7 @@ reference
 region:us
 regression
 repo-records
+repository-management
 reproducibility
 reproducible-research
 reptiles
