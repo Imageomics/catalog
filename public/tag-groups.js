@@ -183,6 +183,10 @@ const TAG_GROUPS = {
         "tree seedling detection", "tree-seedling-detection",
         "hybrid detection", "hybrid-detection"
     ],
+    "segmentation": [
+        "segmentation", "image-segmentation", "trait segmentation", "trait-segmentation",
+        "wing segmentation", "wing-segmentation"
+    ],
     "machine learning": [
         "machine learning", "applied machine learning", "ml",
         "deep learning", "deep-learning",
@@ -253,6 +257,10 @@ const TAG_GROUPS = {
         "data validation", "data-validation",
         "metadata standards", "metadata-standards",
         "standards", "metadata generation", "metadata-generation"
+    ],
+    "metadata": [
+        "metadata", "metadata standards", "metadata-standards",
+        "metadata-export", "metadata generation", "metadata-generation"
     ],
     "data validation": [
         "provenance", "checksums", "deduplication",
@@ -392,9 +400,12 @@ const TAG_GROUPS = {
     // -------------------------------------------------------------------------
     // Open Science & Tools
     // -------------------------------------------------------------------------
+    "FAIR": [
+        "fair", "fair-principles", "fair-drones"
+    ],
     "open science": [
         "open science", "open-science", "open source", "open-source",
-        "fair", "reproducibility",
+        "fair", "fair-principles", "reproducibility",
         "reproducible research", "reproducible-research"
     ],
     "tools": [
