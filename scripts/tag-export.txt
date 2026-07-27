@@ -266,6 +266,7 @@ knowledge-guided-machine-learning
 koa
 lab-bred
 label
+lance
 land-cover
 land-cover-categorization
 land-cover-classification
