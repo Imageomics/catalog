@@ -1,23 +1,7 @@
 import { handleError } from '../ui/render.js';
-import { normalizeTag, filterDisplayTags } from '../utils/normalizeTag.js';
+import { getPlatformVals } from '../utils/definePlatformVals.js';
 import { getPlatformDisplay } from '../utils/defineRibbonVals.js';
-
-// Define platform-specific values
-const PLATFORM_CONFIGS = {
-    github: {
-        starsKey: 'stargazers_count',
-        profileRepo: '.github'
-    },
-    /* gitlab: {
-        starsKey: 'star_count',
-        profileRepo: 'gitlab-profile',
-        //TODO
-    }, */
-    codeberg: {
-        starsKey: 'stars_count',
-        profileRepo: '.profile'
-    }
-};
+import { normalizeTag, filterDisplayTags } from '../utils/normalizeTag.js';
 
 /**
  * Function for fetching code repositories from the specified platform (GitHub, GitLab, or Codeberg).
@@ -46,8 +30,7 @@ export async function fetchCodeRepos(
     let allRepos = [];
     let nextUrl = `${orgApiUrl}`;
     // get platform-specific keys
-    const platformConfig = PLATFORM_CONFIGS[platform.toLowerCase()];
-    const { starsKey, profileRepo } = platformConfig;
+    const { starsKey, profileRepo, fullNameKey, forkKey, urlKey } = getPlatformVals(platform);
     try {
         while (nextUrl) {
             const ghResponse = await fetch(nextUrl);
@@ -68,7 +51,7 @@ export async function fetchCodeRepos(
 
         // For org-owned entries in additionalRepos, reuse data already in allRepos to avoid redundant API calls.
         // Only fetch entries that belong to a different org (external repos).
-        const allReposByFullName = new Map(allRepos.map(r => [r.full_name, r]));
+        const allReposByFullName = new Map(allRepos.map(r => [r[fullNameKey], r]));
         const toFetch = additionalRepos.filter(ownerRepo => !allReposByFullName.has(ownerRepo));
         const fromAllRepos = additionalRepos.map(ownerRepo => allReposByFullName.get(ownerRepo)).filter(Boolean);
 
@@ -91,11 +74,11 @@ export async function fetchCodeRepos(
         const filteredAdditionalRepos = [...fromAllRepos, ...fetchedExternalData.filter(Boolean)];
 
         // Keep only non-forks from org; deduplicate against additional repos by full_name
-        const orgRepoNames = new Set(filteredAdditionalRepos.map(r => r.full_name));
+        const orgRepoNames = new Set(filteredAdditionalRepos.map(r => r[fullNameKey]));
         const orgNonForks = allRepos.filter(repo =>
             repo.name !== profileRepo &&
-            !repo.fork &&
-            !orgRepoNames.has(repo.full_name));
+            !repo[forkKey] &&
+            !orgRepoNames.has(repo[fullNameKey]));
 
         // Process additional repos and all remaining org non-forks to include metadata and 'new' flag as appropriate
         let processedItems = [...filteredAdditionalRepos, ...orgNonForks]
@@ -108,10 +91,10 @@ export async function fetchCodeRepos(
                 const tags = [...new Set(rawTags.flatMap(t => normalizeTag(t)).filter(Boolean))];
                 const displayTags = filterDisplayTags(rawTags);
 
-                const release = releasesMap[repo.full_name] ?? null;
+                const release = releasesMap[repo[fullNameKey]] ?? null;
 
                 return {
-                    id: repo.full_name, // "Imageomics/<repo-name>", used as backup if can't get repo.name
+                    id: repo[fullNameKey], // "Imageomics/<repo-name>", used as backup if can't get repo.name
                     repoType: "code",
                     createdAt,
                     lastModified,
@@ -121,7 +104,7 @@ export async function fetchCodeRepos(
                     rawTags,
                     displayTags,
                     description: repo.description || "No description provided.",
-                    html_url: repo.html_url,
+                    html_url: repo[urlKey],
                     hasNewRelease: release?.isNew ?? false,
                     latestReleaseUrl: release?.url ?? null,
                     latestReleaseTag: release?.tag ?? null,
