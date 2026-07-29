@@ -103,14 +103,13 @@ export async function fetchCodeRepos(
                     tags,
                     rawTags,
                     displayTags,
-                    description: repo.description || "No description provided.",
+                    description: repo.description, // fallback in display (render.js)
                     html_url: repo[urlKey],
                     hasNewRelease: release?.isNew ?? false,
                     latestReleaseUrl: release?.url ?? null,
                     latestReleaseTag: release?.tag ?? null,
                     cardData: {
                         pretty_name: repo.name, // <repo-name>, the one used for card title display
-                        description: repo.description,
                         stars: repo[starsKey] ?? 0
                     }
                 };
