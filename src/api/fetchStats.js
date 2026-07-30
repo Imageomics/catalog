@@ -4,7 +4,7 @@
  * @param {string} repoApiUrl - The base API URL for the code platform (e.g., GitHub API URL)
  * @param {string} organizationName - The organization name for the catalog repository
  * @param {string} catalogRepoName - The repository name for the catalog itself
- * @param {string} releaseSuffix - The suffix used for fetching the latest release information (e.g., '/releases/latest')
+ * @param {string} releaseSuffix - The suffix used for fetching the latest release information (e.g., 'releases/latest')
  * @returns {Promise<void>} - A promise that resolves when the stats have been fetched and displayed
  */
 export const fetchCatalogStats = async (repoApiUrl, organizationName, catalogRepoName, releaseSuffix) => {
