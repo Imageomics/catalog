@@ -50,11 +50,11 @@ export function getPlatformVals(platform) {
  * Usage: import { getPlatformApiUrls } from './definePlatformVals.js';
  *
  * Input: platform and organizationName (e.g., 'github' and 'imageomics'), defined from config.yaml and passed to this function.
- * Output: platformApiUrls[platform] = { org: ORG_API_URL, repo: REPO_API_URL }
+ * Output: platformApiUrls[platform] = { org: ORG_API_URL, repo: REPO_API_URL, releaseSuffix: RELEASE_SUFFIX }
  *
  * @param {string} platform - 'github' or 'codeberg', pending: 'gitlab'
  * @param {string} organizationName - The name of the organization (used in URL construction)
- * @returns {object} An object containing ORG_API_URL and REPO_API_URL
+ * @returns {object} An object containing ORG_API_URL, REPO_API_URL, and RELEASE_SUFFIX
  */
 export function getPlatformApiUrls(platform, organizationName) {
     const platformApiUrls = {
