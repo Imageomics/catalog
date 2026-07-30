@@ -68,7 +68,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
     const oldDateISO = new Date(now.getTime() - 45 * 24 * 60 * 60 * 1000).toISOString();    // 45 days ago
     const oldestDateISO = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000).toISOString(); // 90 days ago
 
-    it('maps raw repo data and attaches release data from releasesMap', async () => {
+    it('maps raw repo data, resolves platform keys, and attaches release data', async () => {
         // Mock a single page platform response
         global.fetch.mockResolvedValueOnce({
             ok: true,
@@ -82,7 +82,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
                 created_at: recentDateISO,
                 topics: ['python'],
                 [starsKey]: 42,
-                [urlKey]: `${platformConfig.repoApiUrl}test-org/code-repo`,
+                [urlKey]: 'http://example.com/test-org/code-repo'
             }])
         });
 
@@ -101,13 +101,14 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
         );
 
         expect(items).toHaveLength(1);
+        expect(items[0].id).toBe('test-org/code-repo');
         expect(items[0].repoType).toBe('code');
+        expect(items[0].description).toBe('A test repository');
+        expect(items[0].fork).toBeFalsy();
         expect(items[0].hasNewRelease).toBe(true);
         expect(items[0].latestReleaseTag).toBe('v1.0');
         expect(items[0].tags).toContain('python');
-        expect(Boolean(items[0].fork)).toBe(false);
-        expect(items[0].description).toBe('A test repository');
-        expect(items[0].html_url).toBe(`${platformConfig.repoApiUrl}test-org/code-repo`);
+        expect(items[0].html_url).toBe('http://example.com/test-org/code-repo');
 
         expect(items[0].cardData.pretty_name).toBe('code-repo');
         expect(items[0].cardData.stars).toBe(42);
