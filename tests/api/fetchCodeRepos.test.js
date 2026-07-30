@@ -104,7 +104,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
         expect(items[0].id).toBe('test-org/code-repo');
         expect(items[0].repoType).toBe('code');
         expect(items[0].description).toBe('A test repository');
-        expect(items[0].fork).toBeFalsy();
+        // fork is used for inclusion filtering only and is not returned by fetchCodeRepos
         expect(items[0].hasNewRelease).toBe(true);
         expect(items[0].latestReleaseTag).toBe('v1.0');
         expect(items[0].tags).toContain('python');
