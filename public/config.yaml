@@ -9,7 +9,7 @@ CATALOG_REPO_NAME: catalog          # Repository name for the catalog itself (us
 
 # Branding
 CATALOG_TITLE: Imageomics Catalog
-CATALOG_DESCRIPTION: "Explore and discover public code, datasets, models, and spaces (demos)."
+CATALOG_DESCRIPTION: "Explore and discover public code, datasets, models, and demos."
 LOGO_URL: "https://github.com/Imageomics/Imageomics-guide/raw/3478acc0068a87a5604069d04a29bdb0795c2045/docs/logos/Imageomics_logo_butterfly.png"
 FAVICON_URL: "https://github.com/Imageomics/Imageomics-guide/raw/3478acc0068a87a5604069d04a29bdb0795c2045/docs/logos/Imageomics_logo_butterfly.png"
 
