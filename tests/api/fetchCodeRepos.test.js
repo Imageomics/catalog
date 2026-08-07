@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { fetchCodeRepos } from '../../src/api/fetchCodeRepos.js';
 import { handleError } from '../../src/ui/render.js';
+import { getPlatformVals, getPlatformApiUrls } from '../../src/utils/definePlatformVals.js';
 
 // Mock the internal dependencies
 vi.mock('../../src/utils/normalizeTag.js', () => ({
@@ -10,34 +11,34 @@ vi.mock('../../src/utils/normalizeTag.js', () => ({
 vi.mock('../../src/ui/render.js', () => ({
     handleError: vi.fn()
 }));
-vi.mock('../../src/utils/defineRibbonVals.js', () => ({
-    getPlatformDisplay: vi.fn(() => 'GitHub')
-}));
 
-// define configs for each platform
-const platformConfigs = [
-    {
-        name: 'github',
-        orgApiUrl: 'https://api.github.com/orgs/test-org/repos',
-        repoApiUrl: 'https://api.github.com/repos/',
-        platformProfileRepo: '.github',
-        starsKey: 'stargazers_count'
-    },
-    /* {
-        name: 'gitlab',
-        orgApiUrl: 'https://gitlab.com/api/v4/groups/test-org/projects',
-        repoApiUrl: 'https://gitlab.com/api/v4/projects/',
-        platformProfileRepo: 'gitlab-profile',
-        starsKey: 'star_count'
-    }, */
-    {
-        name: 'codeberg',
-        orgApiUrl: 'https://codeberg.org/api/v1/orgs/test-org/repos',
-        repoApiUrl: 'https://codeberg.org/api/v1/repos/',
-        platformProfileRepo: '.profile',
-        starsKey: 'stars_count'
+const SUPPORTED_PLATFORMS = ['github', 'codeberg']; // 'gitlab' is pending, tests should work on implementation
+const TEST_ORG = 'test-org';
+
+const platformConfigs = SUPPORTED_PLATFORMS.map(platform => {
+    const platformVals = getPlatformVals(platform);
+    const urls = getPlatformApiUrls(platform, TEST_ORG);
+
+    return {
+        name: platform,
+        orgApiUrl: urls.org,
+        repoApiUrl: urls.repo,
+        starsKey: platformVals.starsKey,
+        platformProfileRepo: platformVals.profileRepo,
+        forkKey: platformVals.forkKey,
+        fullNameKey: platformVals.fullNameKey,
+        urlKey: platformVals.urlKey,
+    };
+});
+
+const getMockForkValue = (isFork, platform) => {
+    if (!isFork) {
+        // GitLab leaves non-forks as undefined; GitHub/Codeberg return false
+        return platform === 'gitlab' ? undefined : false;
     }
-];
+    // GitLab returns parent project object; GitHub/Codeberg return true
+    return platform === 'gitlab' ? { id: 999 } : true;
+};
 
 describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
     const originalFetch = global.fetch;
@@ -55,6 +56,9 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
     const platform = platformConfig.name;
     const starsKey = platformConfig.starsKey;
     const platformProfileRepo = platformConfig.platformProfileRepo;
+    const forkKey = platformConfig.forkKey;
+    const fullNameKey = platformConfig.fullNameKey;
+    const urlKey = platformConfig.urlKey;
     const refreshIntervalDays = 30;
     const releasesMap = {};
 
@@ -64,18 +68,21 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
     const oldDateISO = new Date(now.getTime() - 45 * 24 * 60 * 60 * 1000).toISOString();    // 45 days ago
     const oldestDateISO = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000).toISOString(); // 90 days ago
 
-    it('maps raw repo data and attaches release data from releasesMap', async () => {
+    it('maps raw repo data, resolves platform keys, and attaches release data', async () => {
         // Mock a single page platform response
         global.fetch.mockResolvedValueOnce({
             ok: true,
             headers: { get: () => null }, // No 'link' header means no pagination
             json: () => Promise.resolve([{
-                full_name: 'test-org/code-repo',
+                [fullNameKey]: 'test-org/code-repo',
                 name: 'code-repo',
+                description: 'A test repository',
+                [forkKey]: getMockForkValue(false, platform),
                 updated_at: now.toISOString(),
                 created_at: recentDateISO,
                 topics: ['python'],
                 [starsKey]: 42,
+                [urlKey]: 'http://example.com/test-org/code-repo'
             }])
         });
 
@@ -94,15 +101,23 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
         );
 
         expect(items).toHaveLength(1);
+        expect(items[0].id).toBe('test-org/code-repo');
         expect(items[0].repoType).toBe('code');
+        expect(items[0].description).toBe('A test repository');
+        // fork is used for inclusion filtering only and is not returned by fetchCodeRepos
         expect(items[0].hasNewRelease).toBe(true);
         expect(items[0].latestReleaseTag).toBe('v1.0');
         expect(items[0].tags).toContain('python');
+        expect(items[0].html_url).toBe('http://example.com/test-org/code-repo');
+
         expect(items[0].cardData.pretty_name).toBe('code-repo');
         expect(items[0].cardData.stars).toBe(42);
+
+        expect(global.fetch).toHaveBeenCalledTimes(1);
+        expect(global.fetch).toHaveBeenCalledWith(orgApiUrl);
     });
 
-    // Pagination test: simulate multiple pages of GitHub API results using the Link header
+    // Pagination test: simulate multiple pages of API results using the Link header
     it('handles multi-page pagination', async () => {
         global.fetch.mockImplementation((url) => {
             if (url === orgApiUrl) {
@@ -115,7 +130,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
                             : null
                     },
                     json: () => Promise.resolve([{
-                        full_name: 'test-org/repo-page1',
+                        [fullNameKey]: 'test-org/repo-page1',
                         name: 'repo-page1',
                         created_at: recentDateISO,
                         updated_at: recentDateISO
@@ -127,7 +142,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
                     ok: true,
                     headers: { get: () => null },
                     json: () => Promise.resolve([{
-                        full_name: 'test-org/repo-page2',
+                        [fullNameKey]: 'test-org/repo-page2',
                         name: 'repo-page2',
                         created_at: recentDateISO,
                         updated_at: recentDateISO }])
@@ -156,14 +171,14 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
     it('fetches additional org repos once and fetches external repos', async () => {
         // Base organization discovery lists 'test-org/internal-additional'
         const mockOrgRepo = {
-            full_name: 'test-org/internal-additional',
+            [fullNameKey]: 'test-org/internal-additional',
             name: 'internal-additional',
             created_at: recentDateISO,
             updated_at: recentDateISO
         };
 
         const mockExternalRepo = {
-            full_name: 'external-org/external-additional',
+            [fullNameKey]: 'external-org/external-additional',
             name: 'external-additional',
             created_at: recentDateISO,
             updated_at: recentDateISO
@@ -224,30 +239,30 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
             headers: { get: () => null },
             json: () => Promise.resolve([
                 {
-                    full_name: 'test-org/valid-repo',
+                    [fullNameKey]: 'test-org/valid-repo',
                     name: 'valid-repo',
-                    fork: false,
+                    [forkKey]: getMockForkValue(false, platform),
                     created_at: recentDateISO,
                     updated_at: recentDateISO
                 },
                 {
-                    full_name: 'test-org/forked-repo',
+                    [fullNameKey]: 'test-org/forked-repo',
                     name: 'forked-repo',
-                    fork: true,
+                    [forkKey]: getMockForkValue(true, platform),
                     created_at: recentDateISO,
                     updated_at: recentDateISO
                 },
                 {
-                    full_name: 'test-org/forked-in-list',
+                    [fullNameKey]: 'test-org/forked-in-list',
                     name: 'forked-in-list',
-                    fork: true,
+                    [forkKey]: getMockForkValue(true, platform),
                     created_at: recentDateISO,
                     updated_at: recentDateISO
                 },
                 {
-                    full_name: `test-org/${platformProfileRepo}`,
+                    [fullNameKey]: `test-org/${platformProfileRepo}`,
                     name: platformProfileRepo,
-                    fork: false,
+                    [forkKey]: getMockForkValue(false, platform),
                     created_at: recentDateISO,
                     updated_at: recentDateISO
                 }
@@ -280,13 +295,13 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
             headers: { get: () => null },
             json: () => Promise.resolve([
                 {
-                    full_name: 'test-org/new-repo',
+                    [fullNameKey]: 'test-org/new-repo',
                     name: 'new-repo',
                     created_at: recentDateISO,
                     updated_at: now.toISOString()
                 },
                 {
-                    full_name: 'test-org/old-repo',
+                    [fullNameKey]: 'test-org/old-repo',
                     name: 'old-repo',
                     created_at: oldestDateISO,
                     updated_at: oldDateISO

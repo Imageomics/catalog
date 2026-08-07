@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { load } from 'js-yaml';
 import { validateConfig } from '../src/validateConfig.js';
-import { getPlatformApiUrls } from '../src/utils/defineApiUrls.js';
+import { getPlatformVals, getPlatformApiUrls } from '../src/utils/definePlatformVals.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -28,7 +28,8 @@ const headers = TOKEN
 const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
 
 // Step 1: Fetch all public org repos (paginated, same logic as main.js)
-const { org: ORG_API_URL, repo: REPO_API_URL } = getPlatformApiUrls(CONFIG.PLATFORM, CONFIG.ORGANIZATION_NAME);
+const { org: ORG_API_URL, repo: REPO_API_URL, releaseSuffix: RELEASE_SUFFIX } = getPlatformApiUrls(CONFIG.PLATFORM, CONFIG.ORGANIZATION_NAME);
+const { profileRepo, fullNameKey, forkKey, urlKey, releasePublishedAtKey } = getPlatformVals(CONFIG.PLATFORM);
 let allOrgRepos = [];
 let nextUrl = `${ORG_API_URL}`;
 while (nextUrl) {
@@ -47,24 +48,24 @@ while (nextUrl) {
 // Step 2: Collect all code repo IDs (mirrors main.js deduplication logic)
 const additionalRepoIds = CONFIG.ADDITIONAL_REPOS || [];
 const additionalRepoSet = new Set(additionalRepoIds);
-const orgNonForks = allOrgRepos.filter(r => r.name !== '.github' && !r.fork && !additionalRepoSet.has(r.full_name));
+const orgNonForks = allOrgRepos.filter(r => r.name !== profileRepo && !r[forkKey] && !additionalRepoSet.has(r[fullNameKey]));
 const repoIds = [
     ...additionalRepoIds,
-    ...orgNonForks.map(r => r.full_name),
+    ...orgNonForks.map(r => r[fullNameKey]),
 ];
 
 // Step 3: Fetch latest release for each repo
 const releases = {};
 for (const id of repoIds) {
     try {
-        const res = await fetch(`${REPO_API_URL}${id}/releases/latest`, { headers });
+        const res = await fetch(`${REPO_API_URL}${id}/${RELEASE_SUFFIX}`, { headers });
         if (!res.ok) { releases[id] = null; continue; }
         const data = await res.json();
         releases[id] = {
             tag: data.tag_name,
-            url: data.html_url,
-            publishedAt: data.published_at,
-            isNew: (Date.now() - new Date(data.published_at)) < TWO_WEEKS_MS,
+            url: data[urlKey],
+            publishedAt: data[releasePublishedAtKey],
+            isNew: (Date.now() - new Date(data[releasePublishedAtKey])) < TWO_WEEKS_MS,
         };
     } catch {
         releases[id] = null;
