@@ -17,9 +17,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { load } from 'js-yaml';
 import { validateConfig } from '../src/validateConfig.js';
-import { getPlatformApiUrls } from '../src/utils/defineApiUrls.js';
 import { getPlatformDisplay } from '../src/utils/defineRibbonVals.js';
 import { filterNewAdditionalEntries } from '../src/utils/filterNewAdditionalEntries.js';
+import { getPlatformVals, getPlatformApiUrls } from '../src/utils/definePlatformVals.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -60,6 +60,7 @@ const get = async (url) => {
 // ---------------------------------------------------------------------------
 const allTags = new Set();
 const { org: ORG_API_URL, repo: REPO_API_URL } = getPlatformApiUrls(PLATFORM, ORGANIZATION_NAME);
+const { profileRepo, fullNameKey, forkKey } = getPlatformVals(PLATFORM);
 
 const collectCodePlatformTags = async () => {
     const platformDisplay = getPlatformDisplay(PLATFORM);
@@ -85,8 +86,8 @@ const collectCodePlatformTags = async () => {
     );
     const additionalRepos = additionalData.filter(Boolean);
 
-    const additionalNames = new Set(additionalRepos.map(r => r.full_name));
-    const orgNonForks = allRepos.filter(r => r.name !== '.github' && !r.fork && !additionalNames.has(r.full_name));
+    const additionalNames = new Set(additionalRepos.map(r => r[fullNameKey]));
+    const orgNonForks = allRepos.filter(r => r.name !== profileRepo && !r[forkKey] && !additionalNames.has(r[fullNameKey]));
 
     [...additionalRepos, ...orgNonForks].forEach(repo => {
         (repo.topics || []).forEach(t => allTags.add(t.toLowerCase()));

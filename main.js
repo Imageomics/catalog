@@ -10,7 +10,7 @@ import { load } from 'js-yaml';
 import { initializeUIFromConfig, setThemeToggle } from './src/ui/initUserInterface.js';
 import { parseUrlParams, updateUrlParams, getCurrentState } from './src/ui/urlManager.js';
 import { renderItemList } from './src/ui/render.js';
-import { getPlatformApiUrls } from './src/utils/defineApiUrls.js';
+import { getPlatformApiUrls } from './src/utils/definePlatformVals.js';
 import { filterItems, sortItems } from './src/utils/filterAndSort.js';
 import { fetchCodeRepos } from './src/api/fetchCodeRepos.js';
 import { fetchHfRepos } from './src/api/fetchHfRepos.js';
@@ -28,7 +28,7 @@ const configPromise = fetch('config.yaml')
 // Module-scope lets — assigned after config loads, used by all functions below
 let CONFIG;
 let ORGANIZATION_NAME, HF_ORGANIZATION_NAME, CATALOG_REPO_NAME, PLATFORM, API_BASE_URL, REFRESH_INTERVAL_DAYS, ADDITIONAL_REPOS, ADDITIONAL_HF_REPOS;
-let ORG_API_URL, REPO_API_URL;
+let ORG_API_URL, REPO_API_URL, RELEASE_SUFFIX;
 
 let releasesMap = {};
 
@@ -206,16 +206,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Assign module-scope variables used by all functions
-    ORGANIZATION_NAME     = CONFIG.ORGANIZATION_NAME;
-    HF_ORGANIZATION_NAME  = CONFIG.HF_ORGANIZATION_NAME;
-    CATALOG_REPO_NAME     = CONFIG.CATALOG_REPO_NAME;
-    PLATFORM              = CONFIG.PLATFORM;
-    ORG_API_URL           = getPlatformApiUrls(PLATFORM, ORGANIZATION_NAME).org;
-    REPO_API_URL          = getPlatformApiUrls(PLATFORM, ORGANIZATION_NAME).repo;
-    API_BASE_URL          = CONFIG.API_BASE_URL;
-    REFRESH_INTERVAL_DAYS = CONFIG.REFRESH_INTERVAL_DAYS;
-    ADDITIONAL_REPOS      = CONFIG.ADDITIONAL_REPOS;
-    ADDITIONAL_HF_REPOS   = CONFIG.ADDITIONAL_HF_REPOS;
+    // Destructure CONFIG into individual variables for easier access
+    ({
+        ORGANIZATION_NAME,
+        HF_ORGANIZATION_NAME,
+        CATALOG_REPO_NAME,
+        PLATFORM,
+        API_BASE_URL,
+        REFRESH_INTERVAL_DAYS,
+        ADDITIONAL_REPOS,
+        ADDITIONAL_HF_REPOS
+    } = CONFIG);
+    // Destructure platform-specific API URLs from getPlatformApiUrls
+    ({
+        org: ORG_API_URL,
+        repo: REPO_API_URL,
+        releaseSuffix: RELEASE_SUFFIX
+    } = getPlatformApiUrls(PLATFORM, ORGANIZATION_NAME));
 
     // Guard: if ORGANIZATION_NAME or HF_ORGANIZATION_NAME is missing (e.g. config.yaml failed to load),
     // stop here — proceeding would fire requests like ?author=&full=true which
@@ -289,7 +296,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Initialize the Catalog Badge (Stars/Forks/Version)
-    fetchCatalogStats(REPO_API_URL, ORGANIZATION_NAME, CATALOG_REPO_NAME)
+    fetchCatalogStats(REPO_API_URL, ORGANIZATION_NAME, CATALOG_REPO_NAME, RELEASE_SUFFIX)
 
     // Load pre-built release data (written by scripts/fetch-releases.js at build time)
     releasesMap = await fetch('./releases.json')
