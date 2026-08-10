@@ -144,6 +144,7 @@ duckdb
 ecology
 eda
 editing
+education
 eggs
 elytra
 elytra length
@@ -155,6 +156,7 @@ endangered species
 endemic-birds
 endemic-species
 entomology
+environmental-science
 erato
 evaluation
 evolution
@@ -212,6 +214,7 @@ hawaiian-forest
 hawaiian-honeycreeper
 hdf5
 hdf5-visualization
+hdr
 heliconius
 heliconius erato
 heliconius melpomene
@@ -420,6 +423,7 @@ sparse-autoencoders
 species
 species classification
 species-classification
+species-distribution
 species-identification
 specimen
 specimen-images
@@ -479,6 +483,7 @@ visualization
 visualizations
 vlms
 wasps
+web-app
 weighted-multi-dimensional-scaling
 white-eye
 whitebalance
