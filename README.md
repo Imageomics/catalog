@@ -1,6 +1,6 @@
 # Imageomics Catalog [![DOI](https://zenodo.org/badge/1054290236.svg)](https://doi.org/10.5281/zenodo.17602801)
 
-Repository for web-based catalog of Imageomics code, data, models, and spaces. This template catalog is designed to fetch live data from an organization's code repository platform (e.g., GitHub) API and dataset, model, and spaces repository data from the Hugging Face API to render a searchable, filterable catalog page as a static site via GitHub Pages. The default setup is for the Imageomics Institute's [GitHub](https://github.com/Imageomics) and [Hugging Face](https://huggingface.co/imageomics) organizations.
+Repository for web-based catalog of Imageomics code, data, models, and demos. This template catalog is designed to fetch live data from an organization's code repository platform (e.g., GitHub) API and dataset, model, and spaces (demos) repository data from the Hugging Face API to render a searchable, filterable catalog page as a static site via GitHub Pages. The default setup is for the Imageomics Institute's [GitHub](https://github.com/Imageomics) and [Hugging Face](https://huggingface.co/imageomics) organizations.
 
 For those interested in creating a similar catalog website or contributing to this template, instructions for use and personalization are provided below, under [How to Use this Template](#how-to-use-this-template). More background on this site's creation is provided in the [docs](docs/).
 

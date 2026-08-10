@@ -4,7 +4,7 @@ This file provides guidance for AI coding agents (e.g., GitHub Copilot) working 
 
 ## Project Overview
 
-This is a **template repository** for a web-based catalog of an organization's public code, datasets, models, and spaces. It fetches live data from the code repository platform (such as GitHub) API and the platform API for hosting datasets and models (Hugging Face) and renders a searchable, filterable catalog page as a static site via GitHub Pages. The default setup is for the Imageomics Organization's GitHub and Hugging Face products.
+This is a **template repository** for a web-based catalog of an organization's public code, datasets, models, and demos. It fetches live data from the code repository platform (such as GitHub) API and the platform API for hosting datasets and models (Hugging Face) and renders a searchable, filterable catalog page as a static site via GitHub Pages. The default setup is for the Imageomics Organization's GitHub and Hugging Face products.
 
 ## Critical: Templated Design
 
@@ -50,7 +50,7 @@ Resource type | List (org) URL | Detail (single repo) URL
 ---|---|---
 Datasets | `{API_BASE_URL}datasets?author={org}&full=true` | `{API_BASE_URL}datasets/{owner}/{repo}`
 Models | `{API_BASE_URL}models?author={org}&full=true` | `{API_BASE_URL}models/{owner}/{repo}`
-Spaces | `{API_BASE_URL}spaces?author={org}&full=true` | `{API_BASE_URL}spaces/{owner}/{repo}`
+Spaces (demos) | `{API_BASE_URL}spaces?author={org}&full=true` | `{API_BASE_URL}spaces/{owner}/{repo}`
 
 `API_BASE_URL` defaults to `https://huggingface.co/api/` (set in `config.yaml`).
 
@@ -60,7 +60,7 @@ Resource type | Link URL
 ---|---
 Datasets | `https://huggingface.co/datasets/{owner}/{repo}`
 Models | `https://huggingface.co/{owner}/{repo}` *(no `/models/` prefix)*
-Spaces | `https://huggingface.co/spaces/{owner}/{repo}`
+Spaces (demos) | `https://huggingface.co/spaces/{owner}/{repo}`
 
 ### Models Require a Secondary Per-Model Fetch
 
