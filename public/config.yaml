@@ -9,7 +9,7 @@ CATALOG_REPO_NAME: catalog          # Repository name for the catalog itself (us
 
 # Branding
 CATALOG_TITLE: Imageomics Catalog
-CATALOG_DESCRIPTION: "Explore and discover public code, datasets, models, and spaces."
+CATALOG_DESCRIPTION: "Explore and discover public code, datasets, models, and demos."
 LOGO_URL: "https://github.com/Imageomics/Imageomics-guide/raw/3478acc0068a87a5604069d04a29bdb0795c2045/docs/logos/Imageomics_logo_butterfly.png"
 FAVICON_URL: "https://github.com/Imageomics/Imageomics-guide/raw/3478acc0068a87a5604069d04a29bdb0795c2045/docs/logos/Imageomics_logo_butterfly.png"
 
@@ -24,7 +24,7 @@ COLORS:
 # API & Behavior Settings
 # Codebase platform for API calls and link generation. Supported values: "github" or "codeberg", pending: "gitlab".
 PLATFORM: github
-# Dataset, model, and space (demo) default: Hugging Face, other platforms would require a custom module
+# Dataset, model, and demo default: Hugging Face, other platforms would require a custom module
 API_BASE_URL: "https://huggingface.co/api/"
 # Define "new" repository criteria
 REFRESH_INTERVAL_DAYS: 30
@@ -43,7 +43,7 @@ ADDITIONAL_REPOS:
   - "yoohj0416/predictbeetle"
 
 # Array of Hugging Face repos from outside the org to include.
-# Each entry must specify "repo" (owner/name) and "type" (datasets, models, or spaces).
+# Each entry must specify "repo" (owner/name) and "type" (datasets, models, or spaces/demos).
 # Organization names are case-sensitive in the Hugging Face API.
 # ADDITIONAL_HF_REPOS:
 #   - repo: "user/dataset-name"

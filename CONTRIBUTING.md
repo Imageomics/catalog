@@ -4,9 +4,9 @@ Thank you for your interest in contributing to the catalog! This document outlin
 
 ## Overview
 
-This catalog is built with JavaScript and relies on API calls to code, data, model, and spaces repositories to populate the web app in real time. Deployment only requires a static site-capable web server. The [Imageomics instance](https://catalog.imageomics.org) is currently deployed via GitHub Pages.
+This catalog is built with JavaScript and relies on API calls to code, data, model, and demo repositories to populate the web app in real time. Deployment only requires a static site-capable web server. The [Imageomics instance](https://catalog.imageomics.org) is currently deployed via GitHub Pages.
 
-This is a template repository designed to be copied (with "Use this Template") and customized by different organizations to present their code, data, models, and spaces in a dynamic, searchable site. The default setup is for the Imageomics Institute's GitHub and Hugging Face products.
+This is a template repository designed to be copied (with "Use this Template") and customized by different organizations to present their code, data, models, and demos in a dynamic, searchable site. The default setup is for the Imageomics Institute's GitHub and Hugging Face products.
 
 ## Getting Started
 
@@ -24,7 +24,7 @@ UI features should be tested locally through running a preview.
 
 ## Coding Style, Conventions, and Project Structure
 
-Please refer to our [AGENTS.md](AGENTS.md). This also includes special notes on key differences between the repo types (datasets, models, and spaces) in Hugging Face API calls and returns,  as well as important considerations for the templated design of this repository.
+Please refer to our [AGENTS.md](AGENTS.md). This also includes special notes on key differences between the repo types (datasets, models, and spaces/demos) in Hugging Face API calls and returns,  as well as important considerations for the templated design of this repository.
 
 ## Contribution Process
 

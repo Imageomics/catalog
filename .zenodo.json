@@ -14,13 +14,14 @@
           "affiliation": "The Ohio State University"
       }
     ],
-    "description": "<p>Catalog app for Imageomics code, data, models, and spaces hosted on GitHub and Hugging Face. It was designed for improved discoverability and searchability of Imageomics products, and the content is updated in real-time through calls to the GitHub and Hugging Face APIs.</p>\n<p>Catalog website: <a href=\"https://imageomics.github.io/catalog/\">imageomics.github.io/catalog/</a>.</p>\n<p>The repository also serves as a template for others looking to create a similar website to catalog their group's code, data, models, and demos.</p>",
+    "description": "<p>Catalog app for Imageomics code, data, models, and demos hosted on GitHub and Hugging Face. It was designed for improved discoverability and searchability of Imageomics products, and the content is updated in real-time through calls to the GitHub and Hugging Face APIs.</p>\n<p>Catalog website: <a href=\"https://imageomics.github.io/catalog/\">imageomics.github.io/catalog/</a>.</p>\n<p>The repository also serves as a template for others looking to create a similar website to catalog their group's code, data, models, and demos.</p>",
     "keywords": [
       "imageomics",
       "code",
       "data",
       "models",
       "spaces",
+      "demos",
       "GitHub",
       "Hugging Face",
       "APIs",

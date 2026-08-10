@@ -1,4 +1,4 @@
-abstract: "Catalog app for Imageomics code, data, models, and spaces hosted on GitHub and Hugging Face. It was designed for improved discoverability and searchability of Imageomics products, and the content is updated in real-time through calls to the GitHub and Hugging Face APIs. The repository also serves as a template for others looking to create a similar website to catalog their group's code, data, models, and demos."
+abstract: "Catalog app for Imageomics code, data, models, and demos hosted on GitHub and Hugging Face. It was designed for improved discoverability and searchability of Imageomics products, and the content is updated in real-time through calls to the GitHub and Hugging Face APIs. The repository also serves as a template for others looking to create a similar website to catalog their group's code, data, models, and demos."
 authors:
 - family-names: "Campolongo"
   given-names: "Elizabeth G."
@@ -25,6 +25,7 @@ keywords:
   - data
   - models
   - spaces
+  - demos
   - "GitHub"
   - "Hugging Face"
   - APIs
