@@ -1,5 +1,5 @@
 // scripts/fetch-releases.js
-// Build-time script: fetches the latest GitHub release for each code repo
+// Build-time script: fetches the latest release for each code repo
 // and writes public/releases.json. Runs as part of `npm run build`.
 import { readFileSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -20,6 +20,13 @@ if (errors.length) {
     throw new Error(`Invalid config at ${configPath}: ${errors.join('; ')}`);
 }
 
+// Update this section as needed for non-GitHub code platforms (e.g., Codeberg or GitLab)
+// const TOKEN = process.env.GITLAB_TOKEN
+// const TOKEN = process.env.CODEBERG_TOKEN
+/* NOTE: Codeberg uses `toekn ${TOKEN}` in the Authorization header,
+* while GitHub and GitLab use `Bearer ${TOKEN}`.
+* Adjust accordingly.
+*/
 const TOKEN = process.env.GITHUB_TOKEN;
 const headers = TOKEN
     ? { Authorization: `Bearer ${TOKEN}`, 'User-Agent': 'catalog-build-script' }

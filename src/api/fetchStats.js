@@ -21,17 +21,18 @@ export const fetchCatalogStats = async (repoApiUrl, organizationName, catalogRep
         }
     };
 
+    // Need to URL-encode the owner/repo for GitLab API ('%2F' instead of '/'), but need '/' for GitHub and Codeberg.
+    const ownerRepo = repoApiUrl.includes("gitlab") ? `${organizationName}%2F${catalogRepoName}` : `${organizationName}/${catalogRepoName}`;
+
     try {
-        //TODO: Update stars and forks to support other platforms: Add another || star for GitLab, platform isn't passed
-        // forks_count is shared
+        // platform isn't passed, forks_count is shared
         // 1. Get Stars & Forks
-        const repo = await fetch(`${repoApiUrl}${organizationName}/${catalogRepoName}`).then(r => r.ok ? r.json() : {});
-        if (repo.stargazers_count !== undefined  || repo.stars_count !== undefined) update('gh-stars', 'gh-star-container', repo.stargazers_count || repo.stars_count);
+        const repo = await fetch(`${repoApiUrl}${ownerRepo}`).then(r => r.ok ? r.json() : {});
+        if (repo.stargazers_count !== undefined  || repo.stars_count !== undefined || repo.star_count !== undefined) update('gh-stars', 'gh-star-container', repo.stargazers_count || repo.stars_count || repo.star_count);
         if (repo.forks_count !== undefined) update('gh-forks', 'gh-fork-container', repo.forks_count);
 
         // 2. Get Version (Tag)
-        // TODO: Import from package.json
-        const release = await fetch(`${repoApiUrl}${organizationName}/${catalogRepoName}/${releaseSuffix}`).then(r => r.ok ? r.json() : {});
+        const release = await fetch(`${repoApiUrl}${ownerRepo}/${releaseSuffix}`).then(r => r.ok ? r.json() : {});
         if (release.tag_name !== undefined) update('gh-tag', 'gh-version-container', release.tag_name);
 
     } catch (e) {

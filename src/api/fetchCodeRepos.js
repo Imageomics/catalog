@@ -8,7 +8,7 @@ import { normalizeTag, filterDisplayTags } from '../utils/normalizeTag.js';
  * Both org-owned (non-forks) and additional repos are fetched; metadata is processed for each repo.
  * It also determines if a repo is "new" based on the provided refresh interval.
  * @async
- * @param {string} platform  - 'github', pending: 'gitlab', or 'codeberg'
+ * @param {string} platform  - 'github', 'gitlab', or 'codeberg'
  * @param {Array} additionalRepos - An array of additional "owner/repo" strings to include in addition to non-forked
  * org repos.
  * @param {string} orgApiUrl - The API URL for fetching organization repos

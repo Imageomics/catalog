@@ -12,7 +12,7 @@ vi.mock('../../src/ui/render.js', () => ({
     handleError: vi.fn()
 }));
 
-const SUPPORTED_PLATFORMS = ['github', 'codeberg']; // 'gitlab' is pending, tests should work on implementation
+const SUPPORTED_PLATFORMS = ['github', 'gitlab', 'codeberg'];
 const TEST_ORG = 'test-org';
 
 const platformConfigs = SUPPORTED_PLATFORMS.map(platform => {
