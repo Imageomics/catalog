@@ -54,10 +54,20 @@ describe('validateConfig', () => {
         expect(validateConfig({ ...VALID_CONFIG, ORGANIZATION_NAME: '' })).toContain('ORGANIZATION_NAME');
     });
 
-    it('errors when ORGANIZATION_NAME is not in accepted format', () => {
+    it('errors when ORGANIZATION_NAME is not in accepted format for GitHub', () => {
         expect(
-            validateConfig({ ...VALID_CONFIG, ORGANIZATION_NAME: 'abc center' })
-        ).toContain('ORGANIZATION_NAME (abc center) is invalid, only letters, numbers, and hyphens are allowed');
+            validateConfig({ ...VALID_CONFIG, ORGANIZATION_NAME: 'abc_center' })
+        ).toContain('ORGANIZATION_NAME (abc_center) is invalid for github API calls, only letters, numbers, and hyphens are allowed');
+    });
+
+    it('errors when ORGANIZATION_NAME is not in accepted format for GitLab', () => {
+        const config = { ...VALID_CONFIG, PLATFORM: 'gitlab', ORGANIZATION_NAME: 'abc center' };
+        expect(validateConfig(config)).toContain('ORGANIZATION_NAME (abc center) is invalid for gitlab API calls, only letters, numbers, hyphens, and underscores are allowed');
+    });
+
+    it('errors when ORGANIZATION_NAME is not in accepted format for Codeberg', () => {
+        const config = { ...VALID_CONFIG, PLATFORM: 'codeberg', ORGANIZATION_NAME: 'abc center' };
+        expect(validateConfig(config)).toContain('ORGANIZATION_NAME (abc center) is invalid for codeberg API calls, only letters, numbers, hyphens, and underscores are allowed');
     });
 
     it('errors when HF_ORGANIZATION_NAME is missing', () => {
@@ -101,7 +111,7 @@ describe('validateConfig', () => {
     it('errors when PLATFORM is not a string', () => {
         expect(validateConfig({ ...VALID_CONFIG, PLATFORM: 123 })).toContain('PLATFORM');
     });
-    
+
     it('errors when PLATFORM is unrecognized', () => {
         const errors = validateConfig({ ...VALID_CONFIG, PLATFORM: 'blah' });
         expect(errors.some(e => e.includes('PLATFORM'))).toBe(true);
