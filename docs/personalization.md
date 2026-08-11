@@ -32,7 +32,7 @@ Welcome to your new catalog repo! The primary way to personalize this catalog is
 
 ### API & Behavior Settings
 
-  * `PLATFORM`: Coding platform used: 'github' or 'codeberg' (default: 'github', GitLab support in development). Please see [notes on platform setup](#non-github-code-platform-setup) if using for non-GitHub code repositories
+  * `PLATFORM`: Coding platform used: 'github', 'codeberg', or 'gitlab' (default: 'github'). Please see [notes on platform setup](#non-github-code-repository-platform-setup) if using for non-GitHub code repositories
   * `API_BASE_URL`: Hugging Face API base URL (default: `"https://huggingface.co/api/"`)
   * `REFRESH_INTERVAL_DAYS`: Number of days to consider an item "new" (default: `30`)
   * `ADDITIONAL_REPOS`: Array of forked or non-org GitHub repositories to include, formatted `<owner>/<repo-name>` (non-forks are included by default). Use `[]` if there are none you wish to include
@@ -89,6 +89,122 @@ When first setting up your catalog, run the export script to generate a full lis
 
 See **[tag-grouping-process.md](tag-grouping-process.md)** for full setup instructions, conventions, and guidance on using AI assistance for the initial grouping pass.
 
-## Code Repository Platform Setup
+## Non-GitHub Code Repository Platform Setup
 
-The default code repository platform for this catalog is GitHub. If you wish to use another supported platform (Codeberg), please note that the [tag export](../scripts/export-tags.js) and [fetch release](../scripts/fetch-releases.js) scripts may require header definition modifications to function properly. Workflows would also require token and other platform-specific updates if running from a non-GitHub repository. Otherwise, this app is set up to be able to run from Codeberg to fetch and display Codeberg repositories.
+The default code repository platform for this catalog is GitHub. If you wish to use another supported platform (Codeberg), please note that the [tag export](../scripts/export-tags.js) and [fetch release](../scripts/fetch-releases.js) scripts require header definition modifications to function properly. Notes are provided at the relevant lines (under "Update this section as needed for non-GitHub code platforms"). Workflows would also require token and other platform-specific updates if running from a non-GitHub repository. Otherwise, this app is set up to be able to run from Codeberg or GitLab to fetch and display repositories from the respective platform.
+
+Example configs, as used in testing the Catalog template for non-GitHub code platforms, are provided below.
+
+### Sample Codeberg Config
+
+```yaml
+# Configuration file for Catalog Template
+# Customize these values to personalize the catalog for your organization
+
+# Organization & Repository Settings
+ORGANIZATION_NAME: forgejo          # Codebase platform organization name (for API calls)
+HF_ORGANIZATION_NAME: imageomics    # Hugging Face organization name (case-sensitive, for API calls)
+ORG_NAME: Forgejo                   # Display name for Codebase platform organization (can differ from API name)
+CATALOG_REPO_NAME: catalog          # Repository name for the catalog itself (used for stats badge)
+
+# Branding
+CATALOG_TITLE: Fake Forgejo Catalog
+CATALOG_DESCRIPTION: "Explore and discover public code, datasets, models, and spaces."
+LOGO_URL: "https://github.com/Imageomics/Imageomics-guide/raw/3478acc0068a87a5604069d04a29bdb0795c2045/docs/logos/Imageomics_logo_butterfly.png"
+FAVICON_URL: "https://github.com/Imageomics/Imageomics-guide/raw/3478acc0068a87a5604069d04a29bdb0795c2045/docs/logos/Imageomics_logo_butterfly.png"
+
+# Colors (CSS custom properties)
+COLORS:
+  primary: "#92991c"      # Primary brand color (Imageomics Green)
+  secondary: "#5d8095"    # Secondary brand color (Imageomics Blue)
+  accent: "#0097b2"       # Accent color (Dark Teal)
+  accentDark: "#4fd1eb"   # Dark mode accent color (Light Cyan)
+  tag: "#9bcb5e"          # Tag background color (Light Green)
+
+# API & Behavior Settings
+# Codebase platform for API calls and link generation. Supported values: "github", pending: "codeberg" or "gitlab".
+PLATFORM: codeberg
+# Dataset, model, and space (demo) default: Hugging Face, other platforms would require a custom module
+API_BASE_URL: "https://huggingface.co/api/"
+# Define "new" repository criteria
+REFRESH_INTERVAL_DAYS: 30
+
+# Array of "owner/repo" strings to include in addition to non-forked org repos.
+# Use this for forked repos within the org and repos outside the org entirely.
+ADDITIONAL_REPOS: []
+
+# Array of Hugging Face repos from outside the org to include.
+# Each entry must specify "repo" (owner/name) and "type" (datasets, models, or spaces).
+# ADDITIONAL_HF_REPOS:
+#   - repo: "user/dataset-name"
+#     type: "datasets"
+#   - repo: "user/model-name"
+#     type: "models"
+#   - repo: "user/space-name"
+#     type: "spaces"
+ADDITIONAL_HF_REPOS:
+  - repo: "yoohj0416/predictbeetle"
+    type: "models"
+
+# Typography
+FONT_FAMILY: Inter    # Font family for the site
+```
+
+### Sample GitLab Config
+
+```yaml
+# Configuration file for Catalog Template
+# Customize these values to personalize the catalog for your organization
+
+# Organization & Repository Settings
+ORGANIZATION_NAME: GitLab-com       # Codebase platform organization name (for API calls)
+HF_ORGANIZATION_NAME: imageomics    # Hugging Face organization name (case-sensitive, for API calls)
+ORG_NAME: Imageomics                # Display name for Codebase platform organization (can differ from API name)
+CATALOG_REPO_NAME: www-gitlab-com          # Repository name for the catalog itself (used for stats badge)
+
+# Branding
+CATALOG_TITLE: Fake GitLab.com Catalog
+CATALOG_DESCRIPTION: "Explore and discover public code, datasets, models, and demos."
+LOGO_URL: "https://github.com/Imageomics/Imageomics-guide/raw/3478acc0068a87a5604069d04a29bdb0795c2045/docs/logos/Imageomics_logo_butterfly.png"
+FAVICON_URL: "https://github.com/Imageomics/Imageomics-guide/raw/3478acc0068a87a5604069d04a29bdb0795c2045/docs/logos/Imageomics_logo_butterfly.png"
+
+# Colors (CSS custom properties)
+COLORS:
+  primary: "#92991c"      # Primary brand color (Imageomics Green)
+  secondary: "#5d8095"    # Secondary brand color (Imageomics Blue)
+  accent: "#0097b2"       # Accent color (Dark Teal)
+  accentDark: "#4fd1eb"   # Dark mode accent color (Light Cyan)
+  tag: "#9bcb5e"          # Tag background color (Light Green)
+
+# API & Behavior Settings
+# Codebase platform for API calls and link generation. Supported values: "github", "codeberg", or "gitlab".
+PLATFORM: gitlab
+# Dataset, model, and demo default: Hugging Face, other platforms would require a custom module
+API_BASE_URL: "https://huggingface.co/api/"
+# Define "new" repository criteria
+REFRESH_INTERVAL_DAYS: 30
+
+# Array of "owner/repo" strings to include in addition to non-forked org repos.
+# For GitLab, use the project ID (numeric code) or "owner%2Frepo" (ex: "gitlab-com%2Fdatabase" for https://gitlab.com/gitlab-com/database).
+# Use this for forked repos within the org and repos outside the org entirely.
+ADDITIONAL_REPOS:
+  - "spectrelonewolf%2Fproyectoprofesionalcore1" # ex: https://gitlab.com/spectrelonewolf/proyectoprofesionalcore1
+
+# Array of Hugging Face repos from outside the org to include.
+# Each entry must specify "repo" (owner/name) and "type" (datasets, models, or spaces/demos).
+# Organization names are case-sensitive in the Hugging Face API.
+# ADDITIONAL_HF_REPOS:
+#   - repo: "user/dataset-name"
+#     type: "datasets"
+#   - repo: "user/model-name"
+#     type: "models"
+#   - repo: "user/space-name"
+#     type: "spaces"
+ADDITIONAL_HF_REPOS:
+  - repo: "yoohj0416/predictbeetle"
+    type: "models"
+
+# Typography
+FONT_FAMILY: Inter    # Font family for the site
+
+```

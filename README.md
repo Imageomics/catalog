@@ -8,7 +8,7 @@ For those interested in creating a similar catalog website or contributing to th
 
 The website is styled using the [tailwindcss](https://tailwindcss.com/) package.
 
-* **Real-time Data Fetching:** Displays all public organization repositories, fetched through the code platform and Hugging Face APIs. Includes semantically meaningful virtual markers:
+* **Real-time Data Fetching:** Displays all public organization repositories, fetched through the code platform (GitHub, GitLab, or Codeberg) and Hugging Face APIs. Includes semantically meaningful virtual markers:
     * "New" badge highlights products created within the last 30 days;
     * "🚀 version-tag" badge indicates a new release within the last 2 weeks for code repos, and links to that release;
     * Star (⭐️) or like (❤️) counts displayed for code platform or Hugging Face repos, respectively;
