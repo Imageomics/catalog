@@ -20,16 +20,16 @@ if (errors.length) {
     throw new Error(`Invalid config at ${configPath}: ${errors.join('; ')}`);
 }
 
-// Update this section as needed for non-GitHub code platforms (e.g., Codeberg or GitLab)
-// const TOKEN = process.env.GITLAB_TOKEN
-// const TOKEN = process.env.CODEBERG_TOKEN
-/* NOTE: Codeberg uses `token ${TOKEN}` in the Authorization header,
-* while GitHub and GitLab use `Bearer ${TOKEN}`.
-* Adjust accordingly.
-*/
-const TOKEN = process.env.GITHUB_TOKEN;
+const platform = (CONFIG.PLATFORM || 'github').toLowerCase();
+const tokenByPlatform = {
+    github: process.env.GITHUB_TOKEN,
+    gitlab: process.env.GITLAB_TOKEN,
+    codeberg: process.env.CODEBERG_TOKEN,
+};
+const TOKEN = tokenByPlatform[platform];
+const authScheme = platform === 'codeberg' ? 'token' : 'Bearer';
 const headers = TOKEN
-    ? { Authorization: `Bearer ${TOKEN}`, 'User-Agent': 'catalog-build-script' }
+    ? { Authorization: `${authScheme} ${TOKEN}`, 'User-Agent': 'catalog-build-script' }
     : { 'User-Agent': 'catalog-build-script' };
 
 const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
