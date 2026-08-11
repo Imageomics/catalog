@@ -23,7 +23,7 @@ export function getPlatformVals(platform) {
     gitlab: {
         starsKey: 'star_count',
         profileRepo: 'gitlab-profile',
-        fullNameKey: 'name_with_namespace',
+        fullNameKey: 'path_with_namespace',
         forkKey: 'forked_from_project',
         urlKey: 'web_url',
         releasePublishedAtKey: 'released_at'
@@ -64,12 +64,12 @@ export function getPlatformApiUrls(platform, organizationName) {
             releaseSuffix: "releases/latest"
         },
         gitlab: {
-            org: `https://gitlab.com/api/v4/groups/${organizationName}/projects?per_page=100`,
+            org: `https://gitlab.com/api/v4/groups/${organizationName}/projects?visibility=public&per_page=100`,
             repo: "https://gitlab.com/api/v4/projects/",
             releaseSuffix: "releases/permalink/latest"
         },
         codeberg: {
-            org: `https://codeberg.org/api/v1/orgs/${organizationName}/repos?limit=50`,
+            org: `https://codeberg.org/api/v1/orgs/${organizationName}/repos?type=public&limit=50`,
             repo: "https://codeberg.org/api/v1/repos/",
             releaseSuffix: "releases/latest"
         }
