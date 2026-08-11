@@ -23,7 +23,7 @@ if (errors.length) {
 // Update this section as needed for non-GitHub code platforms (e.g., Codeberg or GitLab)
 // const TOKEN = process.env.GITLAB_TOKEN
 // const TOKEN = process.env.CODEBERG_TOKEN
-/* NOTE: Codeberg uses `toekn ${TOKEN}` in the Authorization header,
+/* NOTE: Codeberg uses `token ${TOKEN}` in the Authorization header,
 * while GitHub and GitLab use `Bearer ${TOKEN}`.
 * Adjust accordingly.
 */
