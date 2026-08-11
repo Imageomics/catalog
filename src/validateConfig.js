@@ -41,7 +41,7 @@ export function validateConfig(config) {
     const glcbOrgRegex = /^[a-zA-Z0-9](?:[a-zA-Z0-9_\-]*[a-zA-Z0-9])?$/;
     if (typeof orgName !== 'string' || !orgName.trim()) {
         errors.push('ORGANIZATION_NAME');
-    } else if (!errors.includes('PLATFORM')) {
+    } else if (validPlatform != '') {
         // If PLATFORM is invalid, we cannot determine which regex to use for ORGANIZATION_NAME validation.
         if (validPlatform == 'github') {
             var codeRegex = ghOrgRegex;
