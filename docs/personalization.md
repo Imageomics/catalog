@@ -105,7 +105,7 @@ Example configs, as used in testing the Catalog template for non-GitHub code pla
 ORGANIZATION_NAME: forgejo          # Codebase platform organization name (for API calls)
 HF_ORGANIZATION_NAME: imageomics    # Hugging Face organization name (case-sensitive, for API calls)
 ORG_NAME: Forgejo                   # Display name for Codebase platform organization (can differ from API name)
-CATALOG_REPO_NAME: catalog          # Repository name for the catalog itself (used for stats badge)
+CATALOG_REPO_NAME: forgejo          # Repository name for the catalog itself (used for stats badge)
 
 # Branding
 CATALOG_TITLE: Fake Forgejo Catalog
