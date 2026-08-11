@@ -28,7 +28,8 @@ export const fetchCatalogStats = async (repoApiUrl, organizationName, catalogRep
         // platform isn't passed, forks_count is shared
         // 1. Get Stars & Forks
         const repo = await fetch(`${repoApiUrl}${ownerRepo}`).then(r => r.ok ? r.json() : {});
-        if (repo.stargazers_count !== undefined  || repo.stars_count !== undefined || repo.star_count !== undefined) update('gh-stars', 'gh-star-container', repo.stargazers_count || repo.stars_count || repo.star_count);
+        const star_count = repo.stargazers_count ?? repo.stars_count ?? repo.star_count;
+        if (star_count !== undefined) update('gh-stars', 'gh-star-container', star_count);
         if (repo.forks_count !== undefined) update('gh-forks', 'gh-fork-container', repo.forks_count);
 
         // 2. Get Version (Tag)
