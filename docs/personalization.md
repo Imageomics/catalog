@@ -185,10 +185,9 @@ API_BASE_URL: "https://huggingface.co/api/"
 REFRESH_INTERVAL_DAYS: 30
 
 # Array of "owner/repo" strings to include in addition to non-forked org repos.
-# For GitLab, use the project ID (numeric code) or "owner%2Frepo" (ex: "gitlab-com%2Fdatabase" for https://gitlab.com/gitlab-com/database).
 # Use this for forked repos within the org and repos outside the org entirely.
 ADDITIONAL_REPOS:
-  - "spectrelonewolf%2Fproyectoprofesionalcore1" # ex: https://gitlab.com/spectrelonewolf/proyectoprofesionalcore1
+  - "spectrelonewolf/proyectoprofesionalcore1" # ex: https://gitlab.com/spectrelonewolf/proyectoprofesionalcore1
 
 # Array of Hugging Face repos from outside the org to include.
 # Each entry must specify "repo" (owner/name) and "type" (datasets, models, or spaces/demos).
