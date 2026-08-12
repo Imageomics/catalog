@@ -35,7 +35,7 @@ Path | Purpose
 `src/api/` | Data fetching modules (`fetchCodeRepos.js`, `fetchHfRepos.js`, etc.).
 `src/ui/` | DOM manipulation, HTML templating (`render.js`), and URL/State routing.
 `src/utils/` | Pure utility functions (filtering, sorting, tag normalization).
-`scripts/` | Build-time Node scripts (`fetch-releases.js`, `export-tags.js`).
+`scripts/` | Build-time Node scripts and helpers (`fetch-releases.js`, `export-tags.js`).
 `tests/` | Vitest unit and integration tests. Subdirectories mirror the `src/` folder layout.
 `docs/` | Developer-facing documentation.
 `.github/workflows/` | CI/CD: tests on PR, deploy on push to `main`, weekly tag scan.

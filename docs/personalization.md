@@ -91,7 +91,7 @@ See **[tag-grouping-process.md](tag-grouping-process.md)** for full setup instru
 
 ## Non-GitHub Code Repository Platform Setup
 
-The default code repository platform for this catalog is GitHub. If you wish to use another supported platform (Codeberg or GitLab), please note that the [tag export](../scripts/export-tags.js) and [fetch release](../scripts/fetch-releases.js) scripts require header definition modifications to function properly. Notes are provided at the relevant lines (under "Update this section as needed for non-GitHub code platforms"). Workflows would also require token and other platform-specific updates if running from a non-GitHub repository. Otherwise, this app is set up to be able to run from Codeberg or GitLab to fetch and display repositories from the respective platform.
+The default code repository platform for this catalog is GitHub. If you wish to use another supported platform (Codeberg or GitLab), please note that the workflows will require token and potentially other platform-specific updates if running from a non-GitHub repository. Otherwise, this app is set up to be able to run from Codeberg or GitLab to fetch and display repositories from the respective platform.
 
 Example configs, as used in testing the Catalog template for non-GitHub code platforms, are provided below.
 
