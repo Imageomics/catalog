@@ -18,7 +18,10 @@ export function getPlatformReleaseVals(platform) {
         releasePublishedAtKey: 'published_at'
     },
     gitlab: {
-        getReleaseUrl: (data, encodedRepoId) => data._links?.self || `${encodedRepoId}/-/releases/${data.tag_name}`, // GitLab response can be inconsistent, so we provide a fallback URL if _links.self is not present
+        getReleaseUrl: (data, repoId) => {
+            const tag = encodeURIComponent(data.tag_name);
+            return `https://gitlab.com/${repoId}/-/releases/${tag}`;
+        },
         releasePublishedAtKey: 'released_at'
     },
     codeberg: {
@@ -53,11 +56,13 @@ const tokenAuthByPlatform = {
 * `headers['Accept']` is only needed for GitHub to avoid 403 errors on some endpoints.
 * @param {string} url - URL to check for the platform API host
 * @param {string} platform - 'github', 'gitlab', or 'codeberg'
+* @param {string} orgName - The name of the organization as used in API calls
 * @returns {object} headers - headers object to use for fetch requests
 */
-export function getPlatformHeaders(url, platform) {
+export function getPlatformHeaders(url, platform, orgName) {
     const { token, apiHost, authScheme } = tokenAuthByPlatform[platform];
-    const headers = { 'User-Agent': 'catalog-build-script' };
+    const cleanedOrgName = orgName.replace(/[^a-zA-Z0-9_-]/g, '');
+    const headers = { 'User-Agent': `${cleanedOrgName}-catalog-build-script` };
     if (token && apiHost && url.includes(apiHost)) {
       headers['Authorization'] = `${authScheme} ${token}`;
       if (platform === 'github') {

@@ -50,7 +50,7 @@ const { org: ORG_API_URL, repo: REPO_API_URL } = getPlatformApiUrls(platform, OR
 const { profileRepo, fullNameKey, forkKey, encodeRepoId } = getPlatformVals(platform);
 
 const get = async (url) => {
-    const headers = getPlatformHeaders(url, platform);
+    const headers = getPlatformHeaders(url, platform, ORGANIZATION_NAME);
     const res = await fetch(url, { headers });
     if (!res.ok) throw new Error(`HTTP ${res.status} — ${url}`);
     return { json: await res.json(), headers: res.headers };

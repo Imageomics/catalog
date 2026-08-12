@@ -30,7 +30,7 @@ const platform = (CONFIG.PLATFORM || 'github').toLowerCase();
 const { org: ORG_API_URL, repo: REPO_API_URL, releaseSuffix: RELEASE_SUFFIX } = getPlatformApiUrls(platform, CONFIG.ORGANIZATION_NAME);
 const { releasePublishedAtKey, getReleaseUrl } = getPlatformReleaseVals(platform);
 const { profileRepo, fullNameKey, forkKey, encodeRepoId } = getPlatformVals(platform);
-const headers = getPlatformHeaders(ORG_API_URL, platform);
+const headers = getPlatformHeaders(ORG_API_URL, platform, CONFIG.ORGANIZATION_NAME);
 
 const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
 
@@ -59,28 +59,55 @@ const repoIds = [
     ...orgNonForks.map(r => r[fullNameKey]),
 ];
 
-// Step 3: Fetch latest releases in parallel with key-value mapping for each repo ID
-const releaseEntries = await Promise.all(
-    repoIds.map(async (id) => {
-        try {
-            const encodedId = encodeRepoId(id);
-            const res = await fetch(`${REPO_API_URL}${encodedId}/${RELEASE_SUFFIX}`, { headers });
-            if (!res.ok) return [id, null];
+// Step 3: Fetch latest releases in parallel with bounded concurrency (max 5 concurrent requests), key-value mapping for each repo ID
 
-            const data = await res.json();
-            const publishedAt = data[releasePublishedAtKey];
-            // gitlab's release API returns a different structure than GitHub/Codeberg
-            return [id, {
-                tag: data.tag_name,
-                url: getReleaseUrl(data, encodedId),
-                publishedAt: publishedAt,
-                isNew: (Date.now() - new Date(publishedAt)) < TWO_WEEKS_MS,
-            }];
-        } catch {
-            return [id, null];
+/**
+ * Zero-dependency bounded concurrency worker pool
+ * @param {*} items - object to fetch
+ * @param {int} concurrency - maximum number of concurrent requests
+ * @param {*} fn - function to apply to each item
+ * @returns {Promise<Array>} - A promise resolving to an array of results
+ */
+async function mapConcurrent(items, concurrency, fn) {
+    const results = new Array(items.length);
+    let index = 0;
+    const workers = Array.from({ length: Math.min(concurrency, items.length) }, async () => {
+        while (index < items.length) {
+            const i = index++;
+            results[i] = await fn(items[i]);
         }
-    })
-);
+    });
+    await Promise.all(workers);
+    return results;
+}
+
+/**
+ * Fetch the latest release for a given repo ID.
+ * @param {String} id - repo ID ('owner/repo' format)
+ * @returns {Promise<[String, Object|null]>} - A promise resolving to a tuple of [repo ID, release data or null if not found]
+ */
+async function fetchRepoRelease(id) {
+    try {
+        const res = await fetch(`${REPO_API_URL}${encodeRepoId(id)}/${RELEASE_SUFFIX}`, { headers });
+        if (!res.ok) return [id, null];
+
+        const data = await res.json();
+        const publishedAt = data[releasePublishedAtKey];
+        // gitlab's release API returns a different structure than GitHub/Codeberg
+        return [id, {
+            tag: data.tag_name,
+            url: getReleaseUrl(data, id),
+            publishedAt: publishedAt,
+            isNew: (Date.now() - new Date(publishedAt)) < TWO_WEEKS_MS,
+        }];
+    } catch (err) {
+        console.warn(`[fetch-releases] Network error for repo "${id}":`, err.message);
+        return [id, null];
+    }
+};
+
+// fetch the repo releases
+const releaseEntries = await mapConcurrent(repoIds, 5, fetchRepoRelease);
 
 // Convert [id, releaseData] pairs into an object for JSON output
 const releases = Object.fromEntries(releaseEntries);
