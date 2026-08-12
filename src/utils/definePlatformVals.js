@@ -18,7 +18,8 @@ export function getPlatformVals(platform) {
         fullNameKey: 'full_name',
         forkKey: 'fork', //forks_count is shared
         urlKey: 'html_url',
-        releasePublishedAtKey: 'published_at'
+        releasePublishedAtKey: 'published_at',
+        encodeRepoId: (ownerRepo) => ownerRepo
     },
     gitlab: {
         starsKey: 'star_count',
@@ -26,7 +27,8 @@ export function getPlatformVals(platform) {
         fullNameKey: 'path_with_namespace',
         forkKey: 'forked_from_project',
         urlKey: 'web_url',
-        releasePublishedAtKey: 'released_at'
+        releasePublishedAtKey: 'released_at',
+        encodeRepoId: (ownerRepo) => encodeURIComponent(ownerRepo) // GitLab requires URL-encoded 'owner/repo' format
     },
     codeberg: {
         starsKey: 'stars_count',
@@ -34,7 +36,8 @@ export function getPlatformVals(platform) {
         fullNameKey: 'full_name',
         forkKey: 'fork',
         urlKey: 'html_url',
-        releasePublishedAtKey: 'published_at'
+        releasePublishedAtKey: 'published_at',
+        encodeRepoId: (ownerRepo) => ownerRepo
     }
 };
     return platformVals[platform.toLowerCase()];

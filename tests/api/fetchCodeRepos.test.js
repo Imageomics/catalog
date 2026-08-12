@@ -28,6 +28,7 @@ const platformConfigs = SUPPORTED_PLATFORMS.map(platform => {
         forkKey: platformVals.forkKey,
         fullNameKey: platformVals.fullNameKey,
         urlKey: platformVals.urlKey,
+        encodeRepoId: platformVals.encodeRepoId // used only for GitLab Additional Repos
     };
 });
 
@@ -59,6 +60,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
     const forkKey = platformConfig.forkKey;
     const fullNameKey = platformConfig.fullNameKey;
     const urlKey = platformConfig.urlKey;
+    const encodeRepoId = platformConfig.encodeRepoId;
     const refreshIntervalDays = 30;
     const releasesMap = {};
 
@@ -177,8 +179,11 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
             updated_at: recentDateISO
         };
 
+        const externalRepoId = 'external-org/external-additional';
+        const expectedExternalRepoUrl = `${repoApiUrl}${encodeRepoId(externalRepoId)}`;
+
         const mockExternalRepo = {
-            [fullNameKey]: 'external-org/external-additional',
+            [fullNameKey]: externalRepoId,
             name: 'external-additional',
             created_at: recentDateISO,
             updated_at: recentDateISO
@@ -192,7 +197,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
                     json: () => Promise.resolve([mockOrgRepo])
                 });
             }
-            if (url === `${repoApiUrl}external-org/external-additional`) {
+            if (url === expectedExternalRepoUrl) {
                 return Promise.resolve({
                     ok: true,
                     headers: { get: () => null },
@@ -203,7 +208,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
 
         const additionalRepos = [
             'test-org/internal-additional',
-            'external-org/external-additional'
+            externalRepoId
         ];
 
         const items = await fetchCodeRepos(
@@ -220,6 +225,9 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
         * should not hit the network a second time.
         */
         expect(global.fetch).toHaveBeenCalledTimes(2);
+        expect(global.fetch).toHaveBeenCalledWith(
+            `${expectedExternalRepoUrl}`
+        );
         expect(global.fetch).not.toHaveBeenCalledWith(
             `${repoApiUrl}test-org/internal-additional`
         );
@@ -229,7 +237,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
          */
         expect(items).toHaveLength(2);
         expect(items.map(i => i.id)).toContain('test-org/internal-additional');
-        expect(items.map(i => i.id)).toContain('external-org/external-additional');
+        expect(items.map(i => i.id)).toContain(externalRepoId);
     });
 
     // Test that forks and platform profile repos are excluded from the final list

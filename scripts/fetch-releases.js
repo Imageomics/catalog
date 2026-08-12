@@ -20,6 +20,7 @@ if (errors.length) {
     throw new Error(`Invalid config at ${configPath}: ${errors.join('; ')}`);
 }
 
+// Update the corresponding workflow and token as needed for non-GitHub code platforms (e.g., Codeberg or GitLab)
 const platform = (CONFIG.PLATFORM || 'github').toLowerCase();
 const tokenByPlatform = {
     github: process.env.GITHUB_TOKEN,
@@ -36,7 +37,7 @@ const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
 
 // Step 1: Fetch all public org repos (paginated, same logic as main.js)
 const { org: ORG_API_URL, repo: REPO_API_URL, releaseSuffix: RELEASE_SUFFIX } = getPlatformApiUrls(CONFIG.PLATFORM, CONFIG.ORGANIZATION_NAME);
-const { profileRepo, fullNameKey, forkKey, urlKey, releasePublishedAtKey } = getPlatformVals(CONFIG.PLATFORM);
+const { profileRepo, fullNameKey, forkKey, urlKey, releasePublishedAtKey, encodeRepoId } = getPlatformVals(CONFIG.PLATFORM);
 let allOrgRepos = [];
 let nextUrl = `${ORG_API_URL}`;
 while (nextUrl) {
@@ -65,7 +66,7 @@ const repoIds = [
 const releases = {};
 for (const id of repoIds) {
     try {
-        const res = await fetch(`${REPO_API_URL}${id}/${RELEASE_SUFFIX}`, { headers });
+        const res = await fetch(`${REPO_API_URL}${encodeRepoId(id)}/${RELEASE_SUFFIX}`, { headers });
         if (!res.ok) { releases[id] = null; continue; }
         const data = await res.json();
         releases[id] = {

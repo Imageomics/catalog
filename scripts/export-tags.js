@@ -41,21 +41,36 @@ const ADDITIONAL_HF_REPOS = CONFIG.ADDITIONAL_HF_REPOS;
 // ---------------------------------------------------------------------------
 // Fetch helpers
 // ---------------------------------------------------------------------------
-// Update this section as needed for non-GitHub code platforms (e.g., Codeberg or GitLab)
-// const TOKEN = process.env.GITLAB_TOKEN
-// const TOKEN = process.env.CODEBERG_TOKEN
-/* NOTE: Codeberg uses `token ${TOKEN}` in the Authorization header,
-* while GitHub and GitLab use `Bearer ${TOKEN}`.
+/* Update the corresponding workflow and token as needed for non-GitHub code platforms (e.g., Codeberg or GitLab)
 * `headers['Accept']` is only needed for GitHub to avoid 403 errors on some endpoints.
-* Adjust accordingly, including API URL include check.
 */
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+const platform = (CONFIG.PLATFORM || 'github').toLowerCase();
+const tokenAuthByPlatform = {
+    github: {
+        token: process.env.GITHUB_TOKEN,
+        apiHost : 'api.github.com',
+        authScheme: 'Bearer',
+     },
+    gitlab: {
+        token: process.env.GITLAB_TOKEN,
+        apiHost : 'gitlab.com/api/v4',
+        authScheme: 'Bearer',
+    },
+    codeberg: {
+        token: process.env.CODEBERG_TOKEN,
+        apiHost : 'codeberg.org/api/v1',
+        authScheme: 'token'
+    },
+};
+const {token: TOKEN, apiHost: platformApiHost, authScheme} = tokenAuthByPlatform[platform];
 
 const get = async (url) => {
     const headers = {};
-    if (GITHUB_TOKEN && url.includes('api.github.com')) {
-        headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`;
+    if (TOKEN && platformApiHost && url.includes(platformApiHost)) {
+      headers['Authorization'] = `${authScheme} ${TOKEN}`;
+      if (platform === 'github') {
         headers['Accept'] = 'application/vnd.github+json';
+      }
     }
     const res = await fetch(url, { headers });
     if (!res.ok) throw new Error(`HTTP ${res.status} — ${url}`);
@@ -67,7 +82,7 @@ const get = async (url) => {
 // ---------------------------------------------------------------------------
 const allTags = new Set();
 const { org: ORG_API_URL, repo: REPO_API_URL } = getPlatformApiUrls(PLATFORM, ORGANIZATION_NAME);
-const { profileRepo, fullNameKey, forkKey } = getPlatformVals(PLATFORM);
+const { profileRepo, fullNameKey, forkKey, encodeRepoId } = getPlatformVals(PLATFORM);
 
 const collectCodePlatformTags = async () => {
     const platformDisplay = getPlatformDisplay(PLATFORM);
@@ -86,7 +101,7 @@ const collectCodePlatformTags = async () => {
     // Additional repos
     const additionalData = await Promise.all(
         ADDITIONAL_REPOS.map(ownerRepo =>
-            get(`${REPO_API_URL}${ownerRepo}`)
+            get(`${REPO_API_URL}${encodeRepoId(ownerRepo)}`)
                 .then(({ json }) => json)
                 .catch(() => null)
         )

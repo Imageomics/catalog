@@ -30,7 +30,7 @@ export async function fetchCodeRepos(
     let allRepos = [];
     let nextUrl = `${orgApiUrl}`;
     // get platform-specific keys
-    const { starsKey, profileRepo, fullNameKey, forkKey, urlKey } = getPlatformVals(platform);
+    const { starsKey, profileRepo, fullNameKey, forkKey, urlKey, encodeRepoId } = getPlatformVals(platform);
     try {
         while (nextUrl) {
             const ghResponse = await fetch(nextUrl);
@@ -57,7 +57,7 @@ export async function fetchCodeRepos(
 
         const fetchedExternalData = await Promise.all(
             toFetch.map(ownerRepo =>
-                fetch(`${repoApiUrl}${ownerRepo}`)
+                fetch(`${repoApiUrl}${encodeRepoId(ownerRepo)}`)
                     .then(r => {
                         if (!r.ok) {
                             console.warn(`Failed to fetch additional repo "${ownerRepo}": HTTP ${r.status}`);
