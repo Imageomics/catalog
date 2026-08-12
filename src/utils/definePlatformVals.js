@@ -19,7 +19,6 @@ export function getPlatformVals(platform) {
         updatedAtKey: 'updated_at',
         forkKey: 'fork', //forks_count is shared
         urlKey: 'html_url',
-        releasePublishedAtKey: 'published_at',
         encodeRepoId: (ownerRepo) => ownerRepo
     },
     gitlab: {
@@ -29,7 +28,6 @@ export function getPlatformVals(platform) {
         updatedAtKey: 'last_activity_at', // key used by GitLab for project update ordering, may include broader group-based activity
         forkKey: 'forked_from_project',
         urlKey: 'web_url',
-        releasePublishedAtKey: 'released_at',
         encodeRepoId: (ownerRepo) => encodeURIComponent(ownerRepo) // GitLab requires URL-encoded 'owner/repo' format
     },
     codeberg: {
@@ -39,7 +37,6 @@ export function getPlatformVals(platform) {
         updatedAtKey: 'updated_at',
         forkKey: 'fork',
         urlKey: 'html_url',
-        releasePublishedAtKey: 'published_at',
         encodeRepoId: (ownerRepo) => ownerRepo
     }
 };

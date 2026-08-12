@@ -7,6 +7,7 @@ import { dirname, join } from 'path';
 import { load } from 'js-yaml';
 import { validateConfig } from '../src/validateConfig.js';
 import { getPlatformVals, getPlatformApiUrls } from '../src/utils/definePlatformVals.js';
+import { getPlatformReleaseVals, getPlatformHeaders } from './platformScriptHelpers.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,24 +21,20 @@ if (errors.length) {
     throw new Error(`Invalid config at ${configPath}: ${errors.join('; ')}`);
 }
 
-// Update the corresponding workflow and token as needed for non-GitHub code platforms (e.g., Codeberg or GitLab)
+/**
+ * Define platform-specific variables needed for script to fetch releases, including API URLs, headers, and repo data keys.
+ * Update the corresponding workflow and token as needed for non-GitHub code platforms (e.g., Codeberg or GitLab).
+*/
 const platform = (CONFIG.PLATFORM || 'github').toLowerCase();
-const tokenByPlatform = {
-    github: process.env.GITHUB_TOKEN,
-    gitlab: process.env.GITLAB_TOKEN,
-    codeberg: process.env.CODEBERG_TOKEN,
-};
-const TOKEN = tokenByPlatform[platform];
-const authScheme = platform === 'codeberg' ? 'token' : 'Bearer';
-const headers = TOKEN
-    ? { Authorization: `${authScheme} ${TOKEN}`, 'User-Agent': 'catalog-build-script' }
-    : { 'User-Agent': 'catalog-build-script' };
+
+const { org: ORG_API_URL, repo: REPO_API_URL, releaseSuffix: RELEASE_SUFFIX } = getPlatformApiUrls(platform, CONFIG.ORGANIZATION_NAME);
+const { releasePublishedAtKey, getReleaseUrl } = getPlatformReleaseVals(platform);
+const { profileRepo, fullNameKey, forkKey, encodeRepoId } = getPlatformVals(platform);
+const headers = getPlatformHeaders(ORG_API_URL, platform);
 
 const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
 
 // Step 1: Fetch all public org repos (paginated, same logic as main.js)
-const { org: ORG_API_URL, repo: REPO_API_URL, releaseSuffix: RELEASE_SUFFIX } = getPlatformApiUrls(CONFIG.PLATFORM, CONFIG.ORGANIZATION_NAME);
-const { profileRepo, fullNameKey, forkKey, urlKey, releasePublishedAtKey, encodeRepoId } = getPlatformVals(CONFIG.PLATFORM);
 let allOrgRepos = [];
 let nextUrl = `${ORG_API_URL}`;
 while (nextUrl) {
@@ -62,23 +59,31 @@ const repoIds = [
     ...orgNonForks.map(r => r[fullNameKey]),
 ];
 
-// Step 3: Fetch latest release for each repo
-const releases = {};
-for (const id of repoIds) {
-    try {
-        const res = await fetch(`${REPO_API_URL}${encodeRepoId(id)}/${RELEASE_SUFFIX}`, { headers });
-        if (!res.ok) { releases[id] = null; continue; }
-        const data = await res.json();
-        releases[id] = {
-            tag: data.tag_name,
-            url: data[urlKey],
-            publishedAt: data[releasePublishedAtKey],
-            isNew: (Date.now() - new Date(data[releasePublishedAtKey])) < TWO_WEEKS_MS,
-        };
-    } catch {
-        releases[id] = null;
-    }
-}
+// Step 3: Fetch latest releases in parallel with key-value mapping for each repo ID
+const releaseEntries = await Promise.all(
+    repoIds.map(async (id) => {
+        try {
+            const encodedId = encodeRepoId(id);
+            const res = await fetch(`${REPO_API_URL}${encodedId}/${RELEASE_SUFFIX}`, { headers });
+            if (!res.ok) return [id, null];
+
+            const data = await res.json();
+            const publishedAt = data[releasePublishedAtKey];
+            // gitlab's release API returns a different structure than GitHub/Codeberg
+            return [id, {
+                tag: data.tag_name,
+                url: getReleaseUrl(data, encodedId),
+                publishedAt: publishedAt,
+                isNew: (Date.now() - new Date(publishedAt)) < TWO_WEEKS_MS,
+            }];
+        } catch {
+            return [id, null];
+        }
+    })
+);
+
+// Convert [id, releaseData] pairs into an object for JSON output
+const releases = Object.fromEntries(releaseEntries);
 
 writeFileSync(join(__dirname, '../public/releases.json'), JSON.stringify(releases));
 console.log(`Wrote releases.json (${Object.keys(releases).length} repos)`);
