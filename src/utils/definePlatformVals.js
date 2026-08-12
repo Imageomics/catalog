@@ -16,6 +16,7 @@ export function getPlatformVals(platform) {
         starsKey: 'stargazers_count',
         profileRepo: '.github',
         fullNameKey: 'full_name',
+        updatedAtKey: 'updated_at',
         forkKey: 'fork', //forks_count is shared
         urlKey: 'html_url',
         releasePublishedAtKey: 'published_at',
@@ -25,6 +26,7 @@ export function getPlatformVals(platform) {
         starsKey: 'star_count',
         profileRepo: 'gitlab-profile',
         fullNameKey: 'path_with_namespace',
+        updatedAtKey: 'last_activity_at', // key used by GitLab for project update ordering, may include broader group-based activity
         forkKey: 'forked_from_project',
         urlKey: 'web_url',
         releasePublishedAtKey: 'released_at',
@@ -34,6 +36,7 @@ export function getPlatformVals(platform) {
         starsKey: 'stars_count',
         profileRepo: '.profile',
         fullNameKey: 'full_name',
+        updatedAtKey: 'updated_at',
         forkKey: 'fork',
         urlKey: 'html_url',
         releasePublishedAtKey: 'published_at',

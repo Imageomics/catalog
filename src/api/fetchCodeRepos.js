@@ -30,7 +30,7 @@ export async function fetchCodeRepos(
     let allRepos = [];
     let nextUrl = `${orgApiUrl}`;
     // get platform-specific keys
-    const { starsKey, profileRepo, fullNameKey, forkKey, urlKey, encodeRepoId } = getPlatformVals(platform);
+    const { starsKey, profileRepo, fullNameKey, updatedAtKey, forkKey, urlKey, encodeRepoId } = getPlatformVals(platform);
     try {
         while (nextUrl) {
             const ghResponse = await fetch(nextUrl);
@@ -84,7 +84,7 @@ export async function fetchCodeRepos(
         let processedItems = [...filteredAdditionalRepos, ...orgNonForks]
             .map(repo => {
                 const createdAt = new Date(repo.created_at);
-                const lastModified = new Date(repo.updated_at);
+                const lastModified = new Date(repo[updatedAtKey]);
                 const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < refreshIntervalDays;
 
                 const rawTags = (repo.topics || []).map(t => t.toLowerCase());
