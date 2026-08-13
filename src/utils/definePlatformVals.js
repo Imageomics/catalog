@@ -67,7 +67,7 @@ export function getPlatformApiUrls(platform, organizationName) {
             releaseSuffix: "releases/latest"
         },
         gitlab: {
-            org: `https://gitlab.com/api/v4/groups/${organizationName}/projects?visibility=public&per_page=100`,
+            org: `https://gitlab.com/api/v4/groups/${organizationName}/projects?visibility=public&include_subgroups=true&with_shared=false&per_page=100`,
             repo: "https://gitlab.com/api/v4/projects/",
             releaseSuffix: "releases/permalink/latest"
         },
