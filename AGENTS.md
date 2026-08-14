@@ -35,7 +35,7 @@ Path | Purpose
 `src/api/` | Data fetching modules (`fetchCodeRepos.js`, `fetchHfRepos.js`, etc.).
 `src/ui/` | DOM manipulation, HTML templating (`render.js`), and URL/State routing.
 `src/utils/` | Pure utility functions (filtering, sorting, tag normalization).
-`scripts/` | Build-time Node scripts (`fetch-releases.js`, `export-tags.js`).
+`scripts/` | Build-time Node scripts and helpers (`fetch-releases.js`, `export-tags.js`).
 `tests/` | Vitest unit and integration tests. Subdirectories mirror the `src/` folder layout.
 `docs/` | Developer-facing documentation.
 `.github/workflows/` | CI/CD: tests on PR, deploy on push to `main`, weekly tag scan.
@@ -102,11 +102,11 @@ When adding a new utility to `src/`, add a corresponding test file. Do **not** a
 
 All runtime behavior is controlled by `public/config.yaml`. It is fetched at page load (not bundled), so changes take effect on the next page load without a rebuild. Key fields:
 
-- `ORGANIZATION_NAME` — used in all code repository platform API calls (GitHub is not case-sensitive)
+- `ORGANIZATION_NAME` — used in all code repository platform API calls
 - `HF_ORGANIZATION_NAME` — used in all Hugging Face API calls (**case-sensitive**)
 - `API_BASE_URL` — Hugging Face API base (default: `https://huggingface.co/api/`)
-- `PLATFORM` — code repository platform; only `github` is currently supported
-- `ADDITIONAL_REPOS` — forked or external GitHub repos to include
+- `PLATFORM` — code repository platform; `github`, `codeberg`, and `gitlab` are currently supported
+- `ADDITIONAL_REPOS` — forked or external code repos to include
 - `ADDITIONAL_HF_REPOS` — Hugging Face repos from outside the org to include (each entry needs `repo` and `type`)
 
 The validator in `src/validateConfig.js` is the authoritative list of required config fields and their shapes.

@@ -20,6 +20,7 @@ import { validateConfig } from '../src/validateConfig.js';
 import { getPlatformDisplay } from '../src/utils/defineRibbonVals.js';
 import { filterNewAdditionalEntries } from '../src/utils/filterNewAdditionalEntries.js';
 import { getPlatformVals, getPlatformApiUrls } from '../src/utils/definePlatformVals.js';
+import { getPlatformHeaders } from './platformScriptHelpers.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -41,15 +42,15 @@ const ADDITIONAL_HF_REPOS = CONFIG.ADDITIONAL_HF_REPOS;
 // ---------------------------------------------------------------------------
 // Fetch helpers
 // ---------------------------------------------------------------------------
-// Update this section as needed for non-GitHub code platforms (e.g., Codeberg or GitLab)
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+/* Update the corresponding workflow and token as needed for non-GitHub code platforms (e.g., Codeberg or GitLab)
+* `headers['Accept']` is only needed for GitHub to avoid 403 errors on some endpoints.
+*/
+const platform = (CONFIG.PLATFORM || 'github').toLowerCase();
+const { org: ORG_API_URL, repo: REPO_API_URL } = getPlatformApiUrls(platform, ORGANIZATION_NAME);
+const { profileRepo, fullNameKey, forkKey, encodeRepoId } = getPlatformVals(platform);
 
 const get = async (url) => {
-    const headers = {};
-    if (GITHUB_TOKEN && url.includes('api.github.com')) {
-        headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`;
-        headers['Accept'] = 'application/vnd.github+json';
-    }
+    const headers = getPlatformHeaders(url, platform, ORGANIZATION_NAME);
     const res = await fetch(url, { headers });
     if (!res.ok) throw new Error(`HTTP ${res.status} — ${url}`);
     return { json: await res.json(), headers: res.headers };
@@ -59,11 +60,9 @@ const get = async (url) => {
 // Tag collection
 // ---------------------------------------------------------------------------
 const allTags = new Set();
-const { org: ORG_API_URL, repo: REPO_API_URL } = getPlatformApiUrls(PLATFORM, ORGANIZATION_NAME);
-const { profileRepo, fullNameKey, forkKey } = getPlatformVals(PLATFORM);
 
 const collectCodePlatformTags = async () => {
-    const platformDisplay = getPlatformDisplay(PLATFORM);
+    const platformDisplay = getPlatformDisplay(platform);
     console.log(`Fetching ${platformDisplay.displayName || PLATFORM} repos...`);
     let allRepos = [];
     let nextUrl = `${ORG_API_URL}`;
@@ -79,7 +78,7 @@ const collectCodePlatformTags = async () => {
     // Additional repos
     const additionalData = await Promise.all(
         ADDITIONAL_REPOS.map(ownerRepo =>
-            get(`${REPO_API_URL}${ownerRepo}`)
+            get(`${REPO_API_URL}${encodeRepoId(ownerRepo)}`)
                 .then(({ json }) => json)
                 .catch(() => null)
         )

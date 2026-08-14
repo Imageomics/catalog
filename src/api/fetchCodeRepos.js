@@ -8,7 +8,7 @@ import { normalizeTag, filterDisplayTags } from '../utils/normalizeTag.js';
  * Both org-owned (non-forks) and additional repos are fetched; metadata is processed for each repo.
  * It also determines if a repo is "new" based on the provided refresh interval.
  * @async
- * @param {string} platform  - 'github', pending: 'gitlab', or 'codeberg'
+ * @param {string} platform  - 'github', 'gitlab', or 'codeberg'
  * @param {Array} additionalRepos - An array of additional "owner/repo" strings to include in addition to non-forked
  * org repos.
  * @param {string} orgApiUrl - The API URL for fetching organization repos
@@ -30,7 +30,7 @@ export async function fetchCodeRepos(
     let allRepos = [];
     let nextUrl = `${orgApiUrl}`;
     // get platform-specific keys
-    const { starsKey, profileRepo, fullNameKey, forkKey, urlKey } = getPlatformVals(platform);
+    const { starsKey, profileRepo, fullNameKey, updatedAtKey, forkKey, urlKey, encodeRepoId } = getPlatformVals(platform);
     try {
         while (nextUrl) {
             const ghResponse = await fetch(nextUrl);
@@ -57,7 +57,7 @@ export async function fetchCodeRepos(
 
         const fetchedExternalData = await Promise.all(
             toFetch.map(ownerRepo =>
-                fetch(`${repoApiUrl}${ownerRepo}`)
+                fetch(`${repoApiUrl}${encodeRepoId(ownerRepo)}`)
                     .then(r => {
                         if (!r.ok) {
                             console.warn(`Failed to fetch additional repo "${ownerRepo}": HTTP ${r.status}`);
@@ -84,7 +84,7 @@ export async function fetchCodeRepos(
         let processedItems = [...filteredAdditionalRepos, ...orgNonForks]
             .map(repo => {
                 const createdAt = new Date(repo.created_at);
-                const lastModified = new Date(repo.updated_at);
+                const lastModified = new Date(repo[updatedAtKey]);
                 const isNew = (new Date() - createdAt) / (1000 * 60 * 60 * 24) < refreshIntervalDays;
 
                 const rawTags = (repo.topics || []).map(t => t.toLowerCase());

@@ -14,15 +14,48 @@ export function validateConfig(config) {
         return errors;
     }
 
-    /** Validate organization names, existence and allowed characters */
-    const ghOrgRegex = /^[a-zA-Z0-9-]+$/;
+    /**
+     * PLATFORM will be parsed without whitespace, but must be string to avoid undefined errors
+    */
+    const supportedPlatforms = ['github', 'gitlab', 'codeberg'];
+    const platform = config.PLATFORM;
+    var validPlatform = '';
+    if (!platform || typeof platform !== 'string') {
+        errors.push('PLATFORM');
+    } else if (!supportedPlatforms.includes(platform.toLowerCase())) {
+        errors.push(`PLATFORM must be one of: ${supportedPlatforms.join(', ')}`);
+    } else {
+        validPlatform = platform.toLowerCase();
+    }
+
+    /**
+     * Validate organization names, existence and allowed characters
+     *
+     * GitHub org names allow only letters, numbers, and hyphens; GitLab and Codeberg also allow underscores.
+     * All require alphanumeric characters at start and end.
+     * See: https://docs.gitlab.com/user/reserved_names/
+     * See: https://codeberg.org/forgejo-contrib/forgejo-cli/wiki/Organizations
+    */
     const orgName = config.ORGANIZATION_NAME;
+    const ghOrgRegex = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/;
+    const glcbOrgRegex = /^[a-zA-Z0-9](?:[a-zA-Z0-9_\-]*[a-zA-Z0-9])?$/;
     if (typeof orgName !== 'string' || !orgName.trim()) {
         errors.push('ORGANIZATION_NAME');
-    } else if (!ghOrgRegex.test(orgName)) {
-        errors.push(`ORGANIZATION_NAME (${orgName}) is invalid, only letters, numbers, and hyphens are allowed`);
+    } else if (validPlatform != '') {
+        // If PLATFORM is invalid, we cannot determine which regex to use for ORGANIZATION_NAME validation.
+        if (validPlatform == 'github') {
+            var codeRegex = ghOrgRegex;
+            var codeRegexError = 'only letters, numbers, and hyphens';
+        } else {
+            var codeRegex = glcbOrgRegex;
+            var codeRegexError = 'only letters, numbers, hyphens, and underscores';
+        }
+        if (!codeRegex.test(orgName)) {
+            errors.push(`ORGANIZATION_NAME (${orgName}) is invalid for ${validPlatform} API calls, ${codeRegexError} are allowed`);
+        }
     }
-    const hfOrgRegex = /^[a-zA-Z0-9_\-]+$/;
+    // Hugging Face org names allow letters, numbers, hyphens, and underscores.
+    const hfOrgRegex = /^[a-zA-Z0-9](?:[a-zA-Z0-9_\-]*[a-zA-Z0-9])?$/;
     const hfOrgName = config.HF_ORGANIZATION_NAME;
     if (typeof hfOrgName !== 'string' || !hfOrgName.trim()) {
         errors.push('HF_ORGANIZATION_NAME');
@@ -31,17 +64,6 @@ export function validateConfig(config) {
     }
     if (!config.ORG_NAME)                     errors.push('ORG_NAME');
     if (!config.CATALOG_REPO_NAME)            errors.push('CATALOG_REPO_NAME');
-
-    /** Update to include 'gitlab' once supported
-     * PLATFORM will be parsed without whitespace, but must be string to avoid undefined errors
-    */
-    const supportedPlatforms = ['github', 'codeberg'];
-    const platform = config.PLATFORM;
-    if (!platform || typeof platform !== 'string') {
-        errors.push('PLATFORM');
-    } else if (!supportedPlatforms.includes(platform.toLowerCase())) {
-        errors.push(`PLATFORM must be one of: ${supportedPlatforms.join(', ')}`);
-    }
 
     if (!config.API_BASE_URL)                 errors.push('API_BASE_URL');
     if (config.REFRESH_INTERVAL_DAYS == null) errors.push('REFRESH_INTERVAL_DAYS');

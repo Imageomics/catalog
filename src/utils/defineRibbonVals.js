@@ -1,6 +1,6 @@
 /**
  * A collection of platform-specific display information (e.g., SVGs and URLs)
- * for code developer platforms including GitHub and Codeberg, pending: GitLab.
+ * for code developer platforms including GitHub, GitLab, and Codeberg.
  * Used for linking to repo and rendering icon and platform name in the ribbon component of the UI.
  *
  * Usage: import { getPlatformDisplay } from './defineRibbonVals.js';
@@ -11,7 +11,7 @@
  */
 
 import githubSvg from '../assets/GitHub_Invertocat.svg?raw';
-// import gitlabSvg from '../assets/gitlab-logo-700-rgb.svg?raw';
+import gitlabSvg from '../assets/gitlab-logo-700-rgb.svg?raw';
 import codebergSvg from '../assets/codeberg-logo_icon_white.svg?raw';
 
 /**
@@ -26,11 +26,11 @@ export function getPlatformDisplay(platform) {
             displayName: "GitHub",
             ribbonUrl: "https://github.com/"
         },
-        // gitlab: {
-        //   svg: gitlabSvg,
-        //   displayName: "GitLab",
-        //   ribbonUrl: "https://gitlab.com/"
-        //},
+        gitlab: {
+          svg: gitlabSvg,
+          displayName: "GitLab",
+          ribbonUrl: "https://gitlab.com/"
+        },
         codeberg: {
           svg: codebergSvg,
           displayName: "Codeberg",
