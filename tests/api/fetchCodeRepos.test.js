@@ -12,7 +12,7 @@ vi.mock('../../src/ui/render.js', () => ({
     handleError: vi.fn()
 }));
 
-const SUPPORTED_PLATFORMS = ['github', 'codeberg']; // 'gitlab' is pending, tests should work on implementation
+const SUPPORTED_PLATFORMS = ['github', 'gitlab', 'codeberg'];
 const TEST_ORG = 'test-org';
 
 const platformConfigs = SUPPORTED_PLATFORMS.map(platform => {
@@ -27,7 +27,9 @@ const platformConfigs = SUPPORTED_PLATFORMS.map(platform => {
         platformProfileRepo: platformVals.profileRepo,
         forkKey: platformVals.forkKey,
         fullNameKey: platformVals.fullNameKey,
+        updatedAtKey: platformVals.updatedAtKey,
         urlKey: platformVals.urlKey,
+        encodeRepoId: platformVals.encodeRepoId // used only for GitLab Additional Repos
     };
 });
 
@@ -58,7 +60,9 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
     const platformProfileRepo = platformConfig.platformProfileRepo;
     const forkKey = platformConfig.forkKey;
     const fullNameKey = platformConfig.fullNameKey;
+    const updatedAtKey = platformConfig.updatedAtKey;
     const urlKey = platformConfig.urlKey;
+    const encodeRepoId = platformConfig.encodeRepoId;
     const refreshIntervalDays = 30;
     const releasesMap = {};
 
@@ -78,7 +82,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
                 name: 'code-repo',
                 description: 'A test repository',
                 [forkKey]: getMockForkValue(false, platform),
-                updated_at: now.toISOString(),
+                [updatedAtKey]: now.toISOString(),
                 created_at: recentDateISO,
                 topics: ['python'],
                 [starsKey]: 42,
@@ -105,6 +109,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
         expect(items[0].repoType).toBe('code');
         expect(items[0].description).toBe('A test repository');
         // fork is used for inclusion filtering only and is not returned by fetchCodeRepos
+        expect(items[0].lastModified).toStrictEqual(now);
         expect(items[0].hasNewRelease).toBe(true);
         expect(items[0].latestReleaseTag).toBe('v1.0');
         expect(items[0].tags).toContain('python');
@@ -133,7 +138,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
                         [fullNameKey]: 'test-org/repo-page1',
                         name: 'repo-page1',
                         created_at: recentDateISO,
-                        updated_at: recentDateISO
+                        [updatedAtKey]: recentDateISO
                     }])
                 });
             } else if (url === `${orgApiUrl}?page=2`) {
@@ -145,7 +150,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
                         [fullNameKey]: 'test-org/repo-page2',
                         name: 'repo-page2',
                         created_at: recentDateISO,
-                        updated_at: recentDateISO }])
+                        [updatedAtKey]: recentDateISO }])
                 });
             }
         });
@@ -174,14 +179,17 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
             [fullNameKey]: 'test-org/internal-additional',
             name: 'internal-additional',
             created_at: recentDateISO,
-            updated_at: recentDateISO
+            [updatedAtKey]: recentDateISO
         };
 
+        const externalRepoId = 'external-org/external-additional';
+        const expectedExternalRepoUrl = `${repoApiUrl}${encodeRepoId(externalRepoId)}`;
+
         const mockExternalRepo = {
-            [fullNameKey]: 'external-org/external-additional',
+            [fullNameKey]: externalRepoId,
             name: 'external-additional',
             created_at: recentDateISO,
-            updated_at: recentDateISO
+            [updatedAtKey]: recentDateISO
         };
 
         global.fetch.mockImplementation((url) => {
@@ -192,7 +200,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
                     json: () => Promise.resolve([mockOrgRepo])
                 });
             }
-            if (url === `${repoApiUrl}external-org/external-additional`) {
+            if (url === expectedExternalRepoUrl) {
                 return Promise.resolve({
                     ok: true,
                     headers: { get: () => null },
@@ -203,7 +211,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
 
         const additionalRepos = [
             'test-org/internal-additional',
-            'external-org/external-additional'
+            externalRepoId
         ];
 
         const items = await fetchCodeRepos(
@@ -220,6 +228,9 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
         * should not hit the network a second time.
         */
         expect(global.fetch).toHaveBeenCalledTimes(2);
+        expect(global.fetch).toHaveBeenCalledWith(
+            `${expectedExternalRepoUrl}`
+        );
         expect(global.fetch).not.toHaveBeenCalledWith(
             `${repoApiUrl}test-org/internal-additional`
         );
@@ -229,7 +240,7 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
          */
         expect(items).toHaveLength(2);
         expect(items.map(i => i.id)).toContain('test-org/internal-additional');
-        expect(items.map(i => i.id)).toContain('external-org/external-additional');
+        expect(items.map(i => i.id)).toContain(externalRepoId);
     });
 
     // Test that forks and platform profile repos are excluded from the final list
@@ -243,28 +254,28 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
                     name: 'valid-repo',
                     [forkKey]: getMockForkValue(false, platform),
                     created_at: recentDateISO,
-                    updated_at: recentDateISO
+                    [updatedAtKey]: recentDateISO
                 },
                 {
                     [fullNameKey]: 'test-org/forked-repo',
                     name: 'forked-repo',
                     [forkKey]: getMockForkValue(true, platform),
                     created_at: recentDateISO,
-                    updated_at: recentDateISO
+                    [updatedAtKey]: recentDateISO
                 },
                 {
                     [fullNameKey]: 'test-org/forked-in-list',
                     name: 'forked-in-list',
                     [forkKey]: getMockForkValue(true, platform),
                     created_at: recentDateISO,
-                    updated_at: recentDateISO
+                    [updatedAtKey]: recentDateISO
                 },
                 {
                     [fullNameKey]: `test-org/${platformProfileRepo}`,
                     name: platformProfileRepo,
                     [forkKey]: getMockForkValue(false, platform),
                     created_at: recentDateISO,
-                    updated_at: recentDateISO
+                    [updatedAtKey]: recentDateISO
                 }
             ])
         });
@@ -298,13 +309,13 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
                     [fullNameKey]: 'test-org/new-repo',
                     name: 'new-repo',
                     created_at: recentDateISO,
-                    updated_at: now.toISOString()
+                    [updatedAtKey]: now.toISOString()
                 },
                 {
                     [fullNameKey]: 'test-org/old-repo',
                     name: 'old-repo',
                     created_at: oldestDateISO,
-                    updated_at: oldDateISO
+                    [updatedAtKey]: oldDateISO
                 }
             ])
         });
@@ -321,6 +332,9 @@ describe.each(platformConfigs)('fetchCodeRepos - $name', (platformConfig) => {
         const newRepo = items.find(i => i.id === 'test-org/new-repo');
         const oldRepo = items.find(i => i.id === 'test-org/old-repo');
 
+        // check that the lastModified dates are set correctly based on the platform-specific updatedAtKey
+        expect(items[0].lastModified).toStrictEqual(now);
+        expect(items[1].lastModified).toStrictEqual(new Date(oldDateISO));
         expect(newRepo.isNew).toBe(true);
         expect(oldRepo.isNew).toBe(false);
     });
