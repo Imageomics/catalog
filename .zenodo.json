@@ -23,6 +23,8 @@
       "spaces",
       "demos",
       "GitHub",
+      "GitLab",
+      "Codeberg",
       "Hugging Face",
       "APIs",
       "inventory",
@@ -32,9 +34,9 @@
       "searchability"
     ],
     "title": "Imageomics Catalog",
-    "version": "4.3.0",
+    "version": "5.0.0",
     "license": "MIT",
-    "publication_date": "2026-07-08",
+    "publication_date": "2026-08-18",
     "grants": [
         {
             "id": "021nxhr62::2118240"
