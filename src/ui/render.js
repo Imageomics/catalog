@@ -143,6 +143,11 @@ const renderHubItemCard = (item) => {
 export const renderItemList = (items) => {
     const itemListElement = document.getElementById('itemList');
     const emptyStateElement = document.getElementById('emptyState');
+    const resultCountElement = document.getElementById('resultCount');
+
+    if (resultCountElement) {
+        resultCountElement.textContent = `${items.length} result${items.length !== 1 ? 's' : ''}`;
+    }
 
     if (items.length === 0) {
         itemListElement.innerHTML = '';
