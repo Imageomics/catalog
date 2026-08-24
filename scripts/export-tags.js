@@ -17,7 +17,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { load } from 'js-yaml';
 import { validateConfig } from '../src/validateConfig.js';
-import { getPlatformDisplay } from '../src/utils/defineRibbonVals.js';
 import { filterNewAdditionalEntries } from '../src/utils/filterNewAdditionalEntries.js';
 import { getPlatformVals, getPlatformApiUrls } from '../src/utils/definePlatformVals.js';
 import { getPlatformHeaders } from './platformScriptHelpers.js';
@@ -36,7 +35,7 @@ if (errors.length) {
 }
 
 const CONFIG = rawConfig;
-const { ORGANIZATION_NAME, HF_ORGANIZATION_NAME, PLATFORM, API_BASE_URL, ADDITIONAL_REPOS } = CONFIG;
+const { ORGANIZATION_NAME, HF_ORGANIZATION_NAME, API_BASE_URL, ADDITIONAL_REPOS } = CONFIG;
 const ADDITIONAL_HF_REPOS = CONFIG.ADDITIONAL_HF_REPOS;
 
 // ---------------------------------------------------------------------------
@@ -62,8 +61,7 @@ const get = async (url) => {
 const allTags = new Set();
 
 const collectCodePlatformTags = async () => {
-    const platformDisplay = getPlatformDisplay(platform);
-    console.log(`Fetching ${platformDisplay.displayName || PLATFORM} repos...`);
+    console.log(`Fetching ${platform} repos...`);
     let allRepos = [];
     let nextUrl = `${ORG_API_URL}`;
 
@@ -92,7 +90,7 @@ const collectCodePlatformTags = async () => {
         (repo.topics || []).forEach(t => allTags.add(t.toLowerCase()));
     });
 
-    console.log(`  ${platformDisplay.displayName || PLATFORM}: processed ${orgNonForks.length} org repos + ${additionalRepos.length} additional repos`);
+    console.log(`  ${platform}: processed ${orgNonForks.length} org repos + ${additionalRepos.length} additional repos`);
 };
 
 const collectHFTags = async (repoType) => {
