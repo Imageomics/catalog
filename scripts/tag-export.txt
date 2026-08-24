@@ -68,6 +68,7 @@ captions
 carabidae
 carpentry-workshop
 catalog
+caterpillar
 checksums
 citizen-science
 class-activation-maps
@@ -118,6 +119,7 @@ dataset-processing
 datasets
 declarative-video-editing
 deduplication
+deep-learning
 deer
 desert
 detection
@@ -130,6 +132,7 @@ dinov2
 discoverability
 discrete wavelet transform
 disease
+disturbance
 documentation
 dog
 dorsal
@@ -181,6 +184,7 @@ fine-grained-classification
 fine-tuned
 fish
 flowers
+flyover-data
 focal-observation
 forewings
 format:imagefolder
@@ -208,6 +212,7 @@ ground beetles
 ground-beetles
 guide
 haha
+harvard-forest
 hawaii
 hawaiian birds
 hawaiian-forest
@@ -234,6 +239,7 @@ image-classification
 image-exploration
 image-filtering
 image-preview
+image-processing
 image-recognition
 image-search
 image-segmentation
@@ -273,10 +279,12 @@ lance
 land-cover
 land-cover-categorization
 land-cover-classification
+land-use
 ldw24
 ldw25
 ldw26
 leaf damage
+leaf-damage
 leaves
 lepidoptera
 library:datasets
@@ -285,6 +293,7 @@ license:cc0-1.0
 license:mit
 lions
 location
+logistic-regression
 loss:cosentloss
 lovedataweek
 mammals
@@ -303,6 +312,7 @@ metadata-export
 metadata-generation
 metadata-standards
 miew-id
+milkweed
 milu
 mimic groups
 mimicry
@@ -312,6 +322,7 @@ ml-challenge
 modality:image
 model
 models
+monarch
 morphology
 morphometrics
 moths
@@ -454,6 +465,7 @@ transformer
 transformers
 tree
 tree planting
+tree-crowns
 tree-of-life
 tree-seedling-detection
 trees
