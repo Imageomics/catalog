@@ -28,11 +28,13 @@ const TAG_GROUPS = {
         "amakihi", "apapane", "omao", "kalij", "white-eye",
         // butterflies & moths
         "butterfly", "butterflies",
+        "caterpillar",
         "lepidoptera",
         "heliconius",
         "heliconius erato", "heliconius-erato",
         "heliconius melpomene", "heliconius-melpomene",
         "erato", "melpomene",
+        "monarch",
         "moth", "moths",
         // beetles & other insects
         "beetle", "beetles",
@@ -86,8 +88,8 @@ const TAG_GROUPS = {
         "akala", "haha"
     ],
     "butterflies": [
-        "butterfly", "butterflies", "lepidoptera", "heliconius",
-        "heliconius erato", "heliconius melpomene", "erato", "melpomene",
+        "butterfly", "butterflies", "caterpillar", "lepidoptera", "heliconius",
+        "heliconius erato", "heliconius melpomene", "erato", "melpomene", "monarch",
         "forewings", "hindwings"
     ],
     "lab-bred": [
@@ -191,7 +193,8 @@ const TAG_GROUPS = {
         "machine learning", "applied machine learning", "ml",
         "deep learning", "deep-learning",
         "knowledge guided", "knowledge-guided",
-        "knowledge guided machine learning", "knowledge-guided-machine-learning"
+        "knowledge guided machine learning", "knowledge-guided-machine-learning",
+        "logistic-regression"
     ],
     "model": [
         "model", "models"
@@ -344,6 +347,7 @@ const TAG_GROUPS = {
         // foliage
         "leaf", "leaves",
         "leaf damage", "leaf-damage",
+        "milkweed",
         // keep flowers distinct from flowering
         "flowers", "flower"
     ],
@@ -352,7 +356,8 @@ const TAG_GROUPS = {
     ],
     "forest": [
         "cloud forest", "cloud-forest",
-        "understory", "hawaiian forest", "hawaiian-forest"
+        "understory", "hawaiian forest", "hawaiian-forest",
+        "harvard-forest"
     ],
     "hawaiian plants": [
         "acacia koa", "koa", "o'hia", "ohelo", "pilo", "pukiawe",
@@ -361,7 +366,7 @@ const TAG_GROUPS = {
         "hawaiian forest", "hawaiian-forest"
     ],
     "trees": [
-        "tree", "trees", "tree planting", "tree-planting",
+        "tree", "trees", "tree planting", "tree-planting", "tree-crowns",
         "tree seedling detection", "tree-seedling-detection",
         "acacia koa", "koa", "o'hia", "pilo"
     ],
