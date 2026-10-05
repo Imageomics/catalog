@@ -448,6 +448,7 @@ specimen-digitization
 specimen-images
 specimen-records
 spei
+standard-operating-procedure
 standards
 synthetic-captions
 taxonomic-resolution
