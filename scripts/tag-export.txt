@@ -27,12 +27,14 @@ api
 api-integration
 app
 applied machine learning
+attribution
 audio
 audio-classification
 autonomy
 baboons
 balanced
 basal pronotum
+batch-imaging
 beetle
 beetles
 behavior
@@ -69,7 +71,10 @@ carabidae
 carpentry-workshop
 catalog
 caterpillar
+cff-citation-validation
+cff-format
 checksums
+citation
 citizen-science
 class-activation-maps
 classification
@@ -311,6 +316,7 @@ metadata generation
 metadata-export
 metadata-generation
 metadata-standards
+metadata-validation
 miew-id
 milkweed
 milu
@@ -337,6 +343,7 @@ multimodal
 museum specimen
 museum specimens
 museum-images
+natural-history-collections
 neon
 neon-data
 nj fish
@@ -437,9 +444,11 @@ species-classification
 species-distribution
 species-identification
 specimen
+specimen-digitization
 specimen-images
 specimen-records
 spei
+standard-operating-procedure
 standards
 synthetic-captions
 taxonomic-resolution
@@ -516,6 +525,7 @@ yolo
 yolo-object-detection
 zebra
 zebras
+zenodo
 zero-shot
 zero-shot-image-classification
 zero-shot-text-retrieval
