@@ -41,6 +41,7 @@ ADDITIONAL_REPOS:
   - "ixlab/vidformer"
   - "ixlab/vega-video"
   - "yoohj0416/predictbeetle"
+  - "sajeedmehrab/op-hrg"
 
 # Array of Hugging Face repos from outside the org to include.
 # Each entry must specify "repo" (owner/name) and "type" (datasets, models, or spaces/demos).
@@ -54,6 +55,8 @@ ADDITIONAL_REPOS:
 #     type: "spaces"
 ADDITIONAL_HF_REPOS:
   - repo: "yoohj0416/predictbeetle"
+    type: "models"
+  - repo: "ksmehrab/op-hrg-qwen3vl4b-instruct"
     type: "models"
 
 # Typography
