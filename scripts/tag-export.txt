@@ -99,6 +99,7 @@ conservation
 containerization
 containerization-with-docker
 contrast enhancement
+coreset
 counterfactual-explanations
 cropland-data-layer
 cropscape
@@ -116,6 +117,7 @@ data-analysis
 data-exploration
 data-explorer
 data-management
+data-selection
 data-validation
 data-visualization
 dataset-documentation
@@ -134,6 +136,7 @@ diffusion-models
 dimensionality-reduction
 dino
 dinov2
+dinov3
 discoverability
 discrete wavelet transform
 disease
@@ -454,6 +457,7 @@ snakemake
 snakes
 soundscape
 spaces
+sparse-autoencoder
 sparse-autoencoders
 species
 species classification
