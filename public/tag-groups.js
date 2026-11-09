@@ -49,20 +49,28 @@ const TAG_GROUPS = {
         // reptiles
         "reptile", "reptiles",
         "snake", "snakes",
-        // fish
-        "fish",
+        "turtles",
+        // aquatic animals
+        "dolphins", "fish", "sea-stars", "seals",
+        "whale-sharks", "whales", "zebrafish",
         // mammals
-        "mammal", "mammals",
-        "african painted dog", "african-painted-dog", "dog",
+        "mammal", "mammals", "primates",
+        "african painted dog", "african-painted-dog", "dog", "dogs",
+        "antelopes",
         "baboon", "baboons",
+        "bears",
+        "cattle",
         "deer", "milu",
         "giraffe", "giraffes",
+        "hyenas",
+        "leopards",
         "lion", "lions",
         "onager",
         "persian onager", "persian-onager",
         "persian onanger", "persian-onanger",
         "przewalski",
         "rodent", "rodents",
+        "tigers",
         "ungulate", "ungulates",
         "zebra", "zebras",
         "grevy's zebra", "grevy's", "grevys",
@@ -94,12 +102,12 @@ const TAG_GROUPS = {
     ],
     "lab-bred": [
           "lab-bred", "lab bred", "cross types"
-    ],      
+    ],
     "mimicry": [
         "mimicry", "mullerian mimicry", "mullerian-mimicry", "mimic groups", "mimic-groups", "mimics"
     ],
     "fish": [
-        "fish", "nj fish"
+        "fish", "nj fish", "whale-sharks", "zebrafish"
     ],
     "giraffes": [
         "giraffe", "giraffes"
@@ -111,15 +119,24 @@ const TAG_GROUPS = {
         "insect", "insects", "moth", "moths", "wasp", "wasps"
     ],
     "mammals": [
-        "mammal", "mammals",
-        "african painted dog", "african-painted-dog", "dog",
+        "mammal", "mammals", "primates",
+        "african painted dog", "african-painted-dog", "dog", "dogs",
+        "antelopes",
         "baboon", "baboons",
+        "bears",
+        "cattle",
         "deer", "milu",
+        "dolphins",
         "giraffe", "giraffes",
+        "hyenas",
+        "leopards",
         "lion", "lions",
         "onager", "persian onanger", "przewalski",
         "rodent", "rodents",
+        "seals",
+        "tigers",
         "ungulate", "ungulates",
+        "whales",
         "zebra", "zebras", "grevy's zebra", "grevy's", "grevys", "plains zebra"
     ],
     "zebras": [
@@ -166,41 +183,74 @@ const TAG_GROUPS = {
         "computer vision", "computer-vision", "cv", "vision",
         "biological visual task", "biological visual tasks"
     ],
+    "classification": [
+        // image classification
+        "image classification", "image-classification",
+        "image recognition", "image-recognition",
+        "pose classification", "pose-classification",
+        "viewpoint classification", "viewpoint-classification",
+        "zero shot image classification", "zero-shot-image-classification",
+        // fine-grained classification
+        "fine-grained classification", "species classification",
+        // species classification
+        "species classification", "species-classification",
+        "species identification", "species-identification",
+        // other
+        "classification", "land-cover-classification", "hierarchical-classification"
+    ],
     "image classification": [
         "image classification", "image-classification",
         "image recognition", "image-recognition",
         "pose classification", "pose-classification",
-        "species classification", "species-classification",
-        "species identification", "species-identification",
-        "viewpoint classification", "viewpoint-classification"
+        "viewpoint classification", "viewpoint-classification",  "zero shot image classification", "zero-shot-image-classification",
     ],
     "fine-grained classification": [
         "fine-grained classification", "fine-grained-classification"
     ],
-    "object detection": [
+    "species classification": [
+        "species classification", "species-classification",
+        "species identification", "species-identification"
+    ],
+    "detection": [
         "object detection", "object-detection",
         "animal detection", "animal-detection",
-        "detection",
+        "detection", "yolo", "yolo-object-detection",
         "face detection", "face-detection",
         "tree seedling detection", "tree-seedling-detection",
         "hybrid detection", "hybrid-detection"
     ],
+    "mask generation": [
+        "mask-generation", "mask2former"
+    ],
     "segmentation": [
-        "segmentation", "image-segmentation", "trait segmentation", "trait-segmentation",
-        "wing segmentation", "wing-segmentation"
+        "segmentation", "foreground-segmentation", "image-segmentation", "trait segmentation", "trait-segmentation",
+        "wing segmentation", "wing-segmentation",
+        "sam3"
+    ],
+    "knowledge-guided": [
+        "knowledge guided", "knowledge-guided",
+        "knowledge guided machine learning", "knowledge-guided-machine-learning",
+        "knowledge-guided machine learning"
     ],
     "machine learning": [
         "machine learning", "applied machine learning", "ml",
         "deep learning", "deep-learning",
         "knowledge guided", "knowledge-guided",
         "knowledge guided machine learning", "knowledge-guided-machine-learning",
+        "knowledge-guided machine learning",
         "logistic-regression"
     ],
     "model": [
         "model", "models"
     ],
+    "BioCLIP": [
+        "bioclip", "bioclip2", "bioclip-2"
+    ],
+    "DINO": [
+        "dino", "dinov2", "dinov3"
+    ],
     "multimodal": [
-        "multimodal", "multi-modal"
+        "multimodal", "multi-modal", "vision-language-models", "vlms"
     ],
     "transformers": [
         "transformer", "transformers",
@@ -240,6 +290,9 @@ const TAG_GROUPS = {
         "class activation maps", "class-activation-maps",
         "saliency map", "saliency-map", "saliency-maps"
     ],
+    "sparse autoencoders": [
+        "sparse-autoencoder", "sparse-autoencoders"
+    ],
 
     // -------------------------------------------------------------------------
     // Data & Datasets
@@ -259,11 +312,16 @@ const TAG_GROUPS = {
         "file verification", "file-verification",
         "data validation", "data-validation",
         "metadata standards", "metadata-standards",
-        "standards", "metadata generation", "metadata-generation"
+        "standards", "metadata generation", "metadata-generation",
+        "metadata-validation"
     ],
     "metadata": [
         "metadata", "metadata standards", "metadata-standards",
-        "metadata-export", "metadata generation", "metadata-generation"
+        "metadata-export", "metadata generation", "metadata-generation",
+        "metadata-validation"
+    ],
+    "provenance": [
+        "provenance", "citation", "attribution"
     ],
     "data validation": [
         "provenance", "checksums", "deduplication",
@@ -281,6 +339,9 @@ const TAG_GROUPS = {
         "pinned specimen", "pinned specimens", "pinned-specimens",
         "specimen images", "specimen-images",
         "specimen", "specimen records", "specimen-records"
+    ],
+    "specimen digitization": [
+        "specimen-digitization", "batch-imaging",
     ],
     "visualization": [
         "visualization", "visualizations",
@@ -318,6 +379,7 @@ const TAG_GROUPS = {
         "trait swapping", "trait-swapping",
         "trait grounding", "trait counting", "trait referring",
         "wing segmentation", "wing-segmentation",
+        "functional-traits",
         "forewings", "hindwings",
         "elytra", "elytra length", "elytra width",
         "basal pronotum", "greenness",
@@ -385,8 +447,21 @@ const TAG_GROUPS = {
         "invasive mammals", "invasive-mammals",
         "endemic species", "endemic-species"
     ],
+    "counting": [
+        "counting", "trait counting"
+    ],
+    "invasive": [
+        "invasive", "invasive species", "invasive-species",
+        "invasive mammals", "invasive-mammals",
+    ],
     "drought": [
         "drought", "spei"
+    ],
+    "hybrids": [
+        "hybrids", "hybrid detection", "hybrid-detection"
+    ],
+    "animal re-id": [
+        "wildlife-reidentification", "animal-re-identification", "re-identification"
     ],
 
     // -------------------------------------------------------------------------
@@ -401,12 +476,21 @@ const TAG_GROUPS = {
         "aerial", "aerial imagery", "aerial-imagery",
         "mapping", "location", "map view", "map-view"
     ],
+    "bioacoustics": [
+        "passive acoustic monitoring", "bioacoustics", "soundscape", "yamnet"
+    ],
+    "camera traps": [
+        "camera trap", "camera traps", "camera-trap", "camera-traps"
+    ],
 
     // -------------------------------------------------------------------------
     // Open Science & Tools
     // -------------------------------------------------------------------------
     "app": [
         "app", "web-app"
+    ],
+    "cff citation validation": [
+        "cff-citation-validation", "cff-format"
     ],
     "FAIR": [
         "fair", "fair-principles", "fair-drones"
