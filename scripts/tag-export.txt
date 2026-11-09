@@ -15,6 +15,7 @@ animal detection
 animal-behavior
 animal-behavior-recognition
 animal-detection
+animal-identification
 animal-re-identification
 animal-tracking
 animals
@@ -22,6 +23,7 @@ annotated video
 annotation
 annotations
 anomaly-detection
+antelopes
 apapane
 api
 api-integration
@@ -35,12 +37,14 @@ baboons
 balanced
 basal pronotum
 batch-imaging
+bears
 beetle
 beetles
 behavior
 behavior recognition
 behavioral-ecology
 behavioural-ecology
+benchmark
 benchmarking
 benchmarks
 best-practices
@@ -71,6 +75,7 @@ carabidae
 carpentry-workshop
 catalog
 caterpillar
+cattle
 cff-citation-validation
 cff-format
 checksums
@@ -101,6 +106,8 @@ containerization-with-docker
 contrast enhancement
 coreset
 counterfactual-explanations
+counterfactual-retrieval
+counting
 cropland-data-layer
 cropscape
 cross types
@@ -143,6 +150,8 @@ disease
 disturbance
 documentation
 dog
+dogs
+dolphins
 dorsal
 download
 downloader
@@ -152,7 +161,6 @@ drone-videos
 drones
 drought
 duckdb
-eccv2026
 ecology
 eda
 editing
@@ -188,14 +196,15 @@ faiss
 feature-extraction
 fiftyone
 file-verification
+fine-grained
 fine-grained classification
 fine-grained-classification
-fine-grained-visual-grounding
 fine-tuned
 fish
 flowers
 flyover-data
 focal-observation
+foreground-segmentation
 forewings
 format:imagefolder
 fragmented habitat
@@ -220,7 +229,6 @@ grevy's zebra
 grevys
 ground beetles
 ground-beetles
-grpo
 guide
 haha
 harvard-forest
@@ -242,6 +250,7 @@ huggingface
 human-in-the-loop
 hybrid-detection
 hybrids
+hyenas
 image
 image analysis
 image classification
@@ -257,8 +266,8 @@ image-segmentation
 imageomics
 images
 imbalanced
+individual-identification
 insect
-instructpart
 interactive
 interactive-evaluation
 interdisciplinary
@@ -298,6 +307,7 @@ ldw26
 leaf damage
 leaf-damage
 leaves
+leopards
 lepidoptera
 library:datasets
 library:mlcroissant
@@ -312,6 +322,7 @@ mammals
 map-view
 mapping
 marmoset
+mask-generation
 mask2former
 mcp
 mds
@@ -347,7 +358,6 @@ mpi-applications
 mullerian-mimicry
 multi-modal
 multimodal
-multimodal-large-language-models
 museum specimen
 museum specimens
 museum-images
@@ -366,7 +376,6 @@ ol pejeta conservancy
 omao
 onager
 ontology
-op-hrg
 open-science
 open-source
 organism
@@ -376,12 +385,6 @@ out-of-distribution
 palooza
 parallel
 parquet
-part-grounding
-part-level-visual-grounding
-part-localization
-part-segmentation
-partimagenet
-pascalpart
 passive acoustic monitoring
 persian onanger
 pets
@@ -402,6 +405,7 @@ plants
 pose
 pose-classification
 pose-estimation
+primates
 processed
 project-website
 projects
@@ -410,17 +414,14 @@ provenance
 przewalski
 pukiawe
 pytorch
-qwen3-vl
 r
 rare species
 rare-species
 raw-data
-reasoning-segmentation
+re-identification
 reference
-referring-expression-comprehension
 region:us
 regression
-reinforcement-learning
 repo-records
 repository-management
 reproducibility
@@ -435,14 +436,16 @@ sahi
 saliency map
 saliency-map
 saliency-maps
+sam3
 sample-code
 samples
 satellite-imagery
 savanna
 scan-samples
+sea-stars
+seals
 searchability
 segmentation
-self-reflection
 sentence-similarity
 sentence-transformers
 separated wings
@@ -459,6 +462,7 @@ soundscape
 spaces
 sparse-autoencoder
 sparse-autoencoders
+spatial-reasoning
 species
 species classification
 species-classification
@@ -475,6 +479,7 @@ synthetic-captions
 taxonomic-resolution
 taxonomy
 telemetry
+tigers
 time series
 time-budget
 toads
@@ -500,6 +505,7 @@ tree-of-life
 tree-seedling-detection
 trees
 tsne
+turtles
 tutorials
 uav
 umap
@@ -522,15 +528,14 @@ vision-language-models
 vision-transformer
 vision-transformers
 visual-analytics
-visual-grounding
-visual-perception
-visual-reasoning
 visualization
 visualizations
 vlms
 wasps
 web-app
 weighted-multi-dimensional-scaling
+whale-sharks
+whales
 white-eye
 whitebalance
 wild
@@ -538,6 +543,7 @@ wildlife
 wildlife monitoring
 wildlife-conservation
 wildlife-monitoring
+wildlife-reidentification
 wilds
 wing-segmentation
 workflow-automation
@@ -549,6 +555,7 @@ yamnet
 yolo
 yolo-object-detection
 zebra
+zebrafish
 zebras
 zenodo
 zero-shot
