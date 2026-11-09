@@ -191,7 +191,7 @@ const TAG_GROUPS = {
         "viewpoint classification", "viewpoint-classification",
         "zero shot image classification", "zero-shot-image-classification",
         // fine-grained classification
-        "fine-grained classification", "species classification",
+        "fine-grained classification", "fine-grained-classification",
         // species classification
         "species classification", "species-classification",
         "species identification", "species-identification",
