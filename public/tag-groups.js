@@ -196,7 +196,8 @@ const TAG_GROUPS = {
         "species classification", "species-classification",
         "species identification", "species-identification",
         // other
-        "classification", "land-cover-classification", "hierarchical-classification"
+        "classification", "land-cover-classification", "hierarchical-classification",
+        "hybrid detection", "hybrid-detection"
     ],
     "image classification": [
         "image classification", "image-classification",
@@ -211,13 +212,12 @@ const TAG_GROUPS = {
         "species classification", "species-classification",
         "species identification", "species-identification"
     ],
-    "detection": [
+    "object detection": [
         "object detection", "object-detection",
         "animal detection", "animal-detection",
         "detection", "yolo", "yolo-object-detection",
         "face detection", "face-detection",
-        "tree seedling detection", "tree-seedling-detection",
-        "hybrid detection", "hybrid-detection"
+        "tree seedling detection", "tree-seedling-detection"
     ],
     "mask generation": [
         "mask-generation", "mask2former"
