@@ -10,7 +10,7 @@ This is a **template repository** for a web-based catalog of an organization's p
 
 **Do not restructure the codebase.** This project is intentionally designed as a template where the only expected user customization is editing `public/config.yaml` and `public/tag-groups.js` at instantiation — and occasionally updating `ADDITIONAL_REPOS` or `ADDITIONAL_HF_REPOS` when non-org repos must be added. 
 
-The `public/config.yaml` file is intended to be stable and reusable across repositories utilizing this template; new functionality should not require changes to existing configuration settings. The `public/tag-groups.js` file is likely to be unique to each template user and should have tag groups added as needed (proper use is described in `docs/tag-grouping-process.md`); **do not delete tag groups**.
+The `public/config.yaml` file is intended to be stable and reusable across repositories utilizing this template; new functionality should not require changes to existing configuration settings. The `public/tag-groups.js` file is likely to be unique to each template user and should have tag groups added as needed (proper use is described in `docs/tag-grouping-process.md`). A tag group should only combine tags with the **same meaning** (alternate spellings, hyphen/space variants, singular/plural forms, abbreviations); do not create broader topic or category groups.
 
 Source files (`src/`) and scripts (`scripts/`) can be updated as needed for new functionality as long as changes adhere to the templated design principles established here.
 

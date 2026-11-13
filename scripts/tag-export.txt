@@ -15,6 +15,7 @@ animal detection
 animal-behavior
 animal-behavior-recognition
 animal-detection
+animal-identification
 animal-re-identification
 animal-tracking
 animals
@@ -22,23 +23,28 @@ annotated video
 annotation
 annotations
 anomaly-detection
+antelopes
 apapane
 api
 api-integration
 app
 applied machine learning
+attribution
 audio
 audio-classification
 autonomy
 baboons
 balanced
 basal pronotum
+batch-imaging
+bears
 beetle
 beetles
 behavior
 behavior recognition
 behavioral-ecology
 behavioural-ecology
+benchmark
 benchmarking
 benchmarks
 best-practices
@@ -69,7 +75,11 @@ carabidae
 carpentry-workshop
 catalog
 caterpillar
+cattle
+cff-citation-validation
+cff-format
 checksums
+citation
 citizen-science
 class-activation-maps
 classification
@@ -94,7 +104,10 @@ conservation
 containerization
 containerization-with-docker
 contrast enhancement
+coreset
 counterfactual-explanations
+counterfactual-retrieval
+counting
 cropland-data-layer
 cropscape
 cross types
@@ -111,6 +124,7 @@ data-analysis
 data-exploration
 data-explorer
 data-management
+data-selection
 data-validation
 data-visualization
 dataset-documentation
@@ -129,12 +143,15 @@ diffusion-models
 dimensionality-reduction
 dino
 dinov2
+dinov3
 discoverability
 discrete wavelet transform
 disease
 disturbance
 documentation
 dog
+dogs
+dolphins
 dorsal
 download
 downloader
@@ -179,6 +196,7 @@ faiss
 feature-extraction
 fiftyone
 file-verification
+fine-grained
 fine-grained classification
 fine-grained-classification
 fine-tuned
@@ -186,6 +204,7 @@ fish
 flowers
 flyover-data
 focal-observation
+foreground-segmentation
 forewings
 format:imagefolder
 fragmented habitat
@@ -231,6 +250,7 @@ huggingface
 human-in-the-loop
 hybrid-detection
 hybrids
+hyenas
 image
 image analysis
 image classification
@@ -246,6 +266,7 @@ image-segmentation
 imageomics
 images
 imbalanced
+individual-identification
 insect
 interactive
 interactive-evaluation
@@ -286,6 +307,7 @@ ldw26
 leaf damage
 leaf-damage
 leaves
+leopards
 lepidoptera
 library:datasets
 library:mlcroissant
@@ -300,6 +322,7 @@ mammals
 map-view
 mapping
 marmoset
+mask-generation
 mask2former
 mcp
 mds
@@ -311,6 +334,7 @@ metadata generation
 metadata-export
 metadata-generation
 metadata-standards
+metadata-validation
 miew-id
 milkweed
 milu
@@ -337,6 +361,7 @@ multimodal
 museum specimen
 museum specimens
 museum-images
+natural-history-collections
 neon
 neon-data
 nj fish
@@ -380,6 +405,7 @@ plants
 pose
 pose-classification
 pose-estimation
+primates
 processed
 project-website
 projects
@@ -392,6 +418,7 @@ r
 rare species
 rare-species
 raw-data
+re-identification
 reference
 region:us
 regression
@@ -409,11 +436,14 @@ sahi
 saliency map
 saliency-map
 saliency-maps
+sam3
 sample-code
 samples
 satellite-imagery
 savanna
 scan-samples
+sea-stars
+seals
 searchability
 segmentation
 sentence-similarity
@@ -430,21 +460,26 @@ snakemake
 snakes
 soundscape
 spaces
+sparse-autoencoder
 sparse-autoencoders
+spatial-reasoning
 species
 species classification
 species-classification
 species-distribution
 species-identification
 specimen
+specimen-digitization
 specimen-images
 specimen-records
 spei
+standard-operating-procedure
 standards
 synthetic-captions
 taxonomic-resolution
 taxonomy
 telemetry
+tigers
 time series
 time-budget
 toads
@@ -470,6 +505,7 @@ tree-of-life
 tree-seedling-detection
 trees
 tsne
+turtles
 tutorials
 uav
 umap
@@ -488,6 +524,7 @@ viewpoint
 viewpoint-classification
 vision
 vision transformer
+vision-language-models
 vision-transformer
 vision-transformers
 visual-analytics
@@ -497,6 +534,8 @@ vlms
 wasps
 web-app
 weighted-multi-dimensional-scaling
+whale-sharks
+whales
 white-eye
 whitebalance
 wild
@@ -504,6 +543,7 @@ wildlife
 wildlife monitoring
 wildlife-conservation
 wildlife-monitoring
+wildlife-reidentification
 wilds
 wing-segmentation
 workflow-automation
@@ -515,7 +555,9 @@ yamnet
 yolo
 yolo-object-detection
 zebra
+zebrafish
 zebras
+zenodo
 zero-shot
 zero-shot-image-classification
 zero-shot-text-retrieval

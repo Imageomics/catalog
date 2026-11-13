@@ -61,7 +61,7 @@ side-by-side. Pay particular attention to:
 - Singular/plural variants (`specimen` / `specimens`, `annotation` / `annotations`)
 - Hyphenated vs. space-separated forms (`animal-behavior` / `animal behavior`)
 - Acronyms and their expansions (`cv` / `computer vision`, `xai` / `explainable ai`)
-- Closely related concepts that warrant separate canonical tags vs. one broader group
+- Related but distinct concepts (e.g., `phylogenetics` / `phylogeny`, `bioclip` / `bioclip2`) stay separate - groups only combine tags with the same meaning, not broader topics or categories
 - Any domain-specific or specialized terms. In our case, this was the Hawaiian birds and plants that Claude did not recognize.
 
 The manual pass by those familiar with the terms provides the most value, but is facilitated by the initial grouping.
@@ -93,8 +93,8 @@ You should update `public/tag-groups.js` when that PR is opened or updated.
 
    | Situation | Action |
    |-----------|--------|
-   | It's a variant of an existing concept (e.g. `bird-detection` when `object detection` exists) | Add the raw tag to the existing group's array |
-   | It represents a new concept that groups with other existing or new tags | Add a new key + array, under the appropriate section comment |
+   | It has the same meaning as an existing group (e.g. `camera-trap` when `camera traps` exists, or `vlms` when `vision-language models` exists) | Add the raw tag to the existing group's array |
+   | It has the same meaning as other existing or new tags not yet in a group | Add a new key + array, under the appropriate section comment |
    | It's a Hugging Face system tag (contains a colon, e.g. `license:mit`) | No edit - these are filtered out by the app and will not reach the UI (see [above](#what-are-tag-groups) for how to not filter these out) |
    | It's a one-off with no grouping candidates | No edit - it passes through unchanged and appears as-is in the UI |
 
