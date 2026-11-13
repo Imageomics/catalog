@@ -16,194 +16,86 @@
 const TAG_GROUPS = {
 
     // -------------------------------------------------------------------------
-    // Animal Groups
+    // Organisms
     // -------------------------------------------------------------------------
     "animals": [
-        "animal", "animals",
-        // birds
-        "bird", "birds",
-        "endemic bird", "endemic birds", "endemic-birds",
-        "hawaiian birds", "hawaiian-birds",
-        "hawaiian honeycreeper", "hawaiian-honeycreeper",
-        "amakihi", "apapane", "omao", "kalij", "white-eye",
-        // butterflies & moths
-        "butterfly", "butterflies",
-        "caterpillar",
-        "lepidoptera",
-        "heliconius",
-        "heliconius erato", "heliconius-erato",
-        "heliconius melpomene", "heliconius-melpomene",
-        "erato", "melpomene",
-        "monarch",
-        "moth", "moths",
-        // beetles & other insects
-        "beetle", "beetles",
-        "carabidae",
-        "ground beetle", "ground beetles", "ground-beetle", "ground-beetles",
-        "insect", "insects",
-        "wasp", "wasps",
-        // amphibians
-        "amphibian", "amphibians",
-        "frog", "frogs",
-        "toad", "toads",
-        // reptiles
-        "reptile", "reptiles",
-        "snake", "snakes",
-        "turtles",
-        // aquatic animals
-        "dolphins", "fish", "sea-stars", "seals",
-        "whale-sharks", "whales", "zebrafish",
-        // mammals
-        "mammal", "mammals", "primates",
-        "african painted dog", "african-painted-dog", "dog", "dogs",
-        "antelopes",
-        "baboon", "baboons",
-        "bears",
-        "cattle",
-        "deer", "milu",
-        "giraffe", "giraffes",
-        "hyenas",
-        "leopards",
-        "lion", "lions",
-        "onager",
-        "persian onager", "persian-onager",
-        "persian onanger", "persian-onanger",
-        "przewalski",
-        "rodent", "rodents",
-        "tigers",
-        "ungulate", "ungulates",
-        "zebra", "zebras",
-        "grevy's zebra", "grevy's", "grevys",
-        "plains zebra", "plains-zebra",
-        // general
-        "wildlife",
-        "nocturnal",
-        "wild",
-        "lab-bred",
-        "lab bred",
-        "cross types"
+        "animal", "animals"
     ],
-    "acuity": [
-        "bird acuity", "bird-acuity", "bird view", "bird-view",
-        "butterfly acuity", "butterfly-acuity", "butterfly view", "butterfly-view"
-    ],
-    "amphibians": [
-        "amphibian", "amphibians", "frog", "frogs", "toad", "toads"
+    "beetles": [
+        "beetle", "beetles"
     ],
     "birds": [
-        "bird", "birds", "hawaiian birds", "hawaiian-birds", "hawaiian-honeycreeper",
-        "endemic birds", "endemic-birds", "birdnet", "white-eye", "amakihi", "apapane", "omao", "kalij",
-        "akala", "haha"
+        "bird", "birds"
     ],
     "butterflies": [
-        "butterfly", "butterflies", "caterpillar", "lepidoptera", "heliconius",
-        "heliconius erato", "heliconius melpomene", "erato", "melpomene", "monarch",
-        "forewings", "hindwings"
+        "butterfly", "butterflies"
     ],
-    "lab-bred": [
-          "lab-bred", "lab bred", "cross types"
-    ],
-    "mimicry": [
-        "mimicry", "mullerian mimicry", "mullerian-mimicry", "mimic groups", "mimic-groups", "mimics"
-    ],
-    "fish": [
-        "fish", "nj fish", "whale-sharks", "zebrafish"
+    "dogs": [
+        "dog", "dogs"
     ],
     "giraffes": [
         "giraffe", "giraffes"
     ],
-    "ground beetles": [
-        "ground beetles", "ground-beetles", "carabidae", "beetles"
+    "grevy's": [
+        "grevy's", "grevys"
     ],
-    "insects": [
-        "insect", "insects", "moth", "moths", "wasp", "wasps"
+    "carabidae": [
+        "ground beetle", "ground beetles", "ground-beetle", "ground-beetles",
+        "carabidae", "carabid"
     ],
-    "mammals": [
-        "mammal", "mammals", "primates",
-        "african painted dog", "african-painted-dog", "dog", "dogs",
-        "antelopes",
-        "baboon", "baboons",
-        "bears",
-        "cattle",
-        "deer", "milu",
-        "dolphins",
-        "giraffe", "giraffes",
-        "hyenas",
-        "leopards",
-        "lion", "lions",
-        "onager", "persian onanger", "przewalski",
-        "rodent", "rodents",
-        "seals",
-        "tigers",
-        "ungulate", "ungulates",
-        "whales",
-        "zebra", "zebras", "grevy's zebra", "grevy's", "grevys", "plains zebra"
+    "trees": [
+        "tree", "trees"
     ],
     "zebras": [
-        "zebra", "zebras", "grevy's zebra", "grevy's", "grevys", "plains zebra"
+        "zebra", "zebras"
     ],
 
     // -------------------------------------------------------------------------
-    // Behavior & Ecology
+    // Behavior, Ecology & Conservation
     // -------------------------------------------------------------------------
     "animal behavior": [
-        "animal behavior", "animal-behavior", "animal-behavior-recognition",
-        "behavior", "behavior recognition", "behavior-recognition",
-        "behavioural ecology", "behavioural-ecology",
+        "animal behavior", "animal-behavior"
+    ],
+    "behavioral ecology": [
         "behavioral ecology", "behavioral-ecology",
-        "time budget", "time-budget", "focal observation", "focal-observation"
+        "behavioural ecology", "behavioural-ecology"
     ],
-    "evolution": [
-        "evolution", "evolutionary biology", "evolutionary-biology"
+    "evolutionary biology": [
+        "evolutionary biology", "evolutionary-biology"
     ],
-    "phenology": [
-        "phenology", "phenologies", "plant phenology", "plant-phenology"
+    "invasive species": [
+        "invasive species", "invasive-species"
     ],
-    "functional traits": [
-        "functional trait", "functional traits", "functional-trait", "functional-traits"
+    "rare species": [
+        "rare species", "rare-species"
+    ],
+    "leaf damage": [
+        "leaf damage", "leaf-damage"
     ],
     "wildlife monitoring": [
-        "wildlife monitoring", "wildlife-monitoring",
-        "camera trap", "camera traps", "camera-trap", "camera-traps",
-        "motion activated", "motion-activated", "motion triggered", "motion-triggered",
-        "passive acoustic monitoring", "bioacoustics", "soundscape",
-        "telemetry", "gps tracker", "gps-tracker"
+        "wildlife monitoring", "wildlife-monitoring"
     ],
     "mpala research centre": [
-        "mpala research centre", "mpala"
+        "mpala research centre", "mpala-research-centre", "mpala"
     ],
-    "neon": [
-        "neon", "neon-data"
+    "camera traps": [
+        "camera trap", "camera traps", "camera-trap", "camera-traps"
+    ],
+    "drones": [
+        "drone", "drones", "uav", "uavs"
     ],
 
     // -------------------------------------------------------------------------
     // Computer Vision & Machine Learning
     // -------------------------------------------------------------------------
     "computer vision": [
-        "computer vision", "computer-vision", "cv", "vision",
-        "biological visual task", "biological visual tasks"
+        "computer vision", "computer-vision", "cv"
     ],
-    "classification": [
-        // image classification
-        "image classification", "image-classification",
-        "image recognition", "image-recognition",
-        "pose classification", "pose-classification",
-        "viewpoint classification", "viewpoint-classification",
-        "zero shot image classification", "zero-shot-image-classification",
-        // fine-grained classification
-        "fine-grained classification", "fine-grained-classification",
-        // species classification
-        "species classification", "species-classification",
-        "species identification", "species-identification",
-        // other
-        "classification", "land-cover-classification", "hierarchical-classification",
-        "hybrid detection", "hybrid-detection"
+    "image": [
+        "image", "images"
     ],
     "image classification": [
-        "image classification", "image-classification",
-        "image recognition", "image-recognition",
-        "pose classification", "pose-classification",
-        "viewpoint classification", "viewpoint-classification",  "zero shot image classification", "zero-shot-image-classification",
+        "image classification", "image-classification"
     ],
     "fine-grained classification": [
         "fine-grained classification", "fine-grained-classification"
@@ -212,85 +104,58 @@ const TAG_GROUPS = {
         "species classification", "species-classification",
         "species identification", "species-identification"
     ],
+    "animal re-identification": [
+        "animal re-identification", "animal-re-identification",
+        "wildlife re-identification", "wildlife-reidentification",
+        "re-identification", "reidentification",
+        "individual identification", "individual-identification"
+    ],
     "object detection": [
-        "object detection", "object-detection",
-        "animal detection", "animal-detection",
-        "detection", "yolo", "yolo-object-detection",
-        "face detection", "face-detection",
-        "tree seedling detection", "tree-seedling-detection"
+        "object detection", "object-detection"
     ],
-    "mask generation": [
-        "mask-generation", "mask2former"
+    "animal detection": [
+        "animal detection", "animal-detection"
     ],
-    "segmentation": [
-        "segmentation", "foreground-segmentation", "image-segmentation", "trait segmentation", "trait-segmentation",
-        "wing segmentation", "wing-segmentation",
-        "sam3"
-    ],
-    "knowledge-guided": [
-        "knowledge guided", "knowledge-guided",
-        "knowledge guided machine learning", "knowledge-guided-machine-learning",
-        "knowledge-guided machine learning"
-    ],
-    "machine learning": [
-        "machine learning", "applied machine learning", "ml",
-        "deep learning", "deep-learning",
-        "knowledge guided", "knowledge-guided",
-        "knowledge guided machine learning", "knowledge-guided-machine-learning",
-        "knowledge-guided machine learning",
-        "logistic-regression"
+    "knowledge-guided machine learning": [
+        "knowledge-guided machine learning", "knowledge-guided-machine-learning",
+        "knowledge guided machine learning"
     ],
     "model": [
         "model", "models"
     ],
-    "BioCLIP": [
-        "bioclip", "bioclip2", "bioclip-2"
-    ],
-    "DINO": [
-        "dino", "dinov2", "dinov3"
-    ],
     "multimodal": [
-        "multimodal", "multi-modal", "vision-language-models", "vlms"
+        "multimodal", "multi-modal"
+    ],
+    "vision-language models": [
+        "vision-language model", "vision-language models",
+        "vision-language-model", "vision-language-models",
+        "vlm", "vlms"
     ],
     "transformers": [
-        "transformer", "transformers",
-        "vision transformer", "vision-transformer",
-        "vision transformers", "vision-transformers"
+        "transformer", "transformers"
+    ],
+    "vision transformers": [
+        "vision transformer", "vision transformers",
+        "vision-transformer", "vision-transformers"
     ],
     "embeddings": [
-        "embedding", "embeddings",
-        "embedding exploration", "embedding-exploration",
-        "feature extraction", "feature-extraction",
-        "sentence transformers", "sentence-transformers",
-        "sentence similarity", "sentence-similarity",
-        "similarity search", "similarity-search",
-        "faiss"
-    ],
-    "zero-shot": [
-        "zero shot", "zero-shot",
-        "zero shot image classification", "zero-shot-image-classification",
-        "zero shot text retrieval", "zero-shot-text-retrieval"
-    ],
-    "image": [
-        "image", "images"
-    ],
-    "video": [
-        "video", "videos", "video-query", "declarative-video-editing", "annotated video"
+        "embedding", "embeddings"
     ],
 
     // -------------------------------------------------------------------------
     // Explainability & Interpretability
     // -------------------------------------------------------------------------
     "explainable ai": [
-        "xai", "explainable ai", "explainable-ai",
-        "interpretable ai", "interpretable-ai",
-        "interpretable machine learning", "interpretable-machine-learning",
-        "interpretable", "interpretability", "interpretation",
-        "counterfactual explanations", "counterfactual-explanations",
-        "class activation maps", "class-activation-maps",
-        "saliency map", "saliency-map", "saliency-maps"
+        "explainable ai", "explainable-ai", "xai"
+    ],
+    "interpretable machine learning": [
+        "interpretable machine learning", "interpretable-machine-learning"
+    ],
+    "saliency maps": [
+        "saliency map", "saliency maps", "saliency-map", "saliency-maps"
     ],
     "sparse autoencoders": [
+        "sparse autoencoder", "sparse autoencoders",
         "sparse-autoencoder", "sparse-autoencoders"
     ],
 
@@ -298,223 +163,46 @@ const TAG_GROUPS = {
     // Data & Datasets
     // -------------------------------------------------------------------------
     "annotations": [
-        "annotation", "annotations", "label", "captions",
-        "synthetic captions", "synthetic-captions",
-        "annotated video"
+        "annotation", "annotations"
     ],
     "benchmarks": [
-        "benchmark", "benchmarks", "benchmarking", "evaluation",
-        "ml challenge", "ml-challenge"
+        "benchmark", "benchmarks"
     ],
-    "data management": [
-        "data management", "data-management", "metadata", "provenance", "checksums", "deduplication",
-        "dataset documentation", "dataset-documentation", "data-access", "data access",
-        "file verification", "file-verification",
-        "data validation", "data-validation",
-        "metadata standards", "metadata-standards",
-        "standards", "metadata generation", "metadata-generation",
-        "metadata-validation"
+    "FAIR": [
+        "fair", "fair principles", "fair-principles"
     ],
-    "metadata": [
-        "metadata", "metadata standards", "metadata-standards",
-        "metadata-export", "metadata generation", "metadata-generation",
-        "metadata-validation"
-    ],
-    "provenance": [
-        "provenance", "citation", "attribution"
-    ],
-    "data validation": [
-        "provenance", "checksums", "deduplication",
-        "file verification", "file-verification",
-        "data validation", "data-validation"
+    "NEON": [
+        "neon", "neon data", "neon-data"
     ],
     "exploratory data analysis": [
-        "eda", "exploratory data analysis", "exploratory-data-analysis",
-        "data exploration", "data-exploration", "data-explorer",
-        "exploratory data visualizations", "exploratory-data-visualizations"
+        "exploratory data analysis", "exploratory-data-analysis", "eda"
+    ],
+    "metadata generation": [
+        "metadata generation", "metadata-generation"
     ],
     "museum specimens": [
         "museum specimen", "museum specimens",
-        "museum images", "museum-images",
-        "pinned specimen", "pinned specimens", "pinned-specimens",
-        "specimen images", "specimen-images",
-        "specimen", "specimen records", "specimen-records"
+        "museum-specimen", "museum-specimens"
     ],
-    "specimen digitization": [
-        "specimen-digitization", "batch-imaging",
+    "pinned specimens": [
+        "pinned specimen", "pinned specimens",
+        "pinned-specimen", "pinned-specimens"
     ],
     "visualization": [
-        "visualization", "visualizations",
-        "data visualization", "data-visualization",
-        "visual analytics", "visual-analytics",
-        "interactive",
-        "hdf5 visualization", "hdf5-visualization",
-        "image exploration", "image-exploration",
-        "image preview", "image-preview"
+        "visualization", "visualizations"
     ],
-    "multi-dimensional-scaling": [
-        "weighted-multi-dimensional-scaling", "mds", "multi-dimensional-scaling"
+    "multi-dimensional scaling": [
+        "multi-dimensional scaling", "multi-dimensional-scaling", "mds"
     ],
 
     // -------------------------------------------------------------------------
-    // Taxonomy, Phylogenetics & Traits
+    // Traits
     // -------------------------------------------------------------------------
-    "phylogenetics": [
-        "phylogenetics", "phylogeny", "phylogenetic trees", "phylogenetic-trees"
-    ],
-    "taxonomy": [
-        "taxonomy", "taxonomic resolution", "taxonomic-resolution", "ontology", "phenoscape", "hierarchy",
-        "tree-of-life", "tree of life", "treeoflife"
-    ],
-    "tree of life": [
-        "tree-of-life", "tree of life", "treeoflife"
-    ],
     "traits": [
-        "trait", "traits",
-        "trait detection", "trait-detection",
-        "trait discovery", "trait-discovery",
-        "trait identification", "trait-identification",
-        "trait segmentation", "trait-segmentation",
-        "trait masking", "trait-masking",
-        "trait swapping", "trait-swapping",
-        "trait grounding", "trait counting", "trait referring",
-        "wing segmentation", "wing-segmentation",
-        "functional-traits",
-        "forewings", "hindwings",
-        "elytra", "elytra length", "elytra width",
-        "basal pronotum", "greenness",
-        "morphometrics", "measurements"
+        "trait", "traits"
     ],
-
-    // -------------------------------------------------------------------------
-    // Plants & Habitat
-    // -------------------------------------------------------------------------
-    "plants": [
-        "plant", "plants",
-        "plant identification", "plant-identification",
-        "plant phenology", "plant-phenology",
-        // hawaiian plants
-        "acacia koa", "acacia-koa", "koa",
-        "akala",
-        "clidemia hirta", "clidemia-hirta",
-        "o'hia",
-        "ohelo",
-        "pilo",
-        "pukiawe",
-        "small leaf kolea", "small-leaf-kolea",
-        // trees
-        "tree", "trees",
-        "tree planting", "tree-planting",
-        "tree seedling detection", "tree-seedling-detection",
-        // foliage
-        "leaf", "leaves",
-        "leaf damage", "leaf-damage",
-        "milkweed",
-        // keep flowers distinct from flowering
-        "flowers", "flower"
-    ],
-    "flowers": [
-        "flowers", "flower"
-    ],
-    "forest": [
-        "cloud forest", "cloud-forest",
-        "understory", "hawaiian forest", "hawaiian-forest",
-        "harvard-forest"
-    ],
-    "hawaiian plants": [
-        "acacia koa", "koa", "o'hia", "ohelo", "pilo", "pukiawe",
-        "akala",
-        "clidemia hirta", "small leaf kolea", "small-leaf-kolea",
-        "hawaiian forest", "hawaiian-forest"
-    ],
-    "trees": [
-        "tree", "trees", "tree planting", "tree-planting", "tree-crowns",
-        "tree seedling detection", "tree-seedling-detection",
-        "acacia koa", "koa", "o'hia", "pilo"
-    ],
-    "land cover": [
-        "land cover", "land-cover", "land-cover-categorization",
-        "land-cover-classification", "cropland-data-layer", "cropscape"
-    ],
-
-    // -------------------------------------------------------------------------
-    // Conservation & Biodiversity
-    // -------------------------------------------------------------------------
-    "biodiversity": [
-        "biodiversity", "conservation", "restoration",
-        "endangered species", "rare species", "rare-species",
-        "invasive species", "invasive-species",
-        "invasive mammals", "invasive-mammals",
-        "endemic species", "endemic-species"
-    ],
-    "counting": [
-        "counting", "trait counting"
-    ],
-    "invasive": [
-        "invasive", "invasive species", "invasive-species",
-        "invasive mammals", "invasive-mammals",
-    ],
-    "drought": [
-        "drought", "spei"
-    ],
-    "hybrids": [
-        "hybrids", "hybrid detection", "hybrid-detection"
-    ],
-    "animal re-id": [
-        "wildlife-reidentification", "animal-re-identification", "re-identification"
-    ],
-
-    // -------------------------------------------------------------------------
-    // Geospatial & Remote Sensing
-    // -------------------------------------------------------------------------
-    "drones": [
-        "drone", "drones", "drone videos", "drone-videos", "uav"
-    ],
-    "geospatial": [
-        "geospatial", "geodata", "gis", "geolocation",
-        "satellite imagery", "satellite-imagery",
-        "aerial", "aerial imagery", "aerial-imagery",
-        "mapping", "location", "map view", "map-view"
-    ],
-    "bioacoustics": [
-        "passive acoustic monitoring", "bioacoustics", "soundscape", "yamnet"
-    ],
-    "camera traps": [
-        "camera trap", "camera traps", "camera-trap", "camera-traps"
-    ],
-
-    // -------------------------------------------------------------------------
-    // Open Science & Tools
-    // -------------------------------------------------------------------------
-    "app": [
-        "app", "web-app"
-    ],
-    "cff citation validation": [
-        "cff-citation-validation", "cff-format"
-    ],
-    "FAIR": [
-        "fair", "fair-principles", "fair-drones"
-    ],
-    "open science": [
-        "open science", "open-science", "open source", "open-source",
-        "fair", "fair-principles", "reproducibility",
-        "reproducible research", "reproducible-research"
-    ],
-    "tools": [
-        "api", "api integration", "api-integration",
-        "cli", "command line interface", "command-line-interface",
-        "pipelines", "workflow automation", "workflow-automation", "snakemake",
-        "containerization", "containerization with docker", "containerization-with-docker",
-        "version control", "version-control"
-    ],
-    "vega": [
-        "vega", "vega-lite"
-    ],
-    // -------------------------------------------------------------------------
-    // Events
-    // -------------------------------------------------------------------------
-    "love data week": [
-        "ldw24", "ldw25", "ldw26", "lovedataweek"
+    "trait identification": [
+        "trait identification", "trait-identification"
     ]
 
 };
