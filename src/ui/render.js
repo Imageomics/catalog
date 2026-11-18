@@ -3,6 +3,11 @@
  * It includes functions for escaping HTML, adding word break opportunities, and rendering item cards.
  */
 
+import fileCodeSvg from '../assets/lucide-file-code.svg?raw';
+import databaseSvg from '../assets/lucide-database.svg?raw';
+import sparklesSvg from '../assets/lucide-sparkles.svg?raw';
+import rocketSvg from '../assets/lucide-rocket.svg?raw';
+
 /**
  * Escapes HTML special characters in a string to prevent XSS.
  * @param {string} str - The input string.
@@ -28,6 +33,30 @@ const addWordBreakOpportunities = (str) => {
     if (!str) return "";
     // Replace underscores with underscore + word break opportunity
     return str.replace(/_/g, '_<wbr>');
+};
+
+/**
+ * Lucide icons (https://lucide.dev, ISC license) and labels for each repository type.
+ */
+const TYPE_ICONS = {
+    code: { label: 'Code', svg: fileCodeSvg },
+    datasets: { label: 'Dataset', svg: databaseSvg },
+    models: { label: 'Model', svg: sparklesSvg },
+    spaces: { label: 'Demo', svg: rocketSvg }
+};
+
+/**
+ * Renders the type icon and label (e.g., "Dataset") for an item as an inline SVG.
+ * @param {string} repoType - The item's repository type.
+ * @returns {string} The HTML string for the icon and label, or an empty string for unknown types.
+ */
+const renderTypeLabel = (repoType) => {
+    const icon = TYPE_ICONS[repoType];
+    if (!icon) return '';
+    return `<span class="type-icon inline-flex items-center gap-1">
+                ${icon.svg}
+                <span>${icon.label}</span>
+            </span>`;
 };
 
 /**
@@ -128,7 +157,10 @@ const renderHubItemCard = (item) => {
                     ${tagsHtml}
                 </div>
                 <div class="flex justify-between items-center mt-4 text-xs text-gray-400 dark:text-gray-500">
-                    <span>Updated: ${lastUpdatedDate}</span>
+                    <span class="flex items-center gap-2">
+                        ${renderTypeLabel(item.repoType)}
+                        <span>Updated: ${lastUpdatedDate}</span>
+                    </span>
                     ${item.archived ? `<span class="archived-badge text-xs font-medium px-2.5 py-1 rounded-full">Archived</span>` : ''}
                 </div>
             </div>
