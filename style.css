@@ -69,6 +69,15 @@ body {
     color: #e3b341;
 }
 
+/* "Show Archived" filter checkbox uses the accent color when checked. */
+.archive-checkbox {
+    accent-color: var(--color-accent);
+}
+
+.dark .archive-checkbox {
+    accent-color: var(--color-accent-dark);
+}
+
 /* Animation for the "New!" badge. */
 .new-badge {
     /* Accent color  */

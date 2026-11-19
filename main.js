@@ -121,7 +121,7 @@ const applyFiltersAndSort = async (updateUrl = true) => {
     const sortBy = document.getElementById('sortBy').value;
     const tagFilter = document.getElementById('tagFilter').value;
     const repoType = document.getElementById('repoType').value;
-    const archiveFilter = document.getElementById('archiveFilter').value;
+    const archiveFilter = document.getElementById('archiveFilter').checked ? 'all' : 'active';
     let currentItems;
 
     // Update URL with current state if requested
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sortBySelect = document.getElementById('sortBy');
     const tagFilterSelect = document.getElementById('tagFilter');
     const repoTypeSelect = document.getElementById('repoType');
-    const archiveFilterSelect = document.getElementById('archiveFilter');
+    const archiveFilterCheckbox = document.getElementById('archiveFilter');
 
     // Parse URL parameters to restore state
     const urlParams = parseUrlParams();
@@ -263,16 +263,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const initialType = repoTypeSelect.value;
 
     // Restore archive filter from URL
-    const validArchiveValues = ['active', 'all'];
-    if (urlParams.archived && validArchiveValues.includes(urlParams.archived)) {
-        archiveFilterSelect.value = urlParams.archived;
-    }
+    archiveFilterCheckbox.checked = urlParams.archived === 'all';
 
     // Add input and change event listeners
     searchInput.addEventListener('input', applyFiltersAndSort);
     sortBySelect.addEventListener('change', applyFiltersAndSort);
     tagFilterSelect.addEventListener('change', applyFiltersAndSort);
-    archiveFilterSelect.addEventListener('change', applyFiltersAndSort);
+    archiveFilterCheckbox.addEventListener('change', applyFiltersAndSort);
 
     repoTypeSelect.addEventListener('change', async (event) => {
         const newRepoType = event.target.value;
