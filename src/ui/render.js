@@ -53,7 +53,7 @@ const TYPE_ICONS = {
 const renderTypeLabel = (repoType) => {
     const icon = TYPE_ICONS[repoType];
     if (!icon) return '';
-    return `<span class="type-icon inline-flex items-center gap-1">
+    return `<span class="type-icon type-icon-${repoType} inline-flex items-center gap-1">
                 ${icon.svg}
                 <span>${icon.label}</span>
             </span>`;

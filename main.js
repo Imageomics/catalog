@@ -182,6 +182,11 @@ const populateTagFilter = (repoType) => {
 // SECTION 4: EVENT LISTENERS AND INITIALIZATION
 //
 document.addEventListener('DOMContentLoaded', async () => {
+    // DEV-ONLY: per-type icon color tester panel (stripped from production builds)
+    if (import.meta.env.DEV) {
+        import('./src/ui/typeColorTester.js').then(m => m.initTypeColorTester());
+    }
+
     // Load config before anything else
     try {
         CONFIG = await configPromise;

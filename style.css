@@ -183,3 +183,14 @@ body {
 .dark .type-icon {
     color: var(--color-accent-dark);
 }
+
+/* Per-type icon colors. Each falls back to the shared colors above unless a --type-color-* variable is set. */
+.type-icon-code { color: var(--type-color-code, var(--color-secondary)); }
+.type-icon-datasets { color: var(--type-color-datasets, var(--color-secondary)); }
+.type-icon-models { color: var(--type-color-models, var(--color-secondary)); }
+.type-icon-spaces { color: var(--type-color-spaces, var(--color-secondary)); }
+
+.dark .type-icon-code { color: var(--type-color-code-dark, var(--color-accent-dark)); }
+.dark .type-icon-datasets { color: var(--type-color-datasets-dark, var(--color-accent-dark)); }
+.dark .type-icon-models { color: var(--type-color-models-dark, var(--color-accent-dark)); }
+.dark .type-icon-spaces { color: var(--type-color-spaces-dark, var(--color-accent-dark)); }
