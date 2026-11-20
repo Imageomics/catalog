@@ -74,7 +74,7 @@ describe('urlManager with jsdom environment', () => {
             <input id="searchInput" value="image segmentation" />
             <select id="sortBy"><option value="stars" selected>Stars</option></select>
             <select id="tagFilter"><option value="pytorch" selected>PyTorch</option></select>
-            <select id="archiveFilter"><option value="all" selected>All</option></select>
+            <button id="archiveFilter" aria-pressed="false">Hide Archived</button>
         `;
 
         const activeState = getCurrentState();

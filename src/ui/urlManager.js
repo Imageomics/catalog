@@ -80,6 +80,6 @@ export const getCurrentState = () => {
         q: document.getElementById('searchInput')?.value || '',
         sort: document.getElementById('sortBy')?.value || 'lastModified',
         tag: document.getElementById('tagFilter')?.value || '',
-        archived: document.getElementById('archiveFilter')?.value || 'active'
+        archived: document.getElementById('archiveFilter')?.getAttribute('aria-pressed') === 'false' ? 'all' : 'active'
     };
 };
