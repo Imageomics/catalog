@@ -10,12 +10,16 @@ authors:
 - family-names: "Radhakrishnan"
   given-names: "Balaji"
   affiliation: "The Ohio State University"
+- family-names: "Lapp"
+  given-names: "Hilmar"
+  affiliation: "Neuromatch"
+  orcid: "https://orcid.org/0000-0001-9107-0714"
 cff-version: 1.2.0
-date-released: "2026-08-24"
+date-released: "2026-11-20"
 identifiers:
-  - description: "The GitHub release URL of tag v5.0.1."
+  - description: "The GitHub release URL of tag v5.1.0."
     type: url
-    value: "https://github.com/Imageomics/catalog/releases/tag/v5.0.1"
+    value: "https://github.com/Imageomics/catalog/releases/tag/v5.1.0"
   - description: "The GitHub URL of the commit tagged with v5.0.1."
     type: url
     value: "https://github.com/Imageomics/catalog/tree/53f860cb1017e9190ee04fdac3c61f3413cbee60" # Update on release
@@ -40,6 +44,6 @@ license: MIT
 message: "If you use this software, please cite it as below."
 repository-code: "https://github.com/Imageomics/catalog"
 title: "Imageomics Catalog"
-version: "5.0.1"
+version: "5.1.0"
 doi: "10.5281/zenodo.17602801"
 type: software
