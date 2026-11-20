@@ -121,7 +121,7 @@ const applyFiltersAndSort = async (updateUrl = true) => {
     const sortBy = document.getElementById('sortBy').value;
     const tagFilter = document.getElementById('tagFilter').value;
     const repoType = document.getElementById('repoType').value;
-    const archiveFilter = document.getElementById('archiveFilter').checked ? 'all' : 'active';
+    const archiveFilter = document.getElementById('archiveFilter').getAttribute('aria-pressed') === 'true' ? 'active' : 'all';
     let currentItems;
 
     // Update URL with current state if requested
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sortBySelect = document.getElementById('sortBy');
     const tagFilterSelect = document.getElementById('tagFilter');
     const repoTypeSelect = document.getElementById('repoType');
-    const archiveFilterCheckbox = document.getElementById('archiveFilter');
+    const archiveFilterButton = document.getElementById('archiveFilter');
 
     // Parse URL parameters to restore state
     const urlParams = parseUrlParams();
@@ -263,13 +263,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const initialType = repoTypeSelect.value;
 
     // Restore archive filter from URL
-    archiveFilterCheckbox.checked = urlParams.archived === 'all';
+    // Pressed = hide archived (default); ?archived=all un-presses it
+    archiveFilterButton.setAttribute('aria-pressed', urlParams.archived === 'all' ? 'false' : 'true');
 
     // Add input and change event listeners
     searchInput.addEventListener('input', applyFiltersAndSort);
     sortBySelect.addEventListener('change', applyFiltersAndSort);
     tagFilterSelect.addEventListener('change', applyFiltersAndSort);
-    archiveFilterCheckbox.addEventListener('change', applyFiltersAndSort);
+    archiveFilterButton.addEventListener('click', () => {
+        const pressed = archiveFilterButton.getAttribute('aria-pressed') === 'true';
+        archiveFilterButton.setAttribute('aria-pressed', String(!pressed));
+        applyFiltersAndSort();
+    });
 
     repoTypeSelect.addEventListener('change', async (event) => {
         const newRepoType = event.target.value;
