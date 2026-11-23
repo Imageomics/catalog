@@ -91,6 +91,9 @@ const TAG_GROUPS = {
     "computer vision": [
         "computer vision", "computer-vision", "cv"
     ],
+    "deep comparative methods": [
+        "deep comparative methods", "deep-comparative-methods", "dcm"
+    ],
     "image": [
         "image", "images"
     ],

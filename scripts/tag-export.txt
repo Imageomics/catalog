@@ -63,6 +63,7 @@ bird view
 birdnet
 birds
 blender-addon
+brownian motion
 butterflies
 butterfly
 butterfly acuity
@@ -131,8 +132,11 @@ dataset-documentation
 dataset-generation
 dataset-processing
 datasets
+dcm
 declarative-video-editing
 deduplication
+deep comparative methods
+deep-comparative-methods
 deep-learning
 deer
 desert
@@ -161,6 +165,7 @@ drone-videos
 drones
 drought
 duckdb
+eccv2026
 ecology
 eda
 editing
@@ -199,6 +204,7 @@ file-verification
 fine-grained
 fine-grained classification
 fine-grained-classification
+fine-grained-visual-grounding
 fine-tuned
 fish
 flowers
@@ -229,6 +235,7 @@ grevy's zebra
 grevys
 ground beetles
 ground-beetles
+grpo
 guide
 haha
 harvard-forest
@@ -268,6 +275,7 @@ images
 imbalanced
 individual-identification
 insect
+instructpart
 interactive
 interactive-evaluation
 interdisciplinary
@@ -318,6 +326,7 @@ location
 logistic-regression
 loss:cosentloss
 lovedataweek
+macroevolution
 mammals
 map-view
 mapping
@@ -349,6 +358,7 @@ models
 monarch
 morphology
 morphometrics
+morphoweave
 moths
 motion-activated
 motion-triggered
@@ -358,6 +368,7 @@ mpi-applications
 mullerian-mimicry
 multi-modal
 multimodal
+multimodal-large-language-models
 museum specimen
 museum specimens
 museum-images
@@ -376,17 +387,26 @@ ol pejeta conservancy
 omao
 onager
 ontology
+op-hrg
 open-science
 open-source
 organism
 organization-based-tools
 orientation
+ornstein-uhlenbeck
 out-of-distribution
+pagels lambda
 palooza
 parallel
 parquet
+part-grounding
+part-level-visual-grounding
+part-localization
+part-segmentation
+partimagenet
+pascalpart
 passive acoustic monitoring
-persian onanger
+persian onager
 pets
 phenology
 phenoscape
@@ -414,14 +434,18 @@ provenance
 przewalski
 pukiawe
 pytorch
+qwen3-vl
 r
 rare species
 rare-species
 raw-data
 re-identification
+reasoning-segmentation
 reference
+referring-expression-comprehension
 region:us
 regression
+reinforcement-learning
 repo-records
 repository-management
 reproducibility
@@ -446,10 +470,13 @@ sea-stars
 seals
 searchability
 segmentation
+self-reflection
 sentence-similarity
 sentence-transformers
 separated wings
+shell
 similarity-search
+simulated data
 simulations
 size
 size_categories:n<1k
@@ -495,6 +522,7 @@ trait-identification
 trait-masking
 trait-segmentation
 trait-swapping
+traitblender
 traits
 transformer
 transformers
@@ -528,6 +556,9 @@ vision-language-models
 vision-transformer
 vision-transformers
 visual-analytics
+visual-grounding
+visual-perception
+visual-reasoning
 visualization
 visualizations
 vlms
