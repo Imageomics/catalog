@@ -12,7 +12,12 @@
       {
           "name": "Radhakrishnan, Balaji",
           "affiliation": "The Ohio State University"
-      }
+      },
+      {
+         "name": "Lapp, Hilmar",
+         "orcid": "https://orcid.org/0000-0001-9107-0714",
+         "affiliation": "Neuromatch"
+     }
     ],
     "description": "<p>Catalog app for Imageomics code, data, models, and demos hosted on GitHub and Hugging Face. It was designed for improved discoverability and searchability of Imageomics products, and the content is updated in real-time through calls to the GitHub and Hugging Face APIs.</p>\n<p>Catalog website: <a href=\"https://imageomics.github.io/catalog/\">imageomics.github.io/catalog/</a>.</p>\n<p>The repository also serves as a template for others looking to create a similar website to catalog their group's code, data, models, and demos.</p>",
     "keywords": [
@@ -34,9 +39,9 @@
       "searchability"
     ],
     "title": "Imageomics Catalog",
-    "version": "5.0.1",
+    "version": "5.1.0",
     "license": "MIT",
-    "publication_date": "2026-08-24",
+    "publication_date": "2026-11-20",
     "grants": [
         {
             "id": "021nxhr62::2118240"
